@@ -3,7 +3,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Locale;
 
 public final class Key implements CharSequence, Comparable<Key> {
     private final byte[] characters;
@@ -15,10 +14,10 @@ public final class Key implements CharSequence, Comparable<Key> {
     }
 
     public static Key of(final String input) {
-        return of(input, false, false);
+        return new Key(input.getBytes(StandardCharsets.US_ASCII));
     }
 
-    public static Key of(final String input, final boolean checkAscii, final boolean checkUpperCase) {
+    public static Key create(final String input, final boolean checkAscii, final boolean checkUpperCase) {
         if (input == null) {
             throw new IllegalArgumentException("Input cannot be null");
         }

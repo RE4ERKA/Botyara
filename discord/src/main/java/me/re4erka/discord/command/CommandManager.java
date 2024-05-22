@@ -50,7 +50,7 @@ public class CommandManager extends Manager {
             try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8))) {
                 while (!isStop.get()) {
                     final String[] message = StringUtils.split(reader.readLine(), ' ');
-                    final Command command = commands.getOrDefault(Key.of(message[0], true, true),
+                    final Command command = commands.getOrDefault(Key.create(message[0], true, true),
                             args -> {
                         System.out.println("Неизвестная команда!");
                         return false;
