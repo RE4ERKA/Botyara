@@ -1,0 +1,5 @@
+rootProject.name = 'Botyara'
+
+include 'api'
+include 'discord'
+

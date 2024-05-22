@@ -1,0 +1,20 @@
+Contains:
+  - 'сколько лет'
+  - 'скики лет'
+
+Options:
+  post_order: LAST
+  use_user_variables: true
+
+Respond:
+  DEFAULT:
+    type: SINGLE
+    message: 'Мне много-много лет'
+
+Questions:
+  WHY:
+    type: SINGLE
+    message: 'Потому я очень давно родился!'
+  SURE:
+    type: SINGLE
+    message: 'Врать со своим возрастом я не буду!'

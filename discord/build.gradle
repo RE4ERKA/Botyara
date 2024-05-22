@@ -1,0 +1,41 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
+dependencies {
+    api project(':api')
+
+    compileOnly ('org.xerial:sqlite-jdbc:3.42.0.0')  {
+        exclude group: 'org.slf4j'
+    }
+    implementation ('org.xerial:sqlite-jdbc:3.42.0.0')  {
+        exclude group: 'org.slf4j'
+    }
+
+    implementation 'mysql:mysql-connector-java:8.0.33'
+    implementation ('com.zaxxer:HikariCP:5.0.1') {
+        exclude group: 'org.slf4j'
+        exclude group: 'org.apache.logging.log4j'
+    }
+
+    implementation ('org.javacord:javacord:3.8.0') {
+        exclude group: 'org.apache.logging.log4j'
+    }
+
+    implementation 'net.objecthunter:exp4j:0.4.8'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'me.re4erka.discord.Botyara'
+    }
+}
+
+shadowJar {
+    archiveFileName = "Botyara-${project.version}.jar"
+
+    minimize() {
+        exclude(dependency('org.javacord:javacord:.*'))
+        exclude(dependency('org.xerial:sqlite-jdbc:.*'))
+    }
+}
