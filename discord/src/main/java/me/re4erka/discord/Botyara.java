@@ -35,12 +35,9 @@ public enum Botyara {
     public static void main(String... args) {
         Botyara.INSTANCE.onEnable();
 
-        Signal.handle(new Signal("INT"), sig -> {
-            System.out.println("It is not recommended to terminate the process via the 'CTRL + C' combination!");
-            System.out.println("Instead, it is better to use the command - /stop");
-
-            Botyara.INSTANCE.onDisable();
-        });
+        Runtime.getRuntime().addShutdownHook(
+                new Thread(Botyara.INSTANCE::onDisable, "Shutdown-Thread")
+        );
     }
 
     public void onEnable() {

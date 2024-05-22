@@ -140,8 +140,9 @@ public final class Key implements CharSequence, Comparable<Key> {
         }
 
         if (charSequence instanceof String) {
-            final String key = toString();
-            return charSequence.equals(key);
+            return charSequence.equals(
+                    toString()
+            );
         }
 
         final int length = charSequence.length();

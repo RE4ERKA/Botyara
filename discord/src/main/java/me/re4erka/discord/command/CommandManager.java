@@ -24,7 +24,7 @@ public class CommandManager extends Manager {
     private final ExecutorService service = Executors.newFixedThreadPool(1, runnable -> {
         final Thread thread = new Thread(runnable);
 
-        thread.setName("Botyara-Console-Thread");
+        thread.setName("Console-Thread");
         thread.setPriority(Thread.NORM_PRIORITY);
         thread.setDaemon(false);
 
