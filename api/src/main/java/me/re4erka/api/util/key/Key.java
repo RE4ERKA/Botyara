@@ -3,6 +3,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Locale;
 
 public final class Key implements CharSequence, Comparable<Key> {
     private final byte[] characters;
@@ -79,6 +80,22 @@ public final class Key implements CharSequence, Comparable<Key> {
     @Override
     public @NotNull String toString() {
         return new String(characters, StandardCharsets.US_ASCII);
+    }
+
+    public @NotNull String toLowerCase() {
+        final byte[] lowerCaseBytes = new byte[characters.length];
+
+        for (int i = 0; i < characters.length; i++) {
+            final byte currentByte = characters[i];
+
+            if (currentByte >= 'A' && currentByte <= 'Z') {
+                lowerCaseBytes[i] = (byte) (currentByte + ('a' - 'A'));
+            } else {
+                lowerCaseBytes[i] = currentByte;
+            }
+        }
+
+        return new String(lowerCaseBytes, StandardCharsets.US_ASCII);
     }
 
     @Override
