@@ -12,7 +12,7 @@ public class HelpCommand implements Command {
                 .getCommandManager()
                 .getCommands()
                 .forEach(command ->
-                    info(" - /" + command.toLowerCase())
+                    info(" - /" + command.toString().toLowerCase())
                 );
 
         return false;
