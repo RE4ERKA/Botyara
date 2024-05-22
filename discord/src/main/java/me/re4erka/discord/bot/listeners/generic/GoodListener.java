@@ -9,9 +9,7 @@ import me.re4erka.api.bot.word.search.SearchWords;
 import me.re4erka.api.bot.word.Words;
 import me.re4erka.discord.bot.ActiveBot;
 
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Date;
 
 @SuppressWarnings("unused")
 public class GoodListener extends AskListener {
@@ -20,17 +18,14 @@ public class GoodListener extends AskListener {
     private final SearchWords evening = SearchWords.builder().words("доброго вечера").build();
     private final SearchWords night = SearchWords.builder().words("доброй ночи").build();
 
-    private final ZoneId zoneId;
-
-    public GoodListener(ActiveBot bot) {
+    public GoodListener(ListeningBot bot) {
         super("GOOD_MORNING_AND_OTHER", PostOrder.LAST, bot);
-        this.zoneId = bot.getZoneId();
     }
 
     @Override
     public boolean onListen(Receiver receiver, Words words) {
         if (words.containsAny(morning)) {
-            final int hours = ZonedDateTime.now(zoneId).getHour();
+            final int hours = ZonedDateTime.now(ActiveBot.ZONE_ID).getHour();
 
             if (hours >= 4 && hours <= 12) {
                 receiver.reply("Доброе!");
@@ -44,7 +39,7 @@ public class GoodListener extends AskListener {
         }
 
         if (words.containsAny(day)) {
-            final int hours = ZonedDateTime.now(zoneId).getHour();
+            final int hours = ZonedDateTime.now(ActiveBot.ZONE_ID).getHour();
 
             if (hours >= 12 && hours <= 16) {
                 receiver.reply("Добрый!");
@@ -58,7 +53,7 @@ public class GoodListener extends AskListener {
         }
 
         if (words.containsAny(evening)) {
-            final int hours = ZonedDateTime.now(zoneId).getHour();
+            final int hours = ZonedDateTime.now(ActiveBot.ZONE_ID).getHour();
 
             if (hours >= 15) {
                 receiver.reply("Доброго!");
@@ -72,7 +67,7 @@ public class GoodListener extends AskListener {
         }
 
         if (words.containsAny(night)) {
-            final int hours = ZonedDateTime.now(zoneId).getHour();
+            final int hours = ZonedDateTime.now(ActiveBot.ZONE_ID).getHour();
 
             if (hours <= 6 || hours == 23) {
                 receiver.reply("Доброй!");

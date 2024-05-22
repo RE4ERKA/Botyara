@@ -1,6 +1,5 @@
 package me.re4erka.discord.bot;
 
-import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import me.re4erka.api.bot.activity.scheduler.ActivityScheduler;
 import me.re4erka.api.bot.listener.ListeningBot;
@@ -61,8 +60,9 @@ public class ActiveBot extends ListeningBot {
 
     private final ActivityScheduler scheduler;
 
-    @Getter
-    private final ZoneId zoneId;
+    public static final ZoneId ZONE_ID = ZoneId.of(
+            Properties.ACTIVITIES_SLEEPING_ZONE_ID.asString()
+    );
 
     public static final UserHistory USER_HISTORY = HistoryManager.newUser("ListeningBot")
             .logging((message, receiver) -> {
@@ -113,7 +113,6 @@ public class ActiveBot extends ListeningBot {
 
         this.api = api;
         this.scheduler = builder.build();
-        this.zoneId = ZoneId.of(Properties.ACTIVITIES_SLEEPING_ZONE_ID.asString());
     }
 
     @Override

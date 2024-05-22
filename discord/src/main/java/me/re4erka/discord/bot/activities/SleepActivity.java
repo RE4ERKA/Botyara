@@ -1,6 +1,5 @@
 package me.re4erka.discord.bot.activities;
 
-import me.re4erka.api.bot.Bot;
 import me.re4erka.api.bot.activity.Activity;
 import me.re4erka.discord.bot.ActiveBot;
 
@@ -15,9 +14,7 @@ public class SleepActivity implements Activity {
 
     @Override
     public boolean update() {
-        final int hours = ZonedDateTime.now(
-                bot.getZoneId()
-        ).getHour();
+        final int hours = ZonedDateTime.now(ActiveBot.ZONE_ID).getHour();
 
         if (hours == 23 || hours <= 5) {
             bot.sleep(true);
