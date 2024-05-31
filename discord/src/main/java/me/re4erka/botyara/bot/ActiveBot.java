@@ -61,7 +61,7 @@ public class ActiveBot extends ListeningBot {
 
     private final ActivityScheduler scheduler;
 
-    private static final ZoneId ZONE_ID = ZoneId.of(
+    public static final ZoneId ZONE_ID = ZoneId.of(
             Properties.ACTIVITIES_SLEEPING_ZONE_ID.asString()
     );
 
