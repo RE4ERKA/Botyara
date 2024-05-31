@@ -10,6 +10,7 @@ import me.re4erka.botyara.api.bot.listener.common.Listener;
 import me.re4erka.botyara.api.config.exception.ConfigLoadException;
 import me.re4erka.botyara.api.config.handler.ConfigHandler;
 import me.re4erka.botyara.api.util.file.JarDirectory;
+import me.re4erka.botyara.api.util.key.Key;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.simpleyaml.configuration.file.YamlConfiguration;
@@ -138,7 +139,10 @@ public class ListenerLoader {
         }
 
         try {
-            return new ConfigHandler(name, config);
+            return new ConfigHandler(
+                    Key.create(name, true, false),
+                    config
+            );
         } catch (ConfigLoadException exception) {
             log.error(
                     new ParameterizedMessage(

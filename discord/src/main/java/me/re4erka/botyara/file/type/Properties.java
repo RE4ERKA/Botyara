@@ -35,6 +35,8 @@ public enum Properties {
 
     ACTIVITIES_SLEEPING_ENABLED("Activities.SLEEPING.enabled", false),
     ACTIVITIES_SLEEPING_ZONE_ID("Activities.SLEEPING.zone_id", "Europe/Moscow"),
+    ACTIVITIES_SLEEPING_PATTERN_BETWEEN("Activities.SLEEPING.pattern.between", 0),
+    ACTIVITIES_SLEEPING_PATTERN_TO("Activities.SLEEPING.pattern.to", 1),
 
     ACTIVITIES_WATCHING_ENABLED("Activities.WATCHING.enabled", false),
     ACTIVITIES_WATCHING_API_KEY("Activities.WATCHING.api_key", "EMPTY"),

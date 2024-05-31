@@ -10,13 +10,14 @@ import me.re4erka.botyara.api.config.types.ConfigOptions;
 import me.re4erka.botyara.api.config.types.ConfigQuestions;
 import me.re4erka.botyara.api.config.types.ConfigRespond;
 import me.re4erka.botyara.api.bot.word.search.SearchWords;
+import me.re4erka.botyara.api.util.key.Key;
 import org.simpleyaml.configuration.file.YamlConfiguration;
 
 import java.util.Map;
 
 @Getter
 public class ConfigHandler {
-    private final String listenerName;
+    private final Key listenerName;
 
     private final SearchWords searchWords;
 
@@ -24,7 +25,7 @@ public class ConfigHandler {
     private final ConfigRespond respond;
     private final ConfigQuestions questions;
 
-    public ConfigHandler(String listenerName, YamlConfiguration configuration) throws ConfigLoadException {
+    public ConfigHandler(Key listenerName, YamlConfiguration configuration) throws ConfigLoadException {
         this.listenerName = listenerName;
 
         this.searchWords = SearchWords.of(configuration.getStringList("Contains"));

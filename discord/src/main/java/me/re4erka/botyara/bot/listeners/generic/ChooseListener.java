@@ -6,6 +6,7 @@ import me.re4erka.botyara.api.bot.listener.ask.AskListener;
 import me.re4erka.botyara.api.bot.listener.common.PostOrder;
 import me.re4erka.botyara.api.bot.receiver.Receiver;
 import me.re4erka.botyara.api.bot.word.Words;
+import me.re4erka.botyara.api.util.key.Key;
 import me.re4erka.botyara.api.util.random.Random;
 import org.apache.commons.lang3.StringUtils;
 
@@ -27,7 +28,7 @@ public class ChooseListener extends AskListener {
     private static final Pattern VALID_REGEX = Pattern.compile("[^А-Яа-я^A-za-z0-9Ёё\\s]");
 
     public ChooseListener(ListeningBot bot) {
-        super("CHOOSE", PostOrder.NORMAL, bot);
+        super(Key.of("CHOOSE"), PostOrder.NORMAL, bot);
     }
 
     @Override

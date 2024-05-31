@@ -9,6 +9,7 @@ import me.re4erka.botyara.api.bot.memory.part.ExpiringMemoryPart;
 import me.re4erka.botyara.api.bot.receiver.Receiver;
 import me.re4erka.botyara.api.bot.word.search.SearchWords;
 import me.re4erka.botyara.api.bot.word.Words;
+import me.re4erka.botyara.api.util.key.Key;
 import me.re4erka.botyara.api.util.random.Random;
 
 import java.util.concurrent.TimeUnit;
@@ -32,7 +33,7 @@ public class WhatsUpListener extends AskListener {
             .build();
 
     public WhatsUpListener(ListeningBot bot) {
-        super("WHATS_UP", PostOrder.NORMAL, bot);
+        super(Key.of("WHATS_UP"), PostOrder.NORMAL, bot);
     }
 
     @Override

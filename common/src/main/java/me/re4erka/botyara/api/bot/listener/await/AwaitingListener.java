@@ -5,6 +5,7 @@ import me.re4erka.botyara.api.bot.listener.common.Listener;
 import me.re4erka.botyara.api.bot.listener.common.PostOrder;
 import me.re4erka.botyara.api.bot.receiver.Receiver;
 import me.re4erka.botyara.api.bot.word.Words;
+import me.re4erka.botyara.api.util.key.Key;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -14,12 +15,12 @@ public abstract class AwaitingListener extends Listener {
 
     private final ListeningBot bot;
 
-    public AwaitingListener(String name, ListeningBot bot) {
+    public AwaitingListener(Key name, ListeningBot bot) {
         super(name);
         this.bot = bot;
     }
 
-    public AwaitingListener(String name, PostOrder postOrder, ListeningBot bot) {
+    public AwaitingListener(Key name, PostOrder postOrder, ListeningBot bot) {
         super(name, postOrder);
         this.bot = bot;
     }

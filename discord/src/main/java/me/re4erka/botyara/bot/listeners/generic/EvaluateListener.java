@@ -6,6 +6,7 @@ import me.re4erka.botyara.api.bot.listener.ask.AskType;
 import me.re4erka.botyara.api.bot.listener.common.PostOrder;
 import me.re4erka.botyara.api.bot.receiver.Receiver;
 import me.re4erka.botyara.api.bot.word.Words;
+import me.re4erka.botyara.api.util.key.Key;
 
 import java.util.OptionalInt;
 import java.util.concurrent.ThreadLocalRandom;
@@ -17,7 +18,7 @@ public class EvaluateListener extends AskListener {
     };
 
     public EvaluateListener(ListeningBot bot) {
-        super("EVALUATE", PostOrder.NORMAL, bot);
+        super(Key.of("EVALUATE"), PostOrder.NORMAL, bot);
     }
 
     @Override

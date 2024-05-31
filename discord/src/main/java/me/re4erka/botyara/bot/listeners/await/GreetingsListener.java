@@ -7,6 +7,7 @@ import me.re4erka.botyara.api.bot.receiver.Receiver;
 import me.re4erka.botyara.api.bot.word.Words;
 import me.re4erka.botyara.api.bot.word.random.answer.MultiAnswer;
 import me.re4erka.botyara.api.bot.word.random.answer.WordEnd;
+import me.re4erka.botyara.api.util.key.Key;
 import me.re4erka.botyara.api.util.user.UserNameUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -23,7 +24,7 @@ public class GreetingsListener extends AwaitingListener {
     private final MultiAnswer greetingAnswer;
 
     public GreetingsListener(ListeningBot bot) {
-        super("USER_GREETING", PostOrder.LAST, bot);
+        super(Key.of("USER_GREETING"), PostOrder.LAST, bot);
 
         familiarityAnswer = MultiAnswer.newBuilder()
                 .part(greetingWords, WordEnd.COMMA)

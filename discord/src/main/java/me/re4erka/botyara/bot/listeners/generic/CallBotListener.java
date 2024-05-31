@@ -6,6 +6,7 @@ import me.re4erka.botyara.api.bot.receiver.Receiver;
 import me.re4erka.botyara.api.bot.word.Words;
 import me.re4erka.botyara.api.bot.word.random.answer.MultiAnswer;
 import me.re4erka.botyara.api.bot.word.random.answer.WordEnd;
+import me.re4erka.botyara.api.util.key.Key;
 
 @SuppressWarnings("unused")
 public class CallBotListener extends Listener {
@@ -14,7 +15,7 @@ public class CallBotListener extends Listener {
             .build();
 
     public CallBotListener() {
-        super("CALL_BOT_LISTENER", PostOrder.FIRST);
+        super(Key.of("CALL_BOT_LISTENER"), PostOrder.FIRST);
     }
 
     @Override

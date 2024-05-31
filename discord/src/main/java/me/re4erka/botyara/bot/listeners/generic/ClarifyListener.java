@@ -7,6 +7,7 @@ import me.re4erka.botyara.api.bot.listener.common.PostOrder;
 import me.re4erka.botyara.api.bot.receiver.Receiver;
 import me.re4erka.botyara.api.bot.word.search.SearchWords;
 import me.re4erka.botyara.api.bot.word.Words;
+import me.re4erka.botyara.api.util.key.Key;
 import me.re4erka.botyara.api.util.random.Random;
 
 @SuppressWarnings("unused")
@@ -24,7 +25,7 @@ public class ClarifyListener extends AskListener {
             .build();
 
     public ClarifyListener(ListeningBot bot) {
-        super("CLARIFY", PostOrder.LAST, bot);
+        super(Key.of("CLARIFY"), PostOrder.LAST, bot);
     }
 
     @Override

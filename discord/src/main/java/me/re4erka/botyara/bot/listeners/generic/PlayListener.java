@@ -6,6 +6,7 @@ import me.re4erka.botyara.api.bot.listener.await.AwaitingListener;
 import me.re4erka.botyara.api.bot.receiver.Receiver;
 import me.re4erka.botyara.api.bot.word.search.SearchWords;
 import me.re4erka.botyara.api.bot.word.Words;
+import me.re4erka.botyara.api.util.key.Key;
 import me.re4erka.botyara.api.util.random.Random;
 import me.re4erka.botyara.bot.receiver.DiscordReceiver;
 
@@ -22,7 +23,7 @@ public class PlayListener extends AwaitingListener {
             .build();
 
     public PlayListener(ListeningBot bot) {
-        super("USER_ASKS_TO_PLAY", bot);
+        super(Key.of("USER_ASKS_TO_PLAY"), bot);
     }
 
     @Override

@@ -6,6 +6,7 @@ import me.re4erka.botyara.api.bot.listener.common.PostOrder;
 import me.re4erka.botyara.api.bot.receiver.Receiver;
 import me.re4erka.botyara.api.bot.word.search.SearchWords;
 import me.re4erka.botyara.api.bot.word.Words;
+import me.re4erka.botyara.api.util.key.Key;
 import me.re4erka.botyara.api.util.user.UserNameUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -40,7 +41,7 @@ public class ChangeNameListener extends AwaitingListener {
             .build();
 
     public ChangeNameListener(ListeningBot bot) {
-        super("CHANGE_USER_NAME", PostOrder.LAST, bot);
+        super(Key.of("CHANGE_USER_NAME"), PostOrder.LAST, bot);
     }
 
     @Override

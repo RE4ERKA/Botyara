@@ -6,6 +6,7 @@ import me.re4erka.botyara.api.bot.listener.ask.AskType;
 import me.re4erka.botyara.api.bot.listener.common.PostOrder;
 import me.re4erka.botyara.api.bot.receiver.Receiver;
 import me.re4erka.botyara.api.bot.word.Words;
+import me.re4erka.botyara.api.util.key.Key;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
@@ -21,7 +22,7 @@ public class CalculationListener extends AskListener {
     private final static Pattern VALID_REGEX = Pattern.compile("[^А-Яа-яA-Za-z]");
 
     public CalculationListener(ListeningBot bot) {
-        super("CALCULATION", PostOrder.LAST, bot);
+        super(Key.of("CALCULATION"), PostOrder.LAST, bot);
     }
 
     @Override

@@ -6,6 +6,7 @@ import me.re4erka.botyara.api.bot.receiver.Receiver;
 import me.re4erka.botyara.api.bot.word.random.answer.ChanceAnswer;
 import me.re4erka.botyara.api.bot.word.search.SearchWords;
 import me.re4erka.botyara.api.bot.word.Words;
+import me.re4erka.botyara.api.util.key.Key;
 
 @SuppressWarnings("unused")
 public class RatingListener extends Listener {
@@ -29,7 +30,7 @@ public class RatingListener extends Listener {
             .build();
 
     public RatingListener() {
-        super("USER_ASKS_MESSAGE_RATING", PostOrder.NORMAL);
+        super(Key.of("USER_ASKS_MESSAGE_RATING"), PostOrder.NORMAL);
     }
 
     @Override

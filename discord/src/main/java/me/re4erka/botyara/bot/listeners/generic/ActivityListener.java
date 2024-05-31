@@ -5,6 +5,7 @@ import me.re4erka.botyara.api.bot.receiver.Receiver;
 import me.re4erka.botyara.api.bot.word.search.SearchWords;
 import me.re4erka.botyara.api.bot.word.Words;
 import me.re4erka.botyara.Botyara;
+import me.re4erka.botyara.api.util.key.Key;
 import me.re4erka.botyara.bot.ActiveBot;
 import org.javacord.api.entity.activity.Activity;
 import org.javacord.api.entity.activity.ActivityType;
@@ -70,7 +71,7 @@ public class ActivityListener extends Listener {
             .build();
 
     public ActivityListener() {
-        super("USER_ASKS_FOR_ACTIVITY");
+        super(Key.of("USER_ASKS_FOR_ACTIVITY"));
 
         this.bot = Botyara.INSTANCE.getBotManager().getBot();
     }

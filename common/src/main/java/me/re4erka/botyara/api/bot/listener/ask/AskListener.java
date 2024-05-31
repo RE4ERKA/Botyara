@@ -5,11 +5,12 @@ import me.re4erka.botyara.api.bot.listener.common.Listener;
 import me.re4erka.botyara.api.bot.listener.common.PostOrder;
 import me.re4erka.botyara.api.bot.receiver.Receiver;
 import me.re4erka.botyara.api.bot.word.Words;
+import me.re4erka.botyara.api.util.key.Key;
 
 public abstract class AskListener extends Listener implements IAskListener {
     private final ListeningBot bot;
 
-    protected AskListener(String name, PostOrder postOrder, ListeningBot bot) {
+    protected AskListener(Key name, PostOrder postOrder, ListeningBot bot) {
         super(name, postOrder);
         this.bot = bot;
     }

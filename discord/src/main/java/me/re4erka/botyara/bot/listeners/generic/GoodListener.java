@@ -7,6 +7,7 @@ import me.re4erka.botyara.api.bot.listener.common.PostOrder;
 import me.re4erka.botyara.api.bot.receiver.Receiver;
 import me.re4erka.botyara.api.bot.word.search.SearchWords;
 import me.re4erka.botyara.api.bot.word.Words;
+import me.re4erka.botyara.api.util.key.Key;
 import me.re4erka.botyara.bot.ActiveBot;
 
 import java.time.ZonedDateTime;
@@ -19,7 +20,7 @@ public class GoodListener extends AskListener {
     private final SearchWords night = SearchWords.builder().words("доброй ночи").build();
 
     public GoodListener(ListeningBot bot) {
-        super("GOOD_MORNING_AND_OTHER", PostOrder.LAST, bot);
+        super(Key.of("GOOD_MORNING_AND_OTHER"), PostOrder.LAST, bot);
     }
 
     @Override
