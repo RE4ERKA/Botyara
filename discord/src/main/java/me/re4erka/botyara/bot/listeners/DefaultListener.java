@@ -49,14 +49,14 @@ public class DefaultListener implements IListener {
 
     private static final class PrankTask extends TimerTask {
         private final Receiver receiver;
-        private final int index;
+        private final short index;
         
-        private PrankTask(Receiver receiver, int index) {
+        private PrankTask(Receiver receiver, short index) {
             this.receiver = receiver;
             this.index = index;
         }
 
-        public static void start(Receiver receiver, int index) {
+        public static void start(Receiver receiver, short index) {
             new Timer(false).schedule(
                     new PrankTask(receiver, index),
                     Random.range(1000, 2000)

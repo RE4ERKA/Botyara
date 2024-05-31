@@ -40,11 +40,18 @@ public class ChanceAnswer {
 
     public static class Builder {
         private final Set<ChanceWord> chanceWords = new HashSet<>();
-        private int sum = 0;
-        private int index = 0;
+        private short sum = 0;
+        private short index = 0;
 
         public Builder word(String word, int chance) {
-            chanceWords.add(new ChanceWord(index, word, this.sum, this.sum + chance));
+            if (chance > 100) {
+                throw new IllegalArgumentException("The chance cannot be above 100!");
+            }
+
+            chanceWords.add(
+                    new ChanceWord(index, word, this.sum, (short) (this.sum + chance))
+            );
+
             sum += chance;
             index++;
 

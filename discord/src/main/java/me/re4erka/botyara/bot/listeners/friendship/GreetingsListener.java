@@ -1,4 +1,4 @@
-package me.re4erka.botyara.bot.listeners.await;
+package me.re4erka.botyara.bot.listeners.friendship;
 
 import me.re4erka.botyara.api.bot.listener.ListeningBot;
 import me.re4erka.botyara.api.bot.listener.await.AwaitingListener;

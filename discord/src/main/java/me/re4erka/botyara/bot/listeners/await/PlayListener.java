@@ -1,4 +1,4 @@
-package me.re4erka.botyara.bot.listeners.generic;
+package me.re4erka.botyara.bot.listeners.await;
 
 import lombok.RequiredArgsConstructor;
 import me.re4erka.botyara.api.bot.listener.ListeningBot;

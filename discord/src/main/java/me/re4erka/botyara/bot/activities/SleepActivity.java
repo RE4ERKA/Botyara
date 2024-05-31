@@ -4,8 +4,6 @@ import me.re4erka.botyara.api.bot.activity.Activity;
 import me.re4erka.botyara.bot.ActiveBot;
 import me.re4erka.botyara.file.type.Properties;
 
-import java.time.ZonedDateTime;
-
 public class SleepActivity implements Activity {
     private final ActiveBot bot;
 
@@ -21,7 +19,7 @@ public class SleepActivity implements Activity {
 
     @Override
     public boolean update() {
-        final int hours = ZonedDateTime.now(ActiveBot.ZONE_ID).getHour();
+        final int hours = bot.getCurrentTime();
 
         if (hours == between || hours <= to) {
             bot.sleep(true);

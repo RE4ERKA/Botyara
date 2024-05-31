@@ -19,14 +19,17 @@ public class GoodListener extends AskListener {
     private final SearchWords evening = SearchWords.builder().words("доброго вечера").build();
     private final SearchWords night = SearchWords.builder().words("доброй ночи").build();
 
+    private final ActiveBot bot;
+
     public GoodListener(ListeningBot bot) {
         super(Key.of("GOOD_MORNING_AND_OTHER"), PostOrder.LAST, bot);
+        this.bot = (ActiveBot) bot;
     }
 
     @Override
     public boolean onListen(Receiver receiver, Words words) {
         if (words.containsAny(morning)) {
-            final int hours = ZonedDateTime.now(ActiveBot.ZONE_ID).getHour();
+            final int hours = bot.getCurrentTime();
 
             if (hours >= 4 && hours <= 12) {
                 receiver.reply("Доброе!");
@@ -40,7 +43,7 @@ public class GoodListener extends AskListener {
         }
 
         if (words.containsAny(day)) {
-            final int hours = ZonedDateTime.now(ActiveBot.ZONE_ID).getHour();
+            final int hours = bot.getCurrentTime();
 
             if (hours >= 12 && hours <= 16) {
                 receiver.reply("Добрый!");
@@ -54,7 +57,7 @@ public class GoodListener extends AskListener {
         }
 
         if (words.containsAny(evening)) {
-            final int hours = ZonedDateTime.now(ActiveBot.ZONE_ID).getHour();
+            final int hours = bot.getCurrentTime();
 
             if (hours >= 15) {
                 receiver.reply("Доброго!");
@@ -68,7 +71,7 @@ public class GoodListener extends AskListener {
         }
 
         if (words.containsAny(night)) {
-            final int hours = ZonedDateTime.now(ActiveBot.ZONE_ID).getHour();
+            final int hours = bot.getCurrentTime();
 
             if (hours <= 6 || hours == 23) {
                 receiver.reply("Доброй!");

@@ -19,5 +19,7 @@ public abstract class Bot {
     public abstract void listen(String song);
     public abstract void play(String game);
 
+    public abstract int getCurrentTime();
+
     public abstract Bot cleanUp();
 }

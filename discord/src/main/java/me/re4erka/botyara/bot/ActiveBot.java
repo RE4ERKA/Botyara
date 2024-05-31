@@ -24,6 +24,7 @@ import org.javacord.api.entity.activity.ActivityType;
 import org.javacord.api.entity.user.UserStatus;
 
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 
 @Log4j2
@@ -60,7 +61,7 @@ public class ActiveBot extends ListeningBot {
 
     private final ActivityScheduler scheduler;
 
-    public static final ZoneId ZONE_ID = ZoneId.of(
+    private static final ZoneId ZONE_ID = ZoneId.of(
             Properties.ACTIVITIES_SLEEPING_ZONE_ID.asString()
     );
 
@@ -221,6 +222,11 @@ public class ActiveBot extends ListeningBot {
     public void play(String game) {
         api.updateActivity(ActivityType.PLAYING, game);
         ACTIVITY_HISTORY.log(ActivityType.PLAYING, game);
+    }
+
+    @Override
+    public int getCurrentTime() {
+        return ZonedDateTime.now(ZONE_ID).getHour();
     }
 
     public Optional<Activity> getDiscordActivity() {
