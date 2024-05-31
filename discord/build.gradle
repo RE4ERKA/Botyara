@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    api project(':api')
+    api project(':common')
 
     compileOnly ('org.xerial:sqlite-jdbc:3.42.0.0')  {
         exclude group: 'org.slf4j'
@@ -27,7 +27,7 @@ dependencies {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'me.re4erka.discord.Botyara'
+        attributes 'Main-Class': 'me.re4erka.botyara.Botyara'
     }
 }
 
