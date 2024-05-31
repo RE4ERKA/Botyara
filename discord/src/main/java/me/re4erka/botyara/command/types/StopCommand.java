@@ -6,7 +6,7 @@ import me.re4erka.botyara.Botyara;
 public class StopCommand implements Command {
     @Override
     public boolean execute(String[] args) {
-        Botyara.INSTANCE.onDisable();
+        Botyara.INSTANCE.shutdown();
 
         return true;
     }

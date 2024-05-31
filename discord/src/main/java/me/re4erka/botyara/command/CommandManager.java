@@ -15,25 +15,12 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Log4j2
 public class CommandManager extends Manager {
-    private final ExecutorService service = Executors.newFixedThreadPool(1, runnable -> {
-        final Thread thread = new Thread(runnable);
-
-        thread.setName("Console-Thread");
-        thread.setPriority(Thread.NORM_PRIORITY);
-        thread.setDaemon(false);
-
-        thread.setUncaughtExceptionHandler(
-                (t, e) -> log.error("There was an error while running the console thread!", e)
-        );
-
-        return thread;
-    });
+    private final AtomicBoolean running = new AtomicBoolean(false);
+    private Thread consoleThread;
 
     private final ImmutableMap<Key, Command> commands = new ImmutableMap.Builder<Key, Command>()
             .put(Key.of("STOP"), new StopCommand())
@@ -44,35 +31,63 @@ public class CommandManager extends Manager {
 
     @Override
     public boolean start() {
-        service.execute(() -> {
-            AtomicBoolean isStop = new AtomicBoolean(false);
+        if (running.get()) {
+            log.warn("The console thread has already started!");
+            return false;
+        }
 
-            try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8))) {
-                while (!isStop.get()) {
+        consoleThread = new Thread(() -> {
+            running.set(true);
+
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8))) {
+                while (running.get()) {
                     final String[] message = StringUtils.split(reader.readLine(), ' ');
                     final Command command = commands.getOrDefault(Key.create(message[0], true, true),
                             args -> {
-                        System.out.println("Неизвестная команда!");
-                        return false;
-                    });
+                                System.out.println("Неизвестная команда!");
+                                return false;
+                            });
 
-                    isStop.set(
-                        Objects.requireNonNull(command).execute(
-                                Arrays.copyOfRange(message, 1, message.length)
-                        )
+                    running.set(
+                            !Objects.requireNonNull(command).execute(
+                                    Arrays.copyOfRange(message, 1, message.length)
+                            )
                     );
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (IOException exception) {
+                log.error("Error when reading the console!", exception);
+                Thread.currentThread().interrupt();
             }
         });
+
+        consoleThread.setName("Console-Thread");
+        consoleThread.setPriority(Thread.NORM_PRIORITY);
+        consoleThread.setDaemon(false);
+        consoleThread.setUncaughtExceptionHandler(
+                (t, e) -> log.error("There was an error while running the console thread!", e)
+        );
+
+        consoleThread.start();
 
         return true;
     }
 
     @Override
     public void stop() {
-        service.shutdownNow();
+        if (running.compareAndSet(true, false)) {
+            if (consoleThread == null) {
+                return;
+            }
+
+            consoleThread.interrupt();
+
+            try {
+                consoleThread.join();
+            } catch (InterruptedException exception) {
+                log.error("Failed to terminate the console thread!", exception);
+                Thread.currentThread().interrupt();
+            }
+        }
     }
 
     public ImmutableSet<Key> getCommands() {

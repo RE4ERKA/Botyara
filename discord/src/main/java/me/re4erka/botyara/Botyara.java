@@ -13,6 +13,7 @@ import me.re4erka.botyara.executor.ScheduledExecutor;
 import me.re4erka.botyara.file.FileManager;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Getter @Log4j2
 public enum Botyara {
@@ -29,15 +30,21 @@ public enum Botyara {
 
     private static final SimpleHistory history = HistoryManager.newSimple("MainClass");
 
+    /* Потокобезопастная переменная выключен ли бот.
+    *
+    * Для избежания повторных выключений.
+    *  */
+    private final AtomicBoolean shutdownInProgress = new AtomicBoolean(false);
+
     public static void main(String... args) {
-        Botyara.INSTANCE.onEnable();
+        Botyara.INSTANCE.start();
 
         Runtime.getRuntime().addShutdownHook(
-                new Thread(Botyara.INSTANCE::onDisable, "Shutdown-Thread")
+                new Thread(Botyara.INSTANCE::shutdown, "Shutdown-Thread")
         );
     }
 
-    public void onEnable() {
+    public void start() {
         HistoryManager.init(jarDirectory);
 
         log.info("Enabling...");
@@ -55,11 +62,15 @@ public enum Botyara {
             log.info("The bot successfully launched in {}ms.", stopwatch.elapsed(TimeUnit.MILLISECONDS));
             history.logAwait("Бот был включен.");
         } else {
-            onDisable();
+            shutdown();
         }
     }
 
-    public void onDisable() {
+    public void shutdown() {
+        if (!shutdownInProgress.compareAndSet(false, true)) {
+            return;
+        }
+
         log.info("Shutdown...");
 
         ScheduledExecutor.shutdown();
