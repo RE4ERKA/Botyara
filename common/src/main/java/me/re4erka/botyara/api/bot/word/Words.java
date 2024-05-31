@@ -270,33 +270,40 @@ public class Words {
         /* Делим предложение на слова в массив с помощью пробелов */
         final String[] words = StringUtils.split(content, SEPARATOR);
 
-        /* Заменяем *молодежные* слова синонимы. */
-        for (int i = 0; i < words.length; i++) {
-            if (words[i].equals("че")) {
-                words[i] = "что";
-            } else if (words[i].equals("щас")) {
-                words[i] = "сейчас";
-            }
+        /* Если длина массива слов равна 1, то сразу создаем класс Words. */
+        if (words.length == 1) {
+            return new Words(null, original, true, isPrivate, isEdited);
         }
 
+        /* Создаем пустой изменяемый массив слов без синоним слов "Бот" */
+        String[] wordsWithoutBot = ArrayUtils.EMPTY_STRING_ARRAY;
+
+        /* Заменяем *молодежные* слова синонимы. */
         for (int i = 0; i < words.length; i++) {
             final String word = words[i];
 
-            /* Проверяем содержится ли в предложении слова синонимы к слову "Бот" */
+            if (word.equals("че")) {
+                words[i] = "что";
+            } else if (word.equals("щас")) {
+                words[i] = "сейчас";
+            }
+
+            /* Ищем синонимы слова "Бот" в массиве слов */
             for (final String botWord : WORDS_TO_CALL_BOT) {
                 if (word.equals(botWord)) {
-                    if (words.length == 1) {
-                        return new Words(null, original, true, isPrivate, isEdited);
-                    }
-
-                    /* Words без слова "Бот" так как оно бесполезно в этом случае. */
-                    final String[] wordsWithoutBot = ArrayUtils.remove(words, i);
-
-                    return new Words(wordsWithoutBot, original, true, isPrivate, isEdited);
+                    /* Удаляем слово "Бот" из массива слов */
+                    wordsWithoutBot = ArrayUtils.remove(words, i);
                 }
             }
         }
 
-        return new Words(words, original, false, isPrivate, isEdited);
+        /* Проверяем пустой ли массив слов без слово "Бот".
+        *
+        * Если да, то создаем класс Words по-обычному.
+        * Если нет, то создаем класс Words без слово "Бот".
+        * */
+        return wordsWithoutBot.length == 0
+                ? new Words(words, original, false, isPrivate, isEdited)
+                : new Words(wordsWithoutBot, original, true, isPrivate, isEdited);
     }
 }
