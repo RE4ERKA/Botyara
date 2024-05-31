@@ -24,7 +24,7 @@ public class WhatsUpListener extends AskListener {
             .words("как ты чувствуешь").words("как ты себя чувствуешь")
             .words("как у тебя житуха").words("как житуха")
             .words("как сам").words("как твое ничего")
-            .words("че по чем").words("что по чем")
+            .words("что по чем")
             .build();
 
     private final ExpiringMemoryPart<WhatsUp> memory = ExpiringMemoryPart.<WhatsUp>builder()

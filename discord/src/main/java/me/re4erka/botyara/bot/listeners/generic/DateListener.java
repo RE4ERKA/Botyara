@@ -37,7 +37,7 @@ public class DateListener extends Listener {
 
             receiver.reply(
                     String.format("В данный момент %d:%d часов.", date.getHour(), date.getMinute())
-            );
+            ).reputation(1);
 
             return true;
         }

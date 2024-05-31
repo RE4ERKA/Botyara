@@ -6,6 +6,7 @@ import me.re4erka.botyara.api.bot.word.search.SearchWords;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.OptionalInt;
 
@@ -268,6 +269,15 @@ public class Words {
 
         /* Делим предложение на слова в массив с помощью пробелов */
         final String[] words = StringUtils.split(content, SEPARATOR);
+
+        /* Заменяем *молодежные* слова синонимы. */
+        for (int i = 0; i < words.length; i++) {
+            if (words[i].equals("че")) {
+                words[i] = "что";
+            } else if (words[i].equals("щас")) {
+                words[i] = "сейчас";
+            }
+        }
 
         for (int i = 0; i < words.length; i++) {
             final String word = words[i];
