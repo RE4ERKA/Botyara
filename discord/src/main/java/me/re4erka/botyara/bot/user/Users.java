@@ -93,7 +93,7 @@ public class Users {
             final UserData data = entry.getValue();
 
             if (data.isStranger()) {
-                return;
+                continue;
             }
 
             databaseManager.addUserOrUpdate(

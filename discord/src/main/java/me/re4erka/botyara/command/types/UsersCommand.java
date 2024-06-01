@@ -7,12 +7,12 @@ import org.apache.commons.lang3.StringUtils;
 
 public class UsersCommand implements Command {
     @Override
-    public boolean execute(String[] args) {
+    public void execute(String[] args) {
         if (args.length < 1) {
             info("Недостаточно аргументов!");
             info("Подкоманды: get|saveAll|setName|setReputation");
 
-            return false;
+            return;
         }
 
         final long id = args.length > 1 ? Long.parseLong(args[1]) : 0;
@@ -30,7 +30,7 @@ public class UsersCommand implements Command {
                                     optionalData.ifPresentOrElse(
                                             this::infoUserData, this::infoUserNotFound
                                     )
-                    );
+                            );
                 } else {
                     infoUserData(data);
                 }
@@ -97,8 +97,6 @@ public class UsersCommand implements Command {
 
             default -> info("Подкоманда не найдена!");
         }
-
-        return false;
     }
 
     private void infoUserData(UserData data) {

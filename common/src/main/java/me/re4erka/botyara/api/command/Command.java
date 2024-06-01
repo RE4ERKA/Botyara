@@ -1,7 +1,7 @@
 package me.re4erka.botyara.api.command;
 
 public interface Command {
-    boolean execute(String[] args);
+    void execute(String[] args);
 
     default void info(String message) {
         System.out.println(message);

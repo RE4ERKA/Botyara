@@ -5,7 +5,7 @@ import me.re4erka.botyara.Botyara;
 
 public class HelpCommand implements Command {
     @Override
-    public boolean execute(String[] args) {
+    public void execute(String[] args) {
         info("Список команд: ");
 
         Botyara.INSTANCE
@@ -14,7 +14,5 @@ public class HelpCommand implements Command {
                 .forEach(command ->
                     info(" - /" + command.toLowerCase())
                 );
-
-        return false;
     }
 }

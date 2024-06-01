@@ -7,11 +7,11 @@ import java.util.Locale;
 
 public class ListenersCommand implements Command {
     @Override
-    public boolean execute(String[] args) {
+    public void execute(String[] args) {
         if (args.length < 1) {
             info("Недостаточно аргументов!");
             info("Подкоманды: reload|cleanup|list|unregister");
-            return false;
+            return;
         }
 
         switch (args[0]) {
@@ -50,7 +50,5 @@ public class ListenersCommand implements Command {
 
             default -> info("Подкоманда не найдена!");
         }
-
-        return false;
     }
 }

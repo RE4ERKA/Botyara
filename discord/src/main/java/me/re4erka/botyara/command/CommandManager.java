@@ -15,11 +15,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+// TODO: Переписать CommandManager для работы через библиотеку JLine
 @Log4j2
 public class CommandManager extends Manager {
     private final AtomicBoolean running = new AtomicBoolean(false);
@@ -52,19 +52,22 @@ public class CommandManager extends Manager {
             running.set(true);
 
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8))) {
+                /*
+                * Вероятнее всего метод reader.readLine() будет блокировать выполнение цикличное выполнение
+                * цикла из-за того, что условие (running.get()) цикла не будет проверяться постоянно.
+                *  */
                 while (running.get()) {
                     final String[] message = StringUtils.split(reader.readLine(), ' ');
-                    final Command command = commands.getOrDefault(Key.create(message[0], true, true),
-                            args -> {
-                                System.out.println("Неизвестная команда!");
-                                return false;
-                            });
-
-                    running.set(
-                            !Objects.requireNonNull(command).execute(
-                                    Arrays.copyOfRange(message, 1, message.length)
-                            )
+                    final Command command = commands.getOrDefault(
+                            Key.create(message[0], true, true),
+                            args -> System.out.println("Неизвестная команда!")
                     );
+
+                    if (command != null) {
+                        command.execute(
+                                Arrays.copyOfRange(message, 1, message.length)
+                        );
+                    }
                 }
             } catch (IOException exception) {
                 log.error("Error when reading the console!", exception);
@@ -80,14 +83,18 @@ public class CommandManager extends Manager {
         if (running.compareAndSet(true, false)) {
             service.shutdownNow();
 
-            try {
-                if (!service.awaitTermination(5, java.util.concurrent.TimeUnit.SECONDS)) {
-                    log.warn("The console thread could not be terminated in time.");
-                }
-            } catch (InterruptedException exception) {
-                log.error("Failed to terminate the console thread!", exception);
-                Thread.currentThread().interrupt();  // Восстановление флага прерывания
-            }
+            // Так как цикл не проверяется постоянно, то код ниже не будет работать корректно.
+//          service.shutdown();
+//
+//            try {
+//                if (!service.awaitTermination(5, java.util.concurrent.TimeUnit.SECONDS)) {
+//                    log.warn("The console thread could not be terminated in time.");
+//                    service.shutdownNow();
+//                }
+//            } catch (InterruptedException exception) {
+//                log.error("Failed to terminate the console thread!", exception);
+//                Thread.currentThread().interrupt();  // Восстановление флага прерывания
+//            }
         }
     }
 
