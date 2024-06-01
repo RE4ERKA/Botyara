@@ -15,12 +15,25 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Log4j2
 public class CommandManager extends Manager {
     private final AtomicBoolean running = new AtomicBoolean(false);
-    private Thread consoleThread;
+    private final ExecutorService service = Executors.newSingleThreadExecutor(runnable -> {
+        final Thread thread = new Thread(runnable);
+
+        thread.setName("Console-Thread");
+        thread.setPriority(Thread.NORM_PRIORITY);
+        thread.setDaemon(false);
+        thread.setUncaughtExceptionHandler(
+                (t, e) -> log.error("There was an error while running the console thread!", e)
+        );
+
+        return thread;
+    });
 
     private final ImmutableMap<Key, Command> commands = new ImmutableMap.Builder<Key, Command>()
             .put(Key.of("STOP"), new StopCommand())
@@ -36,7 +49,7 @@ public class CommandManager extends Manager {
             return false;
         }
 
-        consoleThread = new Thread(() -> {
+        service.execute(() -> {
             running.set(true);
 
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8))) {
@@ -60,32 +73,21 @@ public class CommandManager extends Manager {
             }
         });
 
-        consoleThread.setName("Console-Thread");
-        consoleThread.setPriority(Thread.NORM_PRIORITY);
-        consoleThread.setDaemon(false);
-        consoleThread.setUncaughtExceptionHandler(
-                (t, e) -> log.error("There was an error while running the console thread!", e)
-        );
-
-        consoleThread.start();
-
         return true;
     }
 
     @Override
     public void stop() {
         if (running.compareAndSet(true, false)) {
-            if (consoleThread == null) {
-                return;
-            }
-
-            consoleThread.interrupt();
+            service.shutdownNow();
 
             try {
-                consoleThread.join();
+                if (!service.awaitTermination(5, java.util.concurrent.TimeUnit.SECONDS)) {
+                    log.warn("The console thread could not be terminated in time.");
+                }
             } catch (InterruptedException exception) {
                 log.error("Failed to terminate the console thread!", exception);
-                Thread.currentThread().interrupt();
+                Thread.currentThread().interrupt();  // Восстановление флага прерывания
             }
         }
     }

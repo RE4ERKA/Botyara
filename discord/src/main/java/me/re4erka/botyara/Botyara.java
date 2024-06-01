@@ -67,19 +67,17 @@ public enum Botyara {
     }
 
     public void shutdown() {
-        if (!shutdownInProgress.compareAndSet(false, true)) {
-            return;
+        if (shutdownInProgress.compareAndSet(false, true)) {
+            log.info("Shutdown...");
+
+            ScheduledExecutor.shutdown();
+
+            botManager.stop();
+            databaseManager.stop();
+            commandManager.stop();
+
+            log.info("Successfully shut down.");
+            history.logAwait("Бот был выключен.");
         }
-
-        log.info("Shutdown...");
-
-        ScheduledExecutor.shutdown();
-
-        botManager.stop();
-        databaseManager.stop();
-        commandManager.stop();
-
-        log.info("Successfully shut down.");
-        history.logAwait("Бот был выключен.");
     }
 }
