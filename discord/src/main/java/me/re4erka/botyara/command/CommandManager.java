@@ -2,6 +2,7 @@ package me.re4erka.botyara.command;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import lombok.extern.log4j.Log4j2;
 import me.re4erka.botyara.api.command.Command;
 import me.re4erka.botyara.api.manager.Manager;
@@ -22,18 +23,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Log4j2
 public class CommandManager extends Manager {
     private final AtomicBoolean running = new AtomicBoolean(false);
-    private final ExecutorService service = Executors.newSingleThreadExecutor(runnable -> {
-        final Thread thread = new Thread(runnable);
-
-        thread.setName("Console-Thread");
-        thread.setPriority(Thread.NORM_PRIORITY);
-        thread.setDaemon(false);
-        thread.setUncaughtExceptionHandler(
-                (t, e) -> log.error("There was an error while running the console thread!", e)
-        );
-
-        return thread;
-    });
+    private final ExecutorService service = Executors.newSingleThreadExecutor(
+            new ThreadFactoryBuilder()
+                    .setNameFormat("Console-Input-Thread")
+                    .setPriority(Thread.NORM_PRIORITY)
+                    .setUncaughtExceptionHandler(
+                            (t, e) -> log.error("There was an error while running the console thread!", e)
+                    )
+                    .setDaemon(false)
+                    .build()
+    );
 
     private final ImmutableMap<Key, Command> commands = new ImmutableMap.Builder<Key, Command>()
             .put(Key.of("STOP"), new StopCommand())
