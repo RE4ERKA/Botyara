@@ -66,8 +66,8 @@ public class DefaultListener implements IListener {
         @Override
         public void run() {
             final String answer = index == 0
-                    ? "Ладно, это пранк, на самом деле: Да, это правда."
-                    : "Ладно, это пранк, на самом деле: Нет, это ложь.";
+                    ? "Ладно, это пранк, на самом деле: Нет, это ложь."
+                    : "Ладно, это пранк, на самом деле: Да, это правда.";
 
             receiver.reply(answer);
         }

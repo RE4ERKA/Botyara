@@ -82,12 +82,9 @@ public class ActiveBot extends ListeningBot {
         super(Properties.LISTENER_AWAITING_MAXIMUM_SIZE.asInt(),
                 Properties.LISTENER_ASK_MAXIMUM_SIZE.asInt());
 
-        ActivityScheduler.Builder builder = ActivityScheduler.newBuilder();
-
-        builder.setPeriod(
-                Properties.SCHEDULER_UPDATE_PERIOD_ORIGIN.asInt(),
-                Properties.SCHEDULER_UPDATE_PERIOD_BOUND.asInt()
-        );
+        ActivityScheduler.Builder builder = ActivityScheduler.builder()
+                .setOrigin(Properties.SCHEDULER_UPDATE_PERIOD_ORIGIN.asInt())
+                .setBound(Properties.SCHEDULER_UPDATE_PERIOD_BOUND.asInt());
 
         if (Properties.ACTIVITIES_SLEEPING_ENABLED.asBoolean()) {
             builder.add(new SleepActivity(this));
@@ -234,6 +231,7 @@ public class ActiveBot extends ListeningBot {
     }
 
     public void stop() {
-        scheduler.stop();
+        scheduler.shutdown();
+        cleanUp().unregisterAll();
     }
 }
