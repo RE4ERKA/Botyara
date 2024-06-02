@@ -222,7 +222,7 @@ public class ActiveBot extends ListeningBot {
     }
 
     @Override
-    public int getCurrentTime() {
+    public int getCurrentHours() {
         return ZonedDateTime.now(ZONE_ID).getHour();
     }
 

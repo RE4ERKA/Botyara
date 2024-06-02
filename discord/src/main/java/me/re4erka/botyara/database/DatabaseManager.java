@@ -4,7 +4,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.log4j.Log4j2;
 import me.re4erka.botyara.api.bot.friendship.FriendshipType;
-import me.re4erka.botyara.api.util.date.DateUtil;
+import me.re4erka.botyara.api.util.time.DateUtil;
 import me.re4erka.botyara.api.manager.Manager;
 import me.re4erka.botyara.api.bot.user.UserData;
 import me.re4erka.botyara.file.type.Properties;

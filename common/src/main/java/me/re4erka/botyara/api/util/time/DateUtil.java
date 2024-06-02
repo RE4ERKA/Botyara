@@ -1,4 +1,4 @@
-package me.re4erka.botyara.api.util.date;
+package me.re4erka.botyara.api.util.time;
 
 import lombok.experimental.UtilityClass;
 

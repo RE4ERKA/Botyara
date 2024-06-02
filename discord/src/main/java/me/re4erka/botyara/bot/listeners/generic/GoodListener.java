@@ -10,8 +10,6 @@ import me.re4erka.botyara.api.bot.word.Words;
 import me.re4erka.botyara.api.util.key.Key;
 import me.re4erka.botyara.bot.ActiveBot;
 
-import java.time.ZonedDateTime;
-
 @SuppressWarnings("unused")
 public class GoodListener extends AskListener {
     private final SearchWords morning = SearchWords.builder().words("доброе утро").words("утречко").build();
@@ -29,7 +27,7 @@ public class GoodListener extends AskListener {
     @Override
     public boolean onListen(Receiver receiver, Words words) {
         if (words.containsAny(morning)) {
-            final int hours = bot.getCurrentTime();
+            final int hours = bot.getCurrentHours();
 
             if (hours >= 4 && hours <= 12) {
                 receiver.reply("Доброе!");
@@ -43,7 +41,7 @@ public class GoodListener extends AskListener {
         }
 
         if (words.containsAny(day)) {
-            final int hours = bot.getCurrentTime();
+            final int hours = bot.getCurrentHours();
 
             if (hours >= 12 && hours <= 16) {
                 receiver.reply("Добрый!");
@@ -57,7 +55,7 @@ public class GoodListener extends AskListener {
         }
 
         if (words.containsAny(evening)) {
-            final int hours = bot.getCurrentTime();
+            final int hours = bot.getCurrentHours();
 
             if (hours >= 15) {
                 receiver.reply("Доброго!");
@@ -71,7 +69,7 @@ public class GoodListener extends AskListener {
         }
 
         if (words.containsAny(night)) {
-            final int hours = bot.getCurrentTime();
+            final int hours = bot.getCurrentHours();
 
             if (hours <= 6 || hours == 23) {
                 receiver.reply("Доброй!");

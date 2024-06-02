@@ -23,7 +23,7 @@ public class Words {
     /* Специфичные символы, которые будут удаляться. */
     private static final String[] REPLACEMENTS = {",", ".", "!", "?", "@", "(", ")", ":", "-", "\"", "'", "`"};
     /* Разделение предложения на слова, удаляя пробелы и пропуски строк */
-    public static final String SEPARATOR = " " + System.lineSeparator();
+    public static final String SEPARATOR = StringUtils.SPACE + System.lineSeparator();
 
     private static final String[] WORDS_TO_CALL_BOT = new String[] {
             "ботяра", "бот", "ботя", "робот", "ботик", "ботиха", "ботярище", "botyara", "bot", "robot"

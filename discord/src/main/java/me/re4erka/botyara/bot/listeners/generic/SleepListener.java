@@ -10,6 +10,7 @@ import me.re4erka.botyara.api.util.key.Key;
 import me.re4erka.botyara.bot.ActiveBot;
 import me.re4erka.botyara.file.type.Properties;
 
+@SuppressWarnings("unused")
 public class SleepListener extends Listener {
     private final ActiveBot bot;
 
@@ -34,7 +35,7 @@ public class SleepListener extends Listener {
     @Override
     public boolean onListen(Receiver receiver, Words words) {
         if (words.containsAny(searchWords)) {
-            if (bot.getCurrentTime() >= Properties.ACTIVITIES_SLEEPING_PATTERN_BETWEEN.asInt() - 1) {
+            if (bot.getCurrentHours() >= Properties.ACTIVITIES_SLEEPING_PATTERN_BETWEEN.asInt() - 1) {
                 receiver.reply("Уже скоро собираюсь идти спать!").reputation(1);
             } else {
                 receiver.reply(

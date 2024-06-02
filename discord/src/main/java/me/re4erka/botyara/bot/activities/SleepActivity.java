@@ -19,7 +19,7 @@ public class SleepActivity implements Activity {
 
     @Override
     public boolean update() {
-        final int hours = bot.getCurrentTime();
+        final int hours = bot.getCurrentHours();
 
         if (hours == between || hours <= to) {
             bot.sleep(true);
