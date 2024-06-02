@@ -6,7 +6,6 @@ import me.re4erka.botyara.api.bot.word.search.SearchWords;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Arrays;
 import java.util.Locale;
 import java.util.OptionalInt;
 
@@ -272,7 +271,13 @@ public class Words {
 
         /* Если длина массива слов равна 1, то сразу создаем класс Words. */
         if (words.length == 1) {
-            return new Words(null, original, true, isPrivate, isEdited);
+            for (String botWord : WORDS_TO_CALL_BOT) {
+                if (words[0].equals(botWord)) {
+                    return new Words(null, original, true, isPrivate, isEdited);
+                }
+            }
+
+            return new Words(words, original, false, isPrivate, isEdited);
         }
 
         /* Создаем пустой изменяемый массив слов без синоним слов "Бот" */
@@ -282,18 +287,21 @@ public class Words {
         for (int i = 0; i < words.length; i++) {
             final String word = words[i];
 
+            /* Ищем синонимы слова "Бот" в массиве слов */
+            if (wordsWithoutBot.length == 0) {
+                for (String botWord : WORDS_TO_CALL_BOT) {
+                    if (word.equals(botWord)) {
+                        /* Удаляем слово "Бот" из массива слов */
+                        wordsWithoutBot = ArrayUtils.remove(words, i);
+                        break;
+                    }
+                }
+            }
+
             if (word.equals("че")) {
                 words[i] = "что";
             } else if (word.equals("щас")) {
                 words[i] = "сейчас";
-            }
-
-            /* Ищем синонимы слова "Бот" в массиве слов */
-            for (final String botWord : WORDS_TO_CALL_BOT) {
-                if (word.equals(botWord)) {
-                    /* Удаляем слово "Бот" из массива слов */
-                    wordsWithoutBot = ArrayUtils.remove(words, i);
-                }
             }
         }
 
