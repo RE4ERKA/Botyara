@@ -2,10 +2,10 @@ package me.re4erka.botyara.api.bot.word.random.answer;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import me.re4erka.botyara.api.util.random.Random;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ChanceAnswer {
@@ -23,7 +23,7 @@ public class ChanceAnswer {
     }
 
     public ChanceWord generate() {
-        final int index = ThreadLocalRandom.current().nextInt(sum);
+        final int index = Random.next(sum);
 
         for (ChanceWord chance : chanceWords) {
             if (chance.lowerLimit() <= index && chance.upperLimit() > index) {

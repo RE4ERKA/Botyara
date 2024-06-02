@@ -21,8 +21,12 @@ public class ScheduledExecutor {
     );
 
     public static void executeLater(Runnable runnable, long milliseconds) {
+        executeLater(runnable, milliseconds, TimeUnit.MILLISECONDS);
+    }
+
+    public static void executeLater(Runnable runnable, long delay, TimeUnit unit) {
         try {
-            executor.schedule(runnable, milliseconds, TimeUnit.MILLISECONDS);
+            executor.schedule(runnable, delay, unit);
         } catch (Exception e) {
             log.error("Failed to schedule task: {}", e.getMessage(), e);
         }

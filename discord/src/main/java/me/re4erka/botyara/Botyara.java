@@ -50,20 +50,27 @@ public enum Botyara {
 
         final Stopwatch stopwatch = Stopwatch.createStarted();
 
-        fileManager.start();
+        if (fileManager.start()) {
+            final boolean debug = Properties.BOT_DEBUG.asBoolean();
 
-        HistoryManager.init(jarDirectory, Properties.BOT_DEBUG.asBoolean());
+            HistoryManager.init(jarDirectory, debug);
 
-        databaseManager.start();
-        commandManager.start();
+            if (debug) {
+                log.info("Debug mode has been enabled!");
+            }
 
-        if (botManager.start()) {
-            stopwatch.stop();
+            if (databaseManager.start()) {
+                commandManager.start();
 
-            log.info("The bot successfully launched in {}ms.", stopwatch.elapsed(TimeUnit.MILLISECONDS));
-            history.logAwait("Бот был включен.");
-        } else {
-            shutdown();
+                if (botManager.start()) {
+                    stopwatch.stop();
+
+                    log.info("The bot successfully launched in {}ms.", stopwatch.elapsed(TimeUnit.MILLISECONDS));
+                    history.logAwait("Бот был включен.");
+                } else {
+                    shutdown();
+                }
+            }
         }
     }
 

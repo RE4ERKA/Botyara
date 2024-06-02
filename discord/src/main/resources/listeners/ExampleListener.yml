@@ -4,7 +4,7 @@ Contains:
 
 Options:
   post_order: LAST
-  use_user_variables: true
+  use_user_variables: false
 
 Respond:
   DEFAULT:

@@ -9,19 +9,17 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE) @ToString
 public class MultiAnswer {
     private final LinkedList<RandomWord> randomWords = new LinkedList<>();
 
-    private final ThreadLocalRandom random = ThreadLocalRandom.current();
-
     public String generate() {
         final StringBuilder builder = new StringBuilder();
 
         randomWords.forEach(randomWord ->
-                builder.append(randomWord.generate(random)).append(" ")
+                builder.append(randomWord.generate())
+                        .append(StringUtils.SPACE)
         );
 
         return builder.toString();
@@ -32,7 +30,7 @@ public class MultiAnswer {
         final StringBuilder builder = new StringBuilder();
 
         randomWords.forEach(randomWord -> {
-            String word = randomWord.generate(random);
+            String word = randomWord.generate();
 
             for (Pair<String, String> replace : replaces) {
                 word = StringUtils.replaceOnce(
@@ -42,7 +40,7 @@ public class MultiAnswer {
                 );
             }
 
-            builder.append(word).append(" ");
+            builder.append(word).append(StringUtils.SPACE);
         });
 
         return builder.toString();

@@ -4,32 +4,24 @@ import me.re4erka.botyara.api.bot.friendship.FriendshipType;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
-public interface Receiver {
-    /* Реализация получение сообщения в зависимости от платформы */
-    void onReply(String message);
+public abstract class Receiver {
+    public abstract long getId();
 
-    long getId();
+    public abstract FriendshipType getFriendshipType();
+    public abstract void intoFamiliar(String name);
 
-    FriendshipType getFriendshipType();
-    void intoFamiliar(String name);
+    public abstract void setName(String name);
+    public abstract String getName();
 
-    void setName(String name);
-    String getName();
+    public abstract void reputation(int delta);
+    public abstract int getReputation();
 
-    void reputation(int delta);
-    int getReputation();
+    public abstract boolean isStranger();
 
-    boolean isStranger();
+    public abstract Receiver reply(String message);
 
-    default Receiver reply(String message) {
-        this.onReply(message);
-        return this;
-    }
-
-    default Receiver reply(String message, Pair<String, String> replace) {
+    public Receiver reply(String message, Pair<String, String> replace) {
         message = StringUtils.replace(message, replace.getKey(), replace.getValue());
-
-        this.onReply(message);
-        return this;
+        return reply(message);
     }
 }

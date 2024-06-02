@@ -17,7 +17,7 @@ public class GreetingsListener extends AwaitingListener {
     private final String[] greetingWords = {
             "здравствуй", "привет",
             "хай", "здарова",
-            "прив", "ку"
+            "прив", "ку", "дарова"
     };
 
     private final MultiAnswer familiarityAnswer;

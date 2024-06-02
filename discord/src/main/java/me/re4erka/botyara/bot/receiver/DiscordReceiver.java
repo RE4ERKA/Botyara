@@ -7,15 +7,16 @@ import me.re4erka.botyara.api.bot.word.Words;
 import me.re4erka.botyara.api.history.logging.HistoryMessage;
 import me.re4erka.botyara.Botyara;
 import me.re4erka.botyara.api.bot.user.UserData;
+import me.re4erka.botyara.api.util.random.Random;
 import me.re4erka.botyara.bot.ActiveBot;
 import me.re4erka.botyara.executor.ScheduledExecutor;
 import org.javacord.api.entity.message.Message;
 
 import java.time.Duration;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Consumer;
 
 @Log4j2
-public class DiscordReceiver implements Receiver {
+public class DiscordReceiver extends Receiver {
     protected final Message message;
     private final UserData data;
 
@@ -44,53 +45,16 @@ public class DiscordReceiver implements Receiver {
     }
 
     @Override
-    public void onReply(String respondMessage) {
-        message.getChannel().type().thenRun(() -> {
-            final int length = respondMessage.length();
+    public Receiver reply(String respondMessage) {
+        typing(() -> onReply(respondMessage, null), respondMessage.length());
 
-            ScheduledExecutor.executeLater(() -> message.reply(respondMessage).thenAccept(botMessage -> {
-                message.addMessageEditListener(listener -> {
-                    final Message message = listener.getMessage();
+        return this;
+    }
 
-                    Botyara.INSTANCE.getBotManager().getBot().onListen(
-                            new MessageReceiver(botMessage, data),
-                            Words.create(
-                                    message.getReadableContent(),
-                                    message.isPrivateMessage(),
-                                    true
-                            )
-                    );
+    public Receiver replyThenEdit(String respondMessage, Consumer<Message> editMethod) {
+        typing(() -> onReply(respondMessage, editMethod), respondMessage.length());
 
-                    ActiveBot.USER_HISTORY.log(
-                            HistoryMessage.create("Сообщение изменено: '%bot_message%' на '%bot_changed_message%' из-за пользователя: %user_name%(%user_id%)")
-                                    .replace("bot_message", respondMessage)
-                                    .replace("bot_changed_message", botMessage.getReadableContent())
-                                    .get(),
-                            this,
-                            message.isPrivateMessage()
-                    );
-                });
-
-                message.addMessageDeleteListener(listener -> botMessage.deleteAfter(Duration.ofSeconds(
-                        ThreadLocalRandom.current().nextInt(3, 10)
-                )).thenRun(() -> ActiveBot.USER_HISTORY.log(
-                        HistoryMessage.create("Сообщение удалено: '%bot_message%' из-за пользователя: %user_name%(%user_id%)")
-                                .replace("bot_message", respondMessage)
-                                .get(),
-                        this,
-                        message.isPrivateMessage()
-                )));
-
-                ActiveBot.USER_HISTORY.log(
-                        HistoryMessage.create("%user_name%(%user_id%): '%user_message%'  <-  '%bot_message%'")
-                                .replace("user_message", message.getReadableContent())
-                                .replace("bot_message", respondMessage)
-                                .get(),
-                        this,
-                        message.isPrivateMessage()
-                );
-            }), length > 50 ? length * 30L : length * 15);
-        });
+        return this;
     }
 
     public void replyWithoutDelay(String respondMessage) {
@@ -140,5 +104,61 @@ public class DiscordReceiver implements Receiver {
     @Override
     public boolean isStranger() {
         return data.isStranger();
+    }
+
+    private void onReply(String respondMessage, Consumer<Message> editMethod) {
+        message.reply(respondMessage).thenAccept(botMessage -> {
+            message.addMessageEditListener(listener -> {
+                final Message message = listener.getMessage();
+
+                Botyara.INSTANCE.getBotManager().getBot().onListen(
+                        new MessageReceiver(botMessage, data),
+                        Words.create(
+                                message.getReadableContent(),
+                                message.isPrivateMessage(),
+                                true
+                        )
+                );
+
+                ActiveBot.USER_HISTORY.log(
+                        HistoryMessage.create("Сообщение изменено: '%bot_message%' на '%bot_changed_message%' из-за пользователя: %user_name%(%user_id%)")
+                                .replace("bot_message", respondMessage)
+                                .replace("bot_changed_message", botMessage.getReadableContent())
+                                .get(),
+                        this,
+                        message.isPrivateMessage()
+                );
+            });
+
+            message.addMessageDeleteListener(listener -> botMessage.deleteAfter(
+                    Duration.ofSeconds(Random.range(3, 10))
+            ).thenRun(() -> ActiveBot.USER_HISTORY.log(
+                    HistoryMessage.create("Сообщение удалено: '%bot_message%' из-за пользователя: %user_name%(%user_id%)")
+                            .replace("bot_message", respondMessage)
+                            .get(),
+                    this,
+                    message.isPrivateMessage()
+            )));
+
+            ActiveBot.USER_HISTORY.log(
+                    HistoryMessage.create("%user_name%(%user_id%): '%user_message%'  <-  '%bot_message%'")
+                            .replace("user_message", message.getReadableContent())
+                            .replace("bot_message", respondMessage)
+                            .get(),
+                    this,
+                    message.isPrivateMessage()
+            );
+
+            if (editMethod != null) {
+                editMethod.accept(botMessage);
+            }
+        });
+    }
+
+    private void typing(Runnable runnable, long length) {
+        message.getChannel().type().thenRun(() -> ScheduledExecutor.executeLater(
+                runnable,
+                length > 50 ? length * 30L : length * 15
+        ));
     }
 }

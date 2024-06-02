@@ -13,6 +13,7 @@ public class RatingListener extends Listener {
     private final SearchWords matchesWords = SearchWords.builder()
             .words("как тебе").words("как тебе это")
             .words("как тебе вот это").words("оцени")
+            .words("мнение").words("твое мнение")
             .build();
 
     private final SearchWords searchWords = SearchWords.builder()

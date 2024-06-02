@@ -10,10 +10,9 @@ public class MessageReceiver extends DiscordReceiver {
         super(message, data);
     }
 
-    @Override
     public void onReply(String message) {
         this.message.edit(message).exceptionally(throwable -> {
-            log.error("Failed to change the message!", throwable);
+            log.error("Failed to edit the message!", throwable);
             return null;
         });
     }

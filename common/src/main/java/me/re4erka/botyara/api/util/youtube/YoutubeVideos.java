@@ -8,13 +8,13 @@ import com.google.api.services.youtube.YouTubeRequestInitializer;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.common.collect.ImmutableList;
 import lombok.extern.log4j.Log4j2;
+import me.re4erka.botyara.api.util.random.Random;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ThreadLocalRandom;
 
 @Log4j2
 public final class YoutubeVideos {
@@ -56,7 +56,7 @@ public final class YoutubeVideos {
                 return Optional.empty();
             }
 
-            final int channelIndex = ThreadLocalRandom.current().nextInt(0, channels.size());
+            final int channelIndex = Random.next(channels.size());
 
             SearchListResponse response = null;
             try {
@@ -78,7 +78,7 @@ public final class YoutubeVideos {
                 return Optional.empty();
             }
 
-            final int videoIndex = ThreadLocalRandom.current().nextInt(0, response.getItems().size());
+            final int videoIndex = Random.next(response.getItems().size());
 
             return Optional.of(
                     response.getItems()

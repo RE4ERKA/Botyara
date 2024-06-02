@@ -7,9 +7,9 @@ import me.re4erka.botyara.api.bot.listener.common.PostOrder;
 import me.re4erka.botyara.api.bot.receiver.Receiver;
 import me.re4erka.botyara.api.bot.word.Words;
 import me.re4erka.botyara.api.util.key.Key;
+import me.re4erka.botyara.api.util.random.Random;
 
 import java.util.OptionalInt;
-import java.util.concurrent.ThreadLocalRandom;
 
 @SuppressWarnings("unused")
 public class EvaluateListener extends AskListener {
@@ -79,7 +79,7 @@ public class EvaluateListener extends AskListener {
                     this.addAskListener(receiver.getId());
 
                     receiver.reply(
-                            "По моему субъективному мнению, я думаю... " + ThreadLocalRandom.current().nextInt(first, second)
+                            "По моему субъективному мнению, я думаю... " + Random.range(first, second)
                     ).reputation(1);
 
                     return true;
