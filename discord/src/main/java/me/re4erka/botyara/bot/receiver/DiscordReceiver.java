@@ -13,7 +13,6 @@ import org.javacord.api.entity.message.Message;
 
 import java.time.Duration;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
 
 @Log4j2
 public class DiscordReceiver implements Receiver {
@@ -90,7 +89,7 @@ public class DiscordReceiver implements Receiver {
                         this,
                         message.isPrivateMessage()
                 );
-            }), length > 50 ? length * 30L : length * 15, TimeUnit.MILLISECONDS);
+            }), length > 50 ? length * 30L : length * 15);
         });
     }
 
