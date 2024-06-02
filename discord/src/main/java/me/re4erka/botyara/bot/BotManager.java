@@ -81,30 +81,33 @@ public class BotManager extends Manager {
     public void loadListeners() {
         final AtomicInteger count = new AtomicInteger();
 
+        final String packageName = getClass().getPackage().getName();
+        final String[] packageNames = new String[] {
+                packageName + ".listeners.generic",
+                packageName + ".listeners.await",
+                packageName + ".listeners.friendship"
+        };
+
         ListenerLoader.fromPackage(
-                getClass().getPackage().getName() + ".listeners.generic", bot
+                packageNames,
+                bot
         ).forEach(listener -> {
             bot.register(listener);
             count.getAndIncrement();
         });
 
-        ListenerLoader.fromPackage(
-                getClass().getPackage().getName() + ".listeners.await", bot
-        ).forEach(listener -> {
-            bot.register(listener);
-            count.getAndIncrement();
-        });
+        if (!Properties.BOT_DEBUG.asBoolean()) {
+            ListenerLoader.fromDirectory(
+                    Botyara.INSTANCE.getJarDirectory(),
+                    Properties.LISTENER_IGNORE_EMPTY_LISTENERS_FOLDER.asBoolean()
+            ).forEach(configHandler -> {
+                bot.register(
+                        new ConfigListener(configHandler, bot)
+                );
 
-        ListenerLoader.fromDirectory(
-                Botyara.INSTANCE.getJarDirectory(),
-                Properties.LISTENER_IGNORE_EMPTY_LISTENERS_FOLDER.asBoolean()
-        ).forEach(configHandler -> {
-            bot.register(
-                    new ConfigListener(configHandler, bot)
-            );
-
-            count.getAndIncrement();
-        });
+                count.getAndIncrement();
+            });
+        }
 
         /* Убираем все слушатели в черном списке из конфига */
         Properties.LISTENER_BLACKLIST.asStringList()

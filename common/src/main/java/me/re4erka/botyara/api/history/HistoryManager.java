@@ -18,14 +18,18 @@ public class HistoryManager {
     private static final String HISTORY_FILE = "history/" + DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDate.now()) + ".log";
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss");
 
-    public static void init(JarDirectory directory) {
-        if (directory.notExists(HISTORY_FILE)) {
+    private static boolean DEBUG = false;
+
+    public static void init(JarDirectory directory, boolean debug) {
+        if (!debug && directory.notExists(HISTORY_FILE)) {
             try {
                 directory.newFile(HISTORY_FILE).createNewCustomFile();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
+
+        DEBUG = debug;
     }
 
     public static SimpleHistory newSimple(String name) {
@@ -41,6 +45,10 @@ public class HistoryManager {
     }
 
     public static void writeLine(String line) {
+        if (DEBUG) {
+            return;
+        }
+
         try (final BufferedWriter writer = new BufferedWriter(
                 new FileWriter(HISTORY_FILE, StandardCharsets.UTF_8, true))) {
             writer.write(line);

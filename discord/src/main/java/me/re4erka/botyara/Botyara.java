@@ -11,6 +11,7 @@ import me.re4erka.botyara.command.CommandManager;
 import me.re4erka.botyara.database.DatabaseManager;
 import me.re4erka.botyara.executor.ScheduledExecutor;
 import me.re4erka.botyara.file.FileManager;
+import me.re4erka.botyara.file.type.Properties;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -45,13 +46,13 @@ public enum Botyara {
     }
 
     public void start() {
-        HistoryManager.init(jarDirectory);
-
         log.info("Enabling...");
 
         final Stopwatch stopwatch = Stopwatch.createStarted();
 
         fileManager.start();
+
+        HistoryManager.init(jarDirectory, Properties.BOT_DEBUG.asBoolean());
 
         databaseManager.start();
         commandManager.start();

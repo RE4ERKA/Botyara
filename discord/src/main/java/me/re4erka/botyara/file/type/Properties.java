@@ -8,6 +8,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public enum Properties {
     BOT_TOKEN("Bot.token", "EMPTY"),
+    BOT_DEBUG("Bot.debug", true),
 
 //    DATABASE_TYPE("Database.type", "sqlite"),
     DATABASE_SQLITE_FILE_NAME("Database.sqlite.file_name", "users"),

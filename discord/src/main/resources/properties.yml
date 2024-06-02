@@ -3,6 +3,9 @@ Bot:
   # Токен для работы бота.
   # https://discord.com/developers/docs/topics/oauth2
   token: 'EMPTY'
+  # Включить ли режим откладки?
+  # Если включено, то часть функций не будет работать. К примеру история.
+  debug: false
 
 # Настройка базы данных
 Database:

@@ -14,7 +14,6 @@ import me.re4erka.botyara.api.util.key.Key;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.simpleyaml.configuration.file.YamlConfiguration;
-import org.simpleyaml.utils.SupplierIO;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -69,18 +68,20 @@ public class ListenerLoader {
         return builder.build();
     }
 
-    public static ImmutableSet<Listener> fromPackage(String packageName, ListeningBot bot) {
+    public static ImmutableSet<Listener> fromPackage(String[] packageNames, ListeningBot bot) {
         try {
             final ImmutableSet.Builder<Listener> builder = new ImmutableSet.Builder<>();
 
-            ClassPath.from(Thread.currentThread().getContextClassLoader())
-                    .getTopLevelClasses(packageName)
-                    .forEach(classInfo -> builder.add(
-                            loadListener(
-                                    classInfo.load().asSubclass(Listener.class),
-                                    bot
-                            )
-                    ));
+            for (String name : packageNames) {
+                ClassPath.from(Thread.currentThread().getContextClassLoader())
+                        .getTopLevelClasses(name)
+                        .forEach(classInfo -> builder.add(
+                                loadListener(
+                                        classInfo.load().asSubclass(Listener.class),
+                                        bot
+                                )
+                        ));
+            }
 
             return builder.build();
         } catch (IOException e) {
