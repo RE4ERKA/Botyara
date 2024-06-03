@@ -24,7 +24,7 @@ public class RandomWord {
         }
 
         return words.get(
-                Random.range(0, wordsLength)
+                Random.next(wordsLength)
         ) + wordEnd.getSymbol();
     }
 }

@@ -17,7 +17,7 @@ public class RandomMessage extends MessageHandler {
             final ImmutableList.Builder<String> builder = new ImmutableList.Builder<>();
 
             section.getStringList("messages").forEach(message -> builder.add(
-                    StringUtils.replace(message, "\\n", "\n"))
+                    StringUtils.replace(message, "\\n", StringUtils.LF))
             );
 
             this.messages = builder.build();

@@ -9,8 +9,7 @@ public class ConfigLoadException extends Exception {
     private Key listenerName;
 
     public ConfigLoadException(String message) {
-        super(message);
-        this.listenerName = null;
+        this(null, message);
     }
 
     public ConfigLoadException(Key listenerName, String message) {

@@ -53,7 +53,7 @@ public class ChooseListener extends AskListener {
         }
 
         final String answer = chooseWords.get(
-                Random.range(0, chooseWords.size())
+                Random.next(chooseWords.size())
         );
 
         if (VALID_REGEX.matcher(answer).find()) {

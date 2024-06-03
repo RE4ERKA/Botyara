@@ -11,7 +11,7 @@ public class SingleMessage extends MessageHandler {
     public SingleMessage(ConfigurationSection section) {
         super(section);
         this.message = useLineSkip
-                ? StringUtils.replace(section.getString("message"), "\\n", "\n")
+                ? StringUtils.replace(section.getString("message"), "\\n", StringUtils.LF)
                 : section.getString("message");
     }
 
