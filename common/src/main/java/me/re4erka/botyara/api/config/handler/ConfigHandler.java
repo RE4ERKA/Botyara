@@ -68,7 +68,7 @@ public class ConfigHandler {
 
     public boolean handle(Receiver receiver, Words words) {
         if (words.containsAny(searchWords)
-                || words.containsAny(matchesWords)) {
+                || words.matchesAny(matchesWords)) {
             final ConfigVariables variables = ConfigVariables.from(receiver);
 
             switch (receiver.getFriendshipType()) {

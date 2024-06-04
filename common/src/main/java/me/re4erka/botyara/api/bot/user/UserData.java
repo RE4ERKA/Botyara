@@ -77,7 +77,7 @@ public class UserData {
             return;
         }
 
-        setReputation(reputation + ((int) -(DAYS.between(lastDialog, LocalDate.now()) * 2)));
+        setReputation(reputation + ((int) -(DAYS.between(lastDialog, LocalDate.now()))));
     }
 
     public boolean isStranger() {
