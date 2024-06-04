@@ -20,6 +20,7 @@ public class ConfigHandler {
     private final Key listenerName;
 
     private final SearchWords searchWords;
+    private final SearchWords matchesWords;
 
     private final ConfigOptions options;
     private final ConfigRespond respond;
@@ -29,11 +30,13 @@ public class ConfigHandler {
         this.listenerName = listenerName;
 
         this.searchWords = SearchWords.of(configuration.getStringList("Contains"));
+        this.matchesWords = SearchWords.of(configuration.getStringList("Matches"));
 
-        if (searchWords.size() == 0) {
+        if (searchWords.size() == 0
+                && matchesWords.size() == 0) {
             throw new ConfigLoadException(
                     listenerName,
-                    "The 'Contains' list can't be empty!"
+                    "The 'Contains' and 'Matches' list can't be empty!"
             );
         }
 
@@ -64,7 +67,8 @@ public class ConfigHandler {
     }
 
     public boolean handle(Receiver receiver, Words words) {
-        if (words.containsAny(searchWords)) {
+        if (words.containsAny(searchWords)
+                || words.containsAny(matchesWords)) {
             final ConfigVariables variables = ConfigVariables.from(receiver);
 
             switch (receiver.getFriendshipType()) {

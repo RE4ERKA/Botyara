@@ -18,23 +18,23 @@ public class ListenersCommand implements Command {
             case "reload" -> {
                 info("Перезагрузка...");
 
-                Botyara.INSTANCE.getBotManager().getBot()
+                Botyara.INSTANCE.getDiscordManager().getBot()
                         .cleanUp()
                         .unregisterAll();
 
-                Botyara.INSTANCE.getBotManager().loadListeners();
+                Botyara.INSTANCE.getDiscordManager().loadListeners();
             }
 
             case "cleanup" -> {
                 info("Очистка ожидающий и вопросительных слушателей...");
 
-                Botyara.INSTANCE.getBotManager().getBot().cleanUp();
+                Botyara.INSTANCE.getDiscordManager().getBot().cleanUp();
             }
 
             case "list" -> {
                 info("Список слушателей:");
 
-                Botyara.INSTANCE.getBotManager()
+                Botyara.INSTANCE.getDiscordManager()
                         .getBot()
                         .getListeners()
                         .forEach(listener -> info(
@@ -44,7 +44,7 @@ public class ListenersCommand implements Command {
             }
 
             case "unregister" -> {
-                Botyara.INSTANCE.getBotManager().getBot().unregister(args[1]);
+                Botyara.INSTANCE.getDiscordManager().getBot().unregister(args[1]);
                 info("Слушатель '%s' больше не зарегистрирован!", args[1].toUpperCase(Locale.ROOT));
             }
 

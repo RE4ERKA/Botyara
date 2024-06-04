@@ -5,13 +5,21 @@ import me.re4erka.botyara.api.config.handler.ConfigVariables;
 import me.re4erka.botyara.api.config.message.ConfigMessage;
 import org.simpleyaml.configuration.ConfigurationSection;
 
+import java.util.Objects;
+
 public class ConfigRespond {
     private final ConfigMessage defaultMessage;
     private final ConfigMessage friendMessage;
     private final ConfigMessage bestFriendMessage;
 
     public ConfigRespond(ConfigurationSection section) throws ConfigLoadException {
-        this.defaultMessage = new ConfigMessage(section.getConfigurationSection("DEFAULT"));
+        if (Objects.isNull(section)) {
+            throw new ConfigLoadException("The 'Response' list cannot be empty!");
+        }
+
+        this.defaultMessage = section.contains("DEFAULT")
+                ? new ConfigMessage(section.getConfigurationSection("DEFAULT"))
+                : null;
 
         this.friendMessage = section.contains("FRIEND")
                 ? new ConfigMessage(section.getConfigurationSection("FRIEND"))
@@ -20,6 +28,12 @@ public class ConfigRespond {
         this.bestFriendMessage = section.contains("BEST_FRIEND")
                 ? new ConfigMessage(section.getConfigurationSection("BEST_FRIEND"))
                 : null;
+
+        if (Objects.isNull(defaultMessage)
+                && Objects.isNull(friendMessage)
+                && Objects.isNull(bestFriendMessage)) {
+            throw new ConfigLoadException("There must be at least one response!");
+        }
     }
 
     public String getDefault(ConfigVariables variables) {

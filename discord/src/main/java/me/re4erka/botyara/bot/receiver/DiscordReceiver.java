@@ -13,6 +13,8 @@ import me.re4erka.botyara.executor.ScheduledExecutor;
 import org.javacord.api.entity.message.Message;
 
 import java.time.Duration;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 @Log4j2
@@ -46,22 +48,31 @@ public class DiscordReceiver extends Receiver {
 
     @Override
     public Receiver reply(String respondMessage) {
-        typing(() -> onReply(respondMessage, null), respondMessage.length());
+        botTyping(() -> onSend(respondMessage, null), respondMessage.length());
 
         return this;
     }
 
-    public Receiver replyThenEdit(String respondMessage, Consumer<Message> editMethod) {
-        typing(() -> onReply(respondMessage, editMethod), respondMessage.length());
+    public Receiver replyThenRun(String respondMessage, Consumer<Message> thenAction) {
+        botTyping(() -> onSend(respondMessage, thenAction), respondMessage.length());
 
         return this;
     }
 
     public void replyWithoutDelay(String respondMessage) {
         message.reply(respondMessage).exceptionally(throwable -> {
-            log.error("Failed to send message to user!", throwable);
+            log.error("Failed to reply to user message!", throwable);
             return null;
         });
+    }
+
+    public Receiver emojiThenRun(String emoji, Consumer<Message> thenAction) {
+        message.addReactions(emoji).exceptionally(throwable -> {
+            log.error("Failed to post emoji to user message!", throwable);
+            return null;
+        }).thenRun(() -> thenAction.accept(message));
+
+        return this;
     }
 
     @Override
@@ -89,7 +100,7 @@ public class DiscordReceiver extends Receiver {
             /* Проверяем изменился ли статус дружбы. */
             if (data.checkFriendshipStatus()) {
                 ActiveBot.USER_HISTORY.log(
-                        "Статус дружбы обновлен. Статус: %friendship_type%. Пользователь: %user_name%(%user_id%)",
+                        "Статус дружбы обновлен. Статус: %friendship_type%. Репутация: %user_reputation%. Пользователь: %user_name%(%user_id%)",
                         this
                 );
             }
@@ -106,12 +117,16 @@ public class DiscordReceiver extends Receiver {
         return data.isStranger();
     }
 
-    private void onReply(String respondMessage, Consumer<Message> editMethod) {
+    public CompletableFuture<Void> botTyping() {
+        return message.getChannel().type();
+    }
+
+    protected void onSend(String respondMessage, Consumer<Message> thenAction) {
         message.reply(respondMessage).thenAccept(botMessage -> {
             message.addMessageEditListener(listener -> {
                 final Message message = listener.getMessage();
 
-                Botyara.INSTANCE.getBotManager().getBot().onListen(
+                Botyara.INSTANCE.getDiscordManager().getBot().onListen(
                         new MessageReceiver(botMessage, data),
                         Words.create(
                                 message.getReadableContent(),
@@ -149,16 +164,23 @@ public class DiscordReceiver extends Receiver {
                     message.isPrivateMessage()
             );
 
-            if (editMethod != null) {
-                editMethod.accept(botMessage);
+            if (thenAction != null) {
+                thenAction.accept(botMessage);
             }
+        }).exceptionally(throwable -> {
+            log.error("Failed to reply the message!", throwable);
+            return null;
         });
     }
 
-    private void typing(Runnable runnable, long length) {
+    protected void botTyping(Runnable runnable, long length) {
         message.getChannel().type().thenRun(() -> ScheduledExecutor.executeLater(
                 runnable,
-                length > 50 ? length * 30L : length * 15
+                calculateDelay(length)
         ));
+    }
+
+    public long calculateDelay(long length) {
+        return length > 50 ? length * 30L : length * 15;
     }
 }

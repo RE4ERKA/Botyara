@@ -60,10 +60,12 @@ public class UserData {
     public boolean checkFriendshipStatus() {
         for (FriendshipType type : FriendshipType.familiars()) {
             if (reputation >= type.getRequiredReputation()) {
-                if (friendshipType != type) {
-                    setFriendshipType(type);
-                    return true;
+                if (friendshipType == type) {
+                    break;
                 }
+
+                setFriendshipType(type);
+                return true;
             }
         }
 

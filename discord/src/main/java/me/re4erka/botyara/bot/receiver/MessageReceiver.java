@@ -2,7 +2,11 @@ package me.re4erka.botyara.bot.receiver;
 
 import lombok.extern.log4j.Log4j2;
 import me.re4erka.botyara.api.bot.user.UserData;
+import me.re4erka.botyara.api.util.random.Random;
+import me.re4erka.botyara.executor.ScheduledExecutor;
 import org.javacord.api.entity.message.Message;
+
+import java.util.function.Consumer;
 
 @Log4j2
 public class MessageReceiver extends DiscordReceiver {
@@ -10,15 +14,23 @@ public class MessageReceiver extends DiscordReceiver {
         super(message, data);
     }
 
-    public void onReply(String message) {
-        this.message.edit(message).exceptionally(throwable -> {
+    @Override
+    protected void onSend(String respondMessage, Consumer<Message> thenAction) {
+        this.message.edit(respondMessage).thenAccept(botMessage -> {
+            if (thenAction != null) {
+                thenAction.accept(botMessage);
+            }
+        }).exceptionally(throwable -> {
             log.error("Failed to edit the message!", throwable);
             return null;
         });
     }
 
     @Override
-    public void replyWithoutDelay(String respondMessage) {
-        this.onReply(respondMessage);
+    public void botTyping(Runnable runnable, long length) {
+        message.getChannel().type().thenRun(() -> ScheduledExecutor.executeLater(
+                runnable,
+                calculateDelay(length) * Random.range(3, 5)
+        ));
     }
 }

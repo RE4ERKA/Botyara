@@ -1,4 +1,4 @@
-package me.re4erka.botyara.bot.user;
+package me.re4erka.botyara.discord.user;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;

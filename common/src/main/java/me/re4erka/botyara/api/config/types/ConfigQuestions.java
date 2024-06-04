@@ -28,7 +28,7 @@ public class ConfigQuestions {
             try {
                 builder.put(AskType.valueOf(key), message);
             } catch (IllegalArgumentException exception) {
-                throw new ConfigLoadException("Не был найден тип 'questions'!");
+                throw new ConfigLoadException("No type was found in the 'Questions' list!");
             }
         }
 

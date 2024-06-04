@@ -1,6 +1,7 @@
 package me.re4erka.botyara.api.config.message;
 
 import lombok.RequiredArgsConstructor;
+import me.re4erka.botyara.api.config.exception.ConfigLoadException;
 import me.re4erka.botyara.api.config.message.types.RandomMessage;
 import me.re4erka.botyara.api.config.message.types.SingleMessage;
 import org.simpleyaml.configuration.ConfigurationSection;
@@ -15,7 +16,7 @@ public enum ConfigMessageType {
 
     private final Class<? extends MessageHandler> handler;
 
-    public MessageHandler newInstance(final ConfigurationSection section) {
+    public MessageHandler newInstance(final ConfigurationSection section) throws ConfigLoadException {
         try {
             return handler.getConstructor(
                     ConfigurationSection.class

@@ -10,7 +10,7 @@ Bot:
 # Настройка базы данных
 Database:
   # Тип базы данных.
-  # Пока тип только один, это SQLITE.
+  # Типы: SQLITE, MYSQL (не работает)
   type: SQLITE
   sqlite:
     file_name: 'users'

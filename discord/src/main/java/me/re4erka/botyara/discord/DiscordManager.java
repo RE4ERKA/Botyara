@@ -1,4 +1,4 @@
-package me.re4erka.botyara.bot;
+package me.re4erka.botyara.discord;
 
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -7,8 +7,9 @@ import me.re4erka.botyara.api.bot.listener.loader.ListenerLoader;
 import me.re4erka.botyara.api.bot.word.Words;
 import me.re4erka.botyara.api.manager.Manager;
 import me.re4erka.botyara.Botyara;
+import me.re4erka.botyara.bot.ActiveBot;
 import me.re4erka.botyara.bot.receiver.DiscordReceiver;
-import me.re4erka.botyara.bot.user.Users;
+import me.re4erka.botyara.discord.user.Users;
 import me.re4erka.botyara.file.type.Properties;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
@@ -18,7 +19,7 @@ import org.javacord.api.entity.message.Message;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Log4j2
-public class BotManager extends Manager {
+public class DiscordManager extends Manager {
     @Getter
     private ActiveBot bot;
     private DiscordApi api;
@@ -81,7 +82,7 @@ public class BotManager extends Manager {
     public void loadListeners() {
         final AtomicInteger count = new AtomicInteger();
 
-        final String packageName = getClass().getPackage().getName();
+        final String packageName = ActiveBot.class.getPackage().getName();
         final String[] packageNames = new String[] {
                 packageName + ".listeners.generic",
                 packageName + ".listeners.await",

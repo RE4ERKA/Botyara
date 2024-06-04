@@ -13,7 +13,7 @@ public class ConfigMessage implements ConfigResult {
         try {
             type = ConfigMessageType.valueOf(section.getString("type", "SINGLE"));
         } catch (IllegalArgumentException e) {
-            throw new ConfigLoadException("В строке 'type' не был найден тип сообщения!");
+            throw new ConfigLoadException("A type was not found in the 'type' field!");
         }
 
         this.message = type.newInstance(section);

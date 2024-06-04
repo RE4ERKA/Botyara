@@ -19,7 +19,7 @@ public class UsersCommand implements Command {
 
         switch (args[0].toLowerCase()) {
             case "get" -> {
-                UserData data = Botyara.INSTANCE.getBotManager()
+                UserData data = Botyara.INSTANCE.getDiscordManager()
                         .getUsers()
                         .getCache()
                         .getIfPresent(id);
@@ -37,7 +37,7 @@ public class UsersCommand implements Command {
             }
 
             case "setname" -> {
-                UserData data = Botyara.INSTANCE.getBotManager()
+                UserData data = Botyara.INSTANCE.getDiscordManager()
                         .getUsers()
                         .getCache()
                         .getIfPresent(id);
@@ -63,7 +63,7 @@ public class UsersCommand implements Command {
             }
 
             case "setreputation" -> {
-                UserData data = Botyara.INSTANCE.getBotManager()
+                UserData data = Botyara.INSTANCE.getDiscordManager()
                         .getUsers()
                         .getCache()
                         .getIfPresent(id);
@@ -91,7 +91,7 @@ public class UsersCommand implements Command {
             }
 
             case "saveall" -> {
-                Botyara.INSTANCE.getBotManager().getUsers().saveAll();
+                Botyara.INSTANCE.getDiscordManager().getUsers().saveAll();
                 info("Все пользователи из кеша были сохранены!");
             }
 

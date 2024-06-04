@@ -6,9 +6,9 @@ import lombok.extern.log4j.Log4j2;
 import me.re4erka.botyara.api.history.HistoryManager;
 import me.re4erka.botyara.api.history.type.SimpleHistory;
 import me.re4erka.botyara.api.util.file.JarDirectory;
-import me.re4erka.botyara.bot.BotManager;
 import me.re4erka.botyara.command.CommandManager;
 import me.re4erka.botyara.database.DatabaseManager;
+import me.re4erka.botyara.discord.DiscordManager;
 import me.re4erka.botyara.executor.ScheduledExecutor;
 import me.re4erka.botyara.file.FileManager;
 import me.re4erka.botyara.file.type.Properties;
@@ -23,7 +23,7 @@ public enum Botyara {
     private final FileManager fileManager = new FileManager();
     private final DatabaseManager databaseManager = new DatabaseManager();
 
-    private final BotManager botManager = new BotManager();
+    private final DiscordManager discordManager = new DiscordManager();
 
     private final CommandManager commandManager = new CommandManager();
 
@@ -62,7 +62,7 @@ public enum Botyara {
             if (databaseManager.start()) {
                 commandManager.start();
 
-                if (botManager.start()) {
+                if (discordManager.start()) {
                     stopwatch.stop();
 
                     log.info("The bot successfully launched in {}ms.", stopwatch.elapsed(TimeUnit.MILLISECONDS));
@@ -80,7 +80,7 @@ public enum Botyara {
 
             ScheduledExecutor.shutdown();
 
-            botManager.stop();
+            discordManager.stop();
             databaseManager.stop();
             commandManager.stop();
 

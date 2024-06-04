@@ -34,7 +34,7 @@ public class CoinFlipListener extends Listener {
     public boolean onListen(Receiver receiver, Words words) {
         if (words.containsAny(searchWords)) {
             if (receiver instanceof DiscordReceiver discordReceiver) {
-                discordReceiver.replyThenEdit(
+                discordReceiver.replyThenRun(
                         "Подкинул монетку... *летит*",
                         message -> ScheduledExecutor.executeLater(
                                 () -> message.edit(

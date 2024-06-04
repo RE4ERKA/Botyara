@@ -21,6 +21,7 @@ dependencies {
     implementation ('org.javacord:javacord:3.8.0') {
         exclude group: 'org.apache.logging.log4j'
     }
+    implementation("net.fellbaum:jemoji:1.4.1")
 
     implementation 'net.objecthunter:exp4j:0.4.8'
 }

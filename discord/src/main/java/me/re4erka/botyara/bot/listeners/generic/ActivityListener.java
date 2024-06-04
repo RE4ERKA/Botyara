@@ -73,7 +73,7 @@ public class ActivityListener extends Listener {
     public ActivityListener() {
         super(Key.of("USER_ASKS_FOR_ACTIVITY"));
 
-        this.bot = Botyara.INSTANCE.getBotManager().getBot();
+        this.bot = Botyara.INSTANCE.getDiscordManager().getBot();
     }
 
     @Override
