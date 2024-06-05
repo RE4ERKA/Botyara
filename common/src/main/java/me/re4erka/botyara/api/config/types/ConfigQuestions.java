@@ -8,6 +8,7 @@ import me.re4erka.botyara.api.config.message.ConfigMessage;
 import org.simpleyaml.configuration.ConfigurationSection;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class ConfigQuestions {
     private final ImmutableMap<AskType, ConfigMessage> questionMap;
@@ -36,7 +37,7 @@ public class ConfigQuestions {
     }
 
     public boolean isPresent() {
-        return questionMap != null;
+        return Objects.nonNull(questionMap);
     }
 
     public ImmutableSet<Map.Entry<AskType, ConfigMessage>> entrySet() {

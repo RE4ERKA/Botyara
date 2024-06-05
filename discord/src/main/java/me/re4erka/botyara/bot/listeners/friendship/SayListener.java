@@ -51,7 +51,7 @@ public class SayListener extends Listener {
                                 () -> userMessage.getChannel().sendMessage(message),
                                 discordReceiver.calculateDelay(message.length())
                         ));
-                    }).reputation(-50);
+                    }).reputation(-5);
                 }
             } else if (receiver.getFriendshipType() == FriendshipType.FRIEND) {
                 receiver.reply("Хоть мы с тобой и друзья, но я еще не готов настолько доверять тебе... :disappointed:");

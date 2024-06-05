@@ -36,14 +36,14 @@ public class SleepListener extends Listener {
     public boolean onListen(Receiver receiver, Words words) {
         if (words.containsAny(searchWords)) {
             if (bot.getCurrentHours() >= Properties.ACTIVITIES_SLEEPING_PATTERN_BETWEEN.asInt() - 1) {
-                receiver.reply("Уже скоро собираюсь идти спать!").reputation(1);
+                receiver.reply("Уже скоро собираюсь идти спать!").reputation(3);
             } else {
                 receiver.reply(
                         String.format(
                                 "В ближайшее время не планирую идти спать! Обычно, я стараюсь, ложиться в %d:00",
                                 Properties.ACTIVITIES_SLEEPING_PATTERN_BETWEEN.asInt()
                         )
-                ).reputation(1);
+                ).reputation(3);
             }
 
             return true;

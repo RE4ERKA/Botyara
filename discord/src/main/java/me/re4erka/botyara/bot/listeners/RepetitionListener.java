@@ -25,9 +25,9 @@ public class RepetitionListener implements IListener {
                 }
 
                 if (cacheWords.getId() == receiver.getId()) {
-                    receiver.reply("Эй! Я уже тебе отвечал на это предложение ранее!").reputation(-10);
+                    receiver.reply("Эй! Я уже тебе отвечал на это предложение ранее!").reputation(-3);
                 } else {
-                    receiver.reply("Я уже ранее отвечал на это же предложение!").reputation(-5);
+                    receiver.reply("Я уже ранее отвечал на это же предложение!").reputation(-1);
                 }
 
                 return true;

@@ -40,7 +40,7 @@ public class RatingListener extends Listener {
                 || words.containsAny(searchWords)) {
             receiver.reply(
                     answer.generate().text()
-            );
+            ).reputation(3);
 
             return true;
         }

@@ -50,42 +50,45 @@ public class ConfigHandler {
         }
     }
 
+    public boolean handle(Receiver receiver, Words words) {
+        if (words.containsAny(searchWords) || words.matchesAny(matchesWords)) {
+            final ConfigMessage message = switch (receiver.getFriendshipType()) {
+                case STRANGER -> respond.getMessageForStranger();
+                case FAMILIAR -> respond.getMessageForFamiliar();
+                case FRIEND -> respond.getMessageForFriend();
+                case BEST_FRIEND -> respond.getMessageForBestFriend();
+            };
+
+            final ConfigVariables variables = ConfigVariables.from(receiver);
+
+            receiver.reply(
+                    message.getHandler()
+                            .handle(variables)
+            );
+
+            if (message.getReputation() > 1) {
+                receiver.reputation(
+                        message.getReputation()
+                );
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
     public boolean handleAsk(Receiver receiver, Words words) {
         for (Map.Entry<AskType, ConfigMessage> question : questions.entrySet()) {
             if (words.containsAny(question.getKey().getSearchWords())) {
                 receiver.reply(
-                        question.getValue().get(
+                        question.getValue().getHandler().handle(
                                 ConfigVariables.from(receiver)
                         )
                 );
 
                 return true;
             }
-        }
-
-        return false;
-    }
-
-    public boolean handle(Receiver receiver, Words words) {
-        if (words.containsAny(searchWords)
-                || words.matchesAny(matchesWords)) {
-            final ConfigVariables variables = ConfigVariables.from(receiver);
-
-            switch (receiver.getFriendshipType()) {
-                case STRANGER, FAMILIAR -> receiver.reply(
-                        respond.getDefault(variables)
-                );
-
-                case FRIEND -> receiver.reply(
-                        respond.getIfFriend(variables)
-                );
-
-                case BEST_FRIEND -> receiver.reply(
-                        respond.getIfBestFriend(variables)
-                );
-            }
-
-            return true;
         }
 
         return false;

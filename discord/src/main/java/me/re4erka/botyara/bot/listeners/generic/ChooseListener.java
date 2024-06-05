@@ -57,7 +57,8 @@ public class ChooseListener extends AskListener {
         );
 
         if (VALID_REGEX.matcher(answer).find()) {
-            receiver.reply("Пожалуйста, не используй специфичные символы для выбора!");
+            receiver.reply("Пожалуйста, не используй специфичные символы для выбора!")
+                    .reputation(1);
 
             return true;
         }
@@ -83,7 +84,7 @@ public class ChooseListener extends AskListener {
                         + StringUtils.capitalize(
                                 StringUtils.join(answerWords, ' ')
                 )
-        ).reputation(1);
+        ).reputation(3);
 
         return true;
     }

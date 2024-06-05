@@ -1,14 +1,15 @@
 package me.re4erka.botyara.api.config.types;
 
+import me.re4erka.botyara.api.bot.friendship.FriendshipType;
 import me.re4erka.botyara.api.config.exception.ConfigLoadException;
-import me.re4erka.botyara.api.config.handler.ConfigVariables;
 import me.re4erka.botyara.api.config.message.ConfigMessage;
 import org.simpleyaml.configuration.ConfigurationSection;
 
 import java.util.Objects;
 
 public class ConfigRespond {
-    private final ConfigMessage defaultMessage;
+    private final ConfigMessage strangerMessage;
+    private final ConfigMessage familiarMessage;
     private final ConfigMessage friendMessage;
     private final ConfigMessage bestFriendMessage;
 
@@ -17,34 +18,36 @@ public class ConfigRespond {
             throw new ConfigLoadException("The 'Response' list cannot be empty!");
         }
 
-        this.defaultMessage = section.contains("DEFAULT")
-                ? new ConfigMessage(section.getConfigurationSection("DEFAULT"))
-                : null;
+        this.strangerMessage = create(section, FriendshipType.STRANGER);
+        this.familiarMessage = create(section, FriendshipType.FAMILIAR);
+        this.friendMessage = create(section, FriendshipType.FRIEND);
+        this.bestFriendMessage = create(section, FriendshipType.BEST_FRIEND);
 
-        this.friendMessage = section.contains("FRIEND")
-                ? new ConfigMessage(section.getConfigurationSection("FRIEND"))
-                : null;
-
-        this.bestFriendMessage = section.contains("BEST_FRIEND")
-                ? new ConfigMessage(section.getConfigurationSection("BEST_FRIEND"))
-                : null;
-
-        if (Objects.isNull(defaultMessage)
-                && Objects.isNull(friendMessage)
-                && Objects.isNull(bestFriendMessage)) {
+        if (Objects.isNull(strangerMessage) && Objects.isNull(familiarMessage)
+                && Objects.isNull(friendMessage) && Objects.isNull(bestFriendMessage)) {
             throw new ConfigLoadException("There must be at least one response!");
         }
     }
 
-    public String getDefault(ConfigVariables variables) {
-        return defaultMessage.get(variables);
+    public ConfigMessage getMessageForStranger() {
+        return strangerMessage;
     }
 
-    public String getIfFriend(ConfigVariables variables) {
-        return friendMessage == null ? getDefault(variables) : friendMessage.get(variables);
+    public ConfigMessage getMessageForFamiliar() {
+        return familiarMessage == null ? getMessageForStranger() : familiarMessage;
     }
 
-    public String getIfBestFriend(ConfigVariables variables) {
-        return bestFriendMessage == null ? getIfFriend(variables) : bestFriendMessage.get(variables);
+    public ConfigMessage getMessageForFriend() {
+        return friendMessage == null ? getMessageForFamiliar() : friendMessage;
+    }
+
+    public ConfigMessage getMessageForBestFriend() {
+        return bestFriendMessage == null ? getMessageForFriend() : bestFriendMessage;
+    }
+
+    private ConfigMessage create(ConfigurationSection section, FriendshipType type) throws ConfigLoadException {
+        return section.contains(type.name())
+                ? new ConfigMessage(section.getConfigurationSection(type.name()))
+                : null;
     }
 }

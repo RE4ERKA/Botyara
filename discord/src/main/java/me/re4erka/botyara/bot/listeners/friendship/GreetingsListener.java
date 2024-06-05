@@ -58,15 +58,15 @@ public class GreetingsListener extends AwaitingListener {
                         StringUtils.capitalize(
                                 familiarityAnswer.generate()
                         )
-                );
+                ).reputation(1);
             } else {
                 receiver.reply(
                         StringUtils.capitalize(
                                 greetingAnswer.generate(
                                         Pair.of("%user_name%", receiver.getName())
-                                )
+                                ) + ":sweat_smile:"
                         )
-                );
+                ).reputation(1);
             }
 
             return true;
@@ -82,9 +82,9 @@ public class GreetingsListener extends AwaitingListener {
             final UserNameUtil.InvalidType invalidType = UserNameUtil.valid(name);
 
             switch (invalidType) {
-                case TOO_LONG -> receiver.reply("Я не верю, что это твое имя! Оно слишком длинное.");
-                case TOO_SMALL -> receiver.reply("Я не верю, что это твое имя! Оно слишком короткое.");
-                case CONTAINS_SPECIFIC_SYMBOLS -> receiver.reply("Пожалуйста, используй для своего имени только русские буквы!");
+                case TOO_LONG -> receiver.reply("Я не верю, что это твое имя! Оно слишком длинное.").reputation(1);
+                case TOO_SMALL -> receiver.reply("Я не верю, что это твое имя! Оно слишком короткое.").reputation(1);
+                case CONTAINS_SPECIFIC_SYMBOLS -> receiver.reply("Пожалуйста, используй для своего имени только русские буквы!").reputation(1);
                 default -> {
                     removeAwaitingListener(receiver.getId());
 
@@ -94,7 +94,7 @@ public class GreetingsListener extends AwaitingListener {
                     receiver.reply(
                             "Вот как значит тебя зовут.. Запомню, %user_name%",
                             Pair.of("%user_name%", capitalizeName)
-                    );
+                    ).reputation(3);
                 }
             }
 

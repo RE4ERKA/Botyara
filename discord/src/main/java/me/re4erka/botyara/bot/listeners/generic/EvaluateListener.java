@@ -39,7 +39,8 @@ public class EvaluateListener extends AskListener {
 
                 if (words.equals(optionalIndex.getAsInt() + 1, evaluate[1])) {
                     if (first < 1) {
-                        receiver.reply("Первое число не может быть меньше одного!");
+                        receiver.reply("Первое число не может быть меньше одного!")
+                                .reputation(1);
 
                         return true;
                     }
@@ -55,23 +56,27 @@ public class EvaluateListener extends AskListener {
                     }
 
                     if (second < 2) {
-                        receiver.reply("Второе число не может быть меньше двух!");
+                        receiver.reply("Второе число не может быть меньше двух!")
+                                .reputation(1);
 
                         return true;
                     }
 
                     if (first == second) {
-                        receiver.reply("Первое и второе число не могут быть одинаковые!");
+                        receiver.reply("Первое и второе число не могут быть одинаковые!")
+                                .reputation(1);
 
                         return true;
                     } else if (first > second) {
-                        receiver.reply("Первое число не может быть меньше второго!");
+                        receiver.reply("Первое число не может быть меньше второго!")
+                                .reputation(1);
 
                         return true;
                     }
 
                     if (second > 1000000) {
-                        receiver.reply("Второе число не может быть больше миллиона!");
+                        receiver.reply("Второе число не может быть больше миллиона!")
+                                .reputation(1);
 
                         return true;
                     }
@@ -80,7 +85,7 @@ public class EvaluateListener extends AskListener {
 
                     receiver.reply(
                             "По моему субъективному мнению, я думаю... " + Random.range(first, second)
-                    ).reputation(1);
+                    ).reputation(3);
 
                     return true;
                 }
@@ -93,13 +98,15 @@ public class EvaluateListener extends AskListener {
     @Override
     public boolean onAsked(Receiver receiver, Words words) {
         if (words.containsAny(AskType.WHY.getSearchWords())) {
-            receiver.reply("Потому что я решил оценить на такое количество баллов!");
+            receiver.reply("Потому что я решил оценить на такое количество баллов!")
+                    .reputation(1);
 
             return true;
         }
 
         if (words.containsAny(AskType.SURE.getSearchWords())) {
-            receiver.reply("Я думаю прежде чем ответить! Поэтому я уверен в своем ответе.");
+            receiver.reply("Я думаю прежде чем ответить! Поэтому я уверен в своем ответе.")
+                    .reputation(1);
 
             return true;
         }

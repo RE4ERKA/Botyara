@@ -45,7 +45,8 @@ public class CalculationListener extends AskListener {
             try {
                 expression = new ExpressionBuilder(builder.toString()).build();
             } catch (IllegalArgumentException e) {
-                receiver.reply("Ваш пример неверно написан!");
+                receiver.reply("Ваш пример неверно написан!")
+                        .reputation(1);
 
                 return true;
             }
@@ -55,14 +56,17 @@ public class CalculationListener extends AskListener {
             try {
                 result = expression.evaluate();
             } catch (IllegalArgumentException e) {
-                receiver.reply("Я не могу решить этот пример!");
+                receiver.reply("Я не могу решить этот пример!")
+                        .reputation(1);
 
                 return true;
             } catch (ArithmeticException exception) {
                 if (exception.getMessage().equals("Division by zero!")) {
-                    receiver.reply("Деление на ноль - невозможно!");
+                    receiver.reply("Деление на ноль - невозможно!")
+                            .reputation(1);
                 } else {
-                    receiver.reply("Этот пример невозможно решить!");
+                    receiver.reply("Этот пример невозможно решить!")
+                            .reputation(1);
                 }
 
                 return true;
@@ -80,7 +84,7 @@ public class CalculationListener extends AskListener {
                 receiver.reply("По моим математическим подсчетам, итоговый ответ: " + Math.round(result));
             }
 
-            receiver.reputation(1);
+            receiver.reputation(3);
 
             return true;
         }

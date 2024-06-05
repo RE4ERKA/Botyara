@@ -30,7 +30,7 @@ public class GoodListener extends AskListener {
             final int hours = bot.getCurrentHours();
 
             if (hours >= 4 && hours <= 12) {
-                receiver.reply("Доброе!");
+                receiver.reply("Доброе!").reputation(3);
             } else {
                 this.addAskListener(receiver.getId());
 
@@ -44,7 +44,7 @@ public class GoodListener extends AskListener {
             final int hours = bot.getCurrentHours();
 
             if (hours >= 12 && hours <= 16) {
-                receiver.reply("Добрый!");
+                receiver.reply("Добрый!").reputation(3);
             } else {
                 this.addAskListener(receiver.getId());
 
@@ -58,7 +58,7 @@ public class GoodListener extends AskListener {
             final int hours = bot.getCurrentHours();
 
             if (hours >= 15) {
-                receiver.reply("Доброго!");
+                receiver.reply("Доброго!").reputation(3);
             } else {
                 this.addAskListener(receiver.getId());
 
@@ -72,7 +72,7 @@ public class GoodListener extends AskListener {
             final int hours = bot.getCurrentHours();
 
             if (hours <= 6 || hours == 23) {
-                receiver.reply("Доброй!");
+                receiver.reply("Доброй!").reputation(3);
             } else {
                 this.addAskListener(receiver.getId());
 

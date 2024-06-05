@@ -24,6 +24,8 @@ dependencies {
     implementation("net.fellbaum:jemoji:1.4.1")
 
     implementation 'net.objecthunter:exp4j:0.4.8'
+
+    implementation (files("libs/voicerss_tts.jar"))
 }
 
 jar {

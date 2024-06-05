@@ -45,7 +45,7 @@ public class WhatsUpListener extends AskListener {
 
                 receiver.reply(
                         memory.updateAndGet().answer
-                ).reputation(1);
+                ).reputation(5);
 
                 return true;
             }
@@ -56,7 +56,7 @@ public class WhatsUpListener extends AskListener {
 
             receiver.reply(
                     memory.updateAndGet().answer
-            ).reputation(1);
+            ).reputation(5);
 
             return true;
         }

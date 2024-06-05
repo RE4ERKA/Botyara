@@ -65,7 +65,7 @@ public class DateListener extends Listener {
                             date.getSecond(),
                             Pluralizer.formatSeconds(date.getSecond())
                     )
-            ).reputation(1);
+            ).reputation(3);
 
             return true;
         }
@@ -78,7 +78,7 @@ public class DateListener extends Listener {
                             "Судя по моему календарю сегодня %s. :calendar_spiral:",
                             formatter.format(date)
                     )
-            ).reputation(1);
+            ).reputation(3);
 
             return true;
         }

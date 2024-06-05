@@ -24,7 +24,7 @@ public class SleepingListener implements IListener {
     public boolean onListen(Receiver receiver, Words words) {
         receiver.reply(
                 multiAnswer.generate()
-        ).reputation(-100);
+        ).reputation(-10);
 
         return true;
     }

@@ -105,7 +105,7 @@ public class SeasonalListener extends Listener {
                     summerAnswer.generate(
                             Pair.of("%days_formatted%", days + StringUtils.SPACE + Pluralizer.formatDays(days))
                     )
-            ).reputation(1);
+            ).reputation(3);
 
             return true;
         }
@@ -128,7 +128,7 @@ public class SeasonalListener extends Listener {
                     winterAnswer.generate(
                             Pair.of("%days_formatted%", days + StringUtils.SPACE + Pluralizer.formatDays(days))
                     )
-            ).reputation(1);
+            ).reputation(3);
 
             return true;
         }

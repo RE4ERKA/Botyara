@@ -36,7 +36,7 @@ public class RandomMessage extends MessageHandler {
     }
 
     @Override
-    public String get(ConfigVariables variables) {
+    public String handle(ConfigVariables variables) {
         final String message = Random.nextElement(messages);
 
         if (useVariables) {

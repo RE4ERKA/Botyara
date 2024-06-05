@@ -73,10 +73,12 @@ public class PlayListener extends AwaitingListener {
 
         if (userMove == botMove) {
             if (attempts == 2) {
-                receiver.reply("У нас снова ничья! Видимо, не судьба...");
+                receiver.reply("У нас снова ничья! Видимо, не судьба...")
+                                .reputation(3);
                 removeAwaitingListener(receiver.getId());
             } else {
-                receiver.reply("Ничья! Давай попробуем еще раз, говори что выбираешь!");
+                receiver.reply("Ничья! Давай попробуем еще раз, говори что выбираешь!")
+                        .reputation(3);
             }
 
             return;
@@ -85,9 +87,11 @@ public class PlayListener extends AwaitingListener {
         if (userMove == MoveType.ROCK && botMove == MoveType.SCISSORS
                 || userMove == MoveType.SCISSORS && botMove == MoveType.PAPER
                 || userMove == MoveType.PAPER && botMove == MoveType.ROCK) {
-            receiver.reply("Вот блин! Ты победил меня...");
+            receiver.reply("Вот блин! Ты победил меня... :sweat:")
+                    .reputation(3);
         } else {
-            receiver.reply("Ура! Я смог выиграть тебя!");
+            receiver.reply("Ура! Я смог выиграть тебя! :slight_smile:")
+                    .reputation(3);
         }
 
         removeAwaitingListener(receiver.getId());

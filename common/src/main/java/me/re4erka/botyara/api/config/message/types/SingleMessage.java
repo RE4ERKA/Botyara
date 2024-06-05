@@ -24,7 +24,7 @@ public class SingleMessage extends MessageHandler {
     }
 
     @Override
-    public String get(ConfigVariables variables) {
+    public String handle(ConfigVariables variables) {
         if (useVariables) {
             return variables.format(message);
         } else {

@@ -30,7 +30,7 @@ public class FilterListener implements IListener {
 
             for (String filterWord : filterWords) {
                 if (SimilarityUtil.check(word, filterWord, 0.9)) {
-                    receiver.reputation(-200);
+                    receiver.reputation(-50);
                     return true;
                 }
             }

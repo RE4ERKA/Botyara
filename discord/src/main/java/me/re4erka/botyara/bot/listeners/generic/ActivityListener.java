@@ -92,7 +92,7 @@ public class ActivityListener extends Listener {
                 case WATCHING -> replyWhatWatching(receiver, activity.getName());
                 default -> receiver.reply(
                         "Я прямо сейчас ничем интересным не занят!"
-                ).reputation(1);
+                ).reputation(3);
             }
 
             return true;
@@ -102,7 +102,7 @@ public class ActivityListener extends Listener {
             if (activity.getType() == ActivityType.LISTENING) {
                 replyWhatListening(receiver, activity.getName());
             } else {
-                receiver.reply("Я сейчас ничего не слушаю!").reputation(1);
+                receiver.reply("Я сейчас ничего не слушаю!").reputation(3);
             }
 
             return true;
@@ -112,7 +112,7 @@ public class ActivityListener extends Listener {
             if (activity.getType() == ActivityType.PLAYING) {
                 replyWhatPlaying(receiver, activity.getName());
             } else {
-                receiver.reply("Я сейчас не во что не играю!").reputation(1);
+                receiver.reply("Я сейчас не во что не играю!").reputation(3);
             }
 
             return true;
@@ -122,7 +122,7 @@ public class ActivityListener extends Listener {
             if (activity.getType() == ActivityType.WATCHING) {
                 replyWhatWatching(receiver, activity.getName());
             } else {
-                receiver.reply("Я сейчас ничего не смотрю!").reputation(1);
+                receiver.reply("Я сейчас ничего не смотрю!").reputation(3);
             }
 
             return true;
@@ -140,14 +140,16 @@ public class ActivityListener extends Listener {
                         track[0],
                         track[1]
                 )
-        ).reputation(1);
+        ).reputation(3);
     }
 
     private void replyWhatPlaying(Receiver receiver, String content) {
-        receiver.reply("Я, прямо сейчас, играю в мини-игру " + content).reputation(1);
+        receiver.reply("Я, прямо сейчас, играю в мини-игру " + content)
+                .reputation(3);
     }
 
     private void replyWhatWatching(Receiver receiver, String content) {
-        receiver.reply(String.format("Я сейчас смотрю видео \"%s\"", content)).reputation(1);
+        receiver.reply(String.format("Я сейчас смотрю видео \"%s\"", content))
+                .reputation(3);
     }
 }

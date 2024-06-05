@@ -42,7 +42,7 @@ public class CoinFlipListener extends Listener {
                                 ),
                                 Random.range(1,2), TimeUnit.SECONDS
                         )
-                ).reputation(1);
+                ).reputation(3);
             }
 
             return true;

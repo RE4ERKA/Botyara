@@ -48,7 +48,8 @@ public class ChangeNameListener extends AwaitingListener {
     public boolean onListen(Receiver receiver, Words words) {
         if (words.containsAny(searchWords)) {
             if (receiver.getName() == null) {
-                receiver.reply("Я не знаю тебя... Напиши мне привет - познакомимся.");
+                receiver.reply("Я не знаю тебя... Напиши мне привет - познакомимся.")
+                        .reputation(1);
             } else {
                 askChangeName(receiver);
             }
@@ -72,9 +73,11 @@ public class ChangeNameListener extends AwaitingListener {
             final UserNameUtil.InvalidType invalidType = UserNameUtil.valid(name);
 
             switch (invalidType) {
-                case TOO_LONG -> receiver.reply("Я не верю, что это твое имя! Оно слишком длинное.");
-                case TOO_SMALL -> receiver.reply("Я не верю, что это твое имя! Оно слишком короткое.");
-                case CONTAINS_SPECIFIC_SYMBOLS -> receiver.reply("Пожалуйста, используй для своего имени только русские буквы!");
+                case TOO_LONG -> receiver.reply("Я не верю, что это твое имя! Оно слишком длинное.").reputation(1);
+                case TOO_SMALL -> receiver.reply("Я не верю, что это твое имя! Оно слишком короткое.").reputation(1);
+                case CONTAINS_SPECIFIC_SYMBOLS -> receiver.reply(
+                        "Пожалуйста, используй для своего имени только русские буквы!"
+                ).reputation(1);
                 default -> {
                     final String capitalizeName = StringUtils.capitalize(name);
 
@@ -84,14 +87,15 @@ public class ChangeNameListener extends AwaitingListener {
                     receiver.reply(
                             "Запомнил, твое новое имя - %user_name%",
                             Pair.of("%user_name%", capitalizeName)
-                    ).reputation(1);
+                    ).reputation(3);
                 }
             }
 
             return true;
         }
 
-        receiver.reply("Я не понимаю, пожалуйста, напиши свое имя одним словом в сообщении!");
+        receiver.reply("Я не понимаю, пожалуйста, напиши свое имя одним словом в сообщении!")
+                .reputation(1);
 
         return true;
     }

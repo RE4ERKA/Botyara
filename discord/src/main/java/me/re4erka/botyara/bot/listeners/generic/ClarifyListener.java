@@ -36,7 +36,7 @@ public class ClarifyListener extends AskListener {
 
                 receiver.reply(
                         Random.nextElement(answers)
-                ).reputation(1);
+                ).reputation(3);
 
                 return true;
             }
@@ -49,7 +49,7 @@ public class ClarifyListener extends AskListener {
 
             receiver.reply(
                     Random.nextElement(answers)
-            ).reputation(1);
+            ).reputation(3);
 
             return true;
         }
@@ -60,13 +60,15 @@ public class ClarifyListener extends AskListener {
     @Override
     public boolean onAsked(Receiver receiver, Words words) {
         if (words.containsAny(AskType.WHY.getSearchWords())) {
-            receiver.reply("Ну потому что я еще не уверен, что ответить...").reputation(1);
+            receiver.reply("Ну потому что я еще не уверен, что ответить...")
+                    .reputation(1);
 
             return true;
         }
 
         if (words.containsAny(AskType.SURE.getSearchWords())) {
-            receiver.reply("Ну я не уверен еще в этом вопросе.").reputation(1);
+            receiver.reply("Ну я не уверен еще в этом вопросе.")
+                    .reputation(1);
 
             return true;
         }
