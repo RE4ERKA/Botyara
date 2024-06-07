@@ -68,8 +68,8 @@ public class Users {
         final UserData cachedUserData = cache.getIfPresent(id);
 
         if (cachedUserData == null) {
-            databaseManager.getUserData(id)
-                    .thenAccept(userData -> userData.ifPresentOrElse(data -> {
+            databaseManager.getUserData(id).thenAccept(userData ->
+                    userData.ifPresentOrElse(data -> {
                         data.checkLastDialog();
                         action.accept(data);
 

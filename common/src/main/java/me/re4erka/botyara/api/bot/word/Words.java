@@ -6,7 +6,6 @@ import me.re4erka.botyara.api.bot.word.search.SearchWords;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Locale;
 import java.util.OptionalInt;
 
 public class Words {
@@ -21,7 +20,7 @@ public class Words {
     /* Разделение предложения на слова, удаляя пробелы и пропуски строк */
     public static final String SEPARATOR = StringUtils.SPACE + System.lineSeparator();
 
-    private static final String[] WORDS_TO_CALL_BOT = new String[] {
+    private static final String[] BOT_SYNONYMS = new String[] {
             "ботяра", "бот", "ботя", "робот", "ботик", "ботиха", "ботярище", "botyara", "bot", "robot"
     };
 
@@ -207,10 +206,6 @@ public class Words {
         return new CacheWords(id, toString());
     }
 
-    public static Words of(String[] formattedWords) {
-        return new Words(formattedWords, null, false);
-    }
-
     public static Words create(String content) {
         /* Сохраняем сообщение без каких-либо изменений с поделением на слова в массив */
         final String[] original = StringUtils.split(content, SEPARATOR);
@@ -231,16 +226,10 @@ public class Words {
             );
 
             if (StringUtils.isBlank(content)) {
-                return new Words(
-                        null,
-                        null,
-                        false
-                );
+                // TODO: Можно вызывать ошибку в дальнейшим. Переделать или проверять на null.
+                return of(null);
             }
         }
-
-        /* Заменяем букву Ё на Е для удобства проверок слов. */
-        content = content.replace('ё', 'е');
 
         /*
          * Делаем текст всегда нижнего регистра для удобства.
@@ -250,54 +239,85 @@ public class Words {
          *
          * Проще говоря, метод необходим, для чуть большой оптимизации.
          * */
-        content = content.toLowerCase(Locale.ROOT);
+        content = StringUtils.toRootLowerCase(content);
 
-        /* Делим предложение на слова в массив с помощью пробелов */
+        /* Заменяем букву Ё на Е для улучшения проверок слов. */
+        content = StringUtils.replaceChars(content, 'ё', 'е');
+
+        /* Делим предложение на слова в массив с помощью пробелов и пропусков строк */
         final String[] words = StringUtils.split(content, SEPARATOR);
 
-        /* Если длина массива слов равна 1, то сразу создаем класс Words. */
-        if (words.length == 1) {
-            for (String botWord : WORDS_TO_CALL_BOT) {
-                if (words[0].equals(botWord)) {
-                    return new Words(null, original, true);
+        /* Индекс в котором был упомянут синоним слова бот */
+        short indexMentionsBot = -1;
+
+        wordsLoop:
+        for (short i = 0; i < words.length; i++) {
+            final int wordLength = words[i].length();
+
+            // Создаем StringBuilder для будущих возможных модификаций.
+            final StringBuilder result = new StringBuilder(wordLength);
+
+            char previousCharacter = words[i].charAt(0); // Храним прошлый символ. Изначально вносим первый символ.
+            boolean modified = false; // Проверка на то, была ли модификация в сообщении.
+
+            result.append(previousCharacter); // Сразу добавляем первый прошлый символ.
+
+            /*
+             * Проверяем повторяются ли символы в сообщении и удаляем повторяющие.
+             *
+             * К примеру текст "ппрривееет" станет "привет", что улучшит проверку.
+             * */
+            for (final char character : words[i].toCharArray()) {
+                if (character != previousCharacter) {
+                    result.append(character);
+                    previousCharacter = character;
+                } else if (!modified) {
+                    modified = true;
                 }
             }
 
-            return new Words(words, original, false);
-        }
+            // Проверяем, была ли модификация и применяем.
+            if (modified) {
+                words[i] = result.toString();
+            }
 
-        /* Создаем пустой изменяемый массив слов без синоним слов "Бот" */
-        String[] wordsWithoutBot = ArrayUtils.EMPTY_STRING_ARRAY;
-
-        /* Заменяем *молодежные* слова синонимы. */
-        for (int i = 0; i < words.length; i++) {
-            final String word = words[i];
-
-            /* Ищем синонимы слова "Бот" в массиве слов */
-            if (wordsWithoutBot.length == 0) {
-                for (String botWord : WORDS_TO_CALL_BOT) {
-                    if (word.equals(botWord)) {
-                        /* Удаляем слово "Бот" из массива слов */
-                        wordsWithoutBot = ArrayUtils.remove(words, i);
-                        break;
+            // Проверяем индекс равен -1 или нет, дабы избежать повторных лишних выполнений.
+            if (indexMentionsBot == -1) {
+                // Ищем синонимы слова "Бот" в массиве слов
+                for (String synonym : BOT_SYNONYMS) {
+                    if (words[i].equals(synonym)) {
+                        // Проверяем количество слов в сообщении.
+                        // Если 1, то нет смысла выполнять дальше код.
+                        if (words.length == 1) {
+                            return new Words(null, original, true);
+                        } else {
+                            indexMentionsBot = i;
+                            continue wordsLoop;
+                        }
                     }
                 }
             }
 
-            if (word.equals("че")) {
-                words[i] = "что";
-            } else if (word.equals("щас")) {
-                words[i] = "сейчас";
+            // Заменяем *молодежные* слова на синонимы.
+            switch (words[i]) {
+                case "че" -> words[i] = "что";
+                case "щас" -> words[i] = "сейчас";
+                case "го" -> words[i] = "давай"; // или заменять на "пошли" ?
             }
         }
 
-        /* Проверяем пустой ли массив слов без слово "Бот".
-        *
-        * Если да, то создаем класс Words по-обычному.
-        * Если нет, то создаем класс Words без слово "Бот".
-        * */
-        return wordsWithoutBot.length == 0
+        /*
+         * Проверяем пустой ли массив слов без слово "Бот".
+         *
+         * Если да, то создаем класс Words по-обычному.
+         * Если нет, то создаем класс Words без слово "Бот".
+         * */
+        return indexMentionsBot == -1
                 ? new Words(words, original, false)
-                : new Words(wordsWithoutBot, original, true);
+                : new Words(ArrayUtils.remove(words, indexMentionsBot), original, true);
+    }
+
+    public static Words of(String[] formattedWords) {
+        return new Words(formattedWords, null, false);
     }
 }
