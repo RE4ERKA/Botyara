@@ -26,5 +26,5 @@ gradle-app.setting
 
 ### Custom Listeners
 discord/src/main/java/me/re4erka/botyara/bot/listeners/generic/
-another/path/to/exclude/
-yet/another/path/to/exclude/
+discord/src/main/java/me/re4erka/botyara/bot/listeners/friendship/
+discord/src/main/java/me/re4erka/botyara/bot/listeners/await/
