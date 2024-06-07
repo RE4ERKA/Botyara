@@ -24,3 +24,7 @@ gradle-app.setting
 ### Intellij idea
 .idea
 
+### Custom Listeners
+discord/src/main/java/me/re4erka/botyara/bot/listeners/generic/
+another/path/to/exclude/
+yet/another/path/to/exclude/

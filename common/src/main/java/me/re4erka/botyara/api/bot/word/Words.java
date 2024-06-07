@@ -14,11 +14,7 @@ public class Words {
     private final String[] originalWords;
 
     @Getter
-    private final boolean userCalledBot;
-    @Getter
-    private final boolean isPrivate;
-    @Getter
-    private final boolean isEdited;
+    private final boolean didUserMentionBot;
 
     /* Специфичные символы, которые будут удаляться. */
     private static final String[] REPLACEMENTS = {",", ".", "!", "?", "@", "(", ")", ":", "-", "\"", "'", "`"};
@@ -29,19 +25,11 @@ public class Words {
             "ботяра", "бот", "ботя", "робот", "ботик", "ботиха", "ботярище", "botyara", "bot", "robot"
     };
 
-    private Words(
-            String[] formattedWords,
-            String[] originalWords,
-            boolean userCalledBot,
-            boolean isPrivate,
-            boolean isEdited
-    ) {
+    private Words(String[] formattedWords, String[] originalWords, boolean didUserMentionBot) {
         this.formattedWords = formattedWords;
         this.originalWords = originalWords;
 
-        this.userCalledBot = userCalledBot;
-        this.isPrivate = isPrivate;
-        this.isEdited = isEdited;
+        this.didUserMentionBot = didUserMentionBot;
     }
 
     public String get(int index) {
@@ -220,10 +208,10 @@ public class Words {
     }
 
     public static Words of(String[] formattedWords) {
-        return new Words(formattedWords, null, false, false, false);
+        return new Words(formattedWords, null, false);
     }
 
-    public static Words create(String content, boolean isPrivate, boolean isEdited) {
+    public static Words create(String content) {
         /* Сохраняем сообщение без каких-либо изменений с поделением на слова в массив */
         final String[] original = StringUtils.split(content, SEPARATOR);
 
@@ -246,9 +234,7 @@ public class Words {
                 return new Words(
                         null,
                         null,
-                        false,
-                        isPrivate,
-                        isEdited
+                        false
                 );
             }
         }
@@ -273,11 +259,11 @@ public class Words {
         if (words.length == 1) {
             for (String botWord : WORDS_TO_CALL_BOT) {
                 if (words[0].equals(botWord)) {
-                    return new Words(null, original, true, isPrivate, isEdited);
+                    return new Words(null, original, true);
                 }
             }
 
-            return new Words(words, original, false, isPrivate, isEdited);
+            return new Words(words, original, false);
         }
 
         /* Создаем пустой изменяемый массив слов без синоним слов "Бот" */
@@ -311,7 +297,7 @@ public class Words {
         * Если нет, то создаем класс Words без слово "Бот".
         * */
         return wordsWithoutBot.length == 0
-                ? new Words(words, original, false, isPrivate, isEdited)
-                : new Words(wordsWithoutBot, original, true, isPrivate, isEdited);
+                ? new Words(words, original, false)
+                : new Words(wordsWithoutBot, original, true);
     }
 }

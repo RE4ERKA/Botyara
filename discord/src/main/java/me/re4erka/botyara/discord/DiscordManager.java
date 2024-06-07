@@ -8,7 +8,8 @@ import me.re4erka.botyara.api.bot.word.Words;
 import me.re4erka.botyara.api.manager.Manager;
 import me.re4erka.botyara.Botyara;
 import me.re4erka.botyara.bot.ActiveBot;
-import me.re4erka.botyara.bot.receiver.DiscordReceiver;
+import me.re4erka.botyara.bot.receiver.type.DataReceiver;
+import me.re4erka.botyara.bot.receiver.type.EmptyReceiver;
 import me.re4erka.botyara.discord.user.Users;
 import me.re4erka.botyara.file.type.Properties;
 import org.javacord.api.DiscordApi;
@@ -62,16 +63,24 @@ public class DiscordManager extends Manager {
             }
 
             final Message message = event.getMessage();
+
+            // TODO: Вызывать уникальный слушатель или систему проверок слушателей.
+            if (message.isPrivateMessage()) {
+                return;
+            }
+
             final long id = message.getAuthor().getId();
 
-            users.find(id, userData -> bot.onListen(
-                    new DiscordReceiver(message, userData),
-                    Words.create(
-                            message.getReadableContent(),
-                            message.isPrivateMessage(),
-                            false
-                    )
-            ));
+            users.find(id, userData -> {
+                final Words words = Words.create(
+                        message.getReadableContent()
+                );
+
+                userData.ifFamiliarOrElse(
+                        data -> bot.onListen(new DataReceiver(message, data), words),
+                        () -> bot.onListen(new EmptyReceiver(message), words)
+                );
+            });
         });
 
         loadListeners();

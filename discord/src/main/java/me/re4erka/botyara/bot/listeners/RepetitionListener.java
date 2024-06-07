@@ -5,6 +5,7 @@ import me.re4erka.botyara.api.bot.listener.common.IListener;
 import me.re4erka.botyara.api.bot.receiver.Receiver;
 import me.re4erka.botyara.api.bot.word.cache.CacheWords;
 import me.re4erka.botyara.api.bot.word.Words;
+import me.re4erka.botyara.bot.receiver.DiscordReceiver;
 import me.re4erka.botyara.file.type.Properties;
 
 public class RepetitionListener implements IListener {
@@ -20,8 +21,10 @@ public class RepetitionListener implements IListener {
 
         for (final CacheWords cacheWords : previousWords) {
             if (cacheWords.similarity(words)) {
-                if (words.isEdited()) {
-                    return true;
+                if (receiver instanceof DiscordReceiver discordReceiver) {
+                    if (discordReceiver.hasMessageBeenChanged()) {
+                        return true;
+                    }
                 }
 
                 if (cacheWords.getId() == receiver.getId()) {

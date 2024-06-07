@@ -1,7 +1,5 @@
 package me.re4erka.botyara.api.history;
 
-import me.re4erka.botyara.api.bot.Bot;
-import me.re4erka.botyara.api.history.type.BotHistory;
 import me.re4erka.botyara.api.history.type.SimpleHistory;
 import me.re4erka.botyara.api.history.type.UserHistory;
 import me.re4erka.botyara.api.util.file.JarDirectory;
@@ -38,10 +36,6 @@ public class HistoryManager {
 
     public static UserHistory newUser(String name) {
         return new UserHistory(name);
-    }
-
-    public static BotHistory newBot(String name, Bot bot) {
-        return new BotHistory(name, bot);
     }
 
     public static void writeLine(String line) {

@@ -8,8 +8,8 @@ import me.re4erka.botyara.api.bot.mood.MoodType;
 import me.re4erka.botyara.api.bot.receiver.Receiver;
 import me.re4erka.botyara.api.bot.word.Words;
 import me.re4erka.botyara.api.history.HistoryManager;
+import me.re4erka.botyara.api.history.type.SimpleHistory;
 import me.re4erka.botyara.history.ActivityHistory;
-import me.re4erka.botyara.api.history.type.BotHistory;
 import me.re4erka.botyara.api.history.type.UserHistory;
 import me.re4erka.botyara.bot.activities.*;
 import me.re4erka.botyara.bot.listeners.DefaultListener;
@@ -76,8 +76,7 @@ public class ActiveBot extends ListeningBot {
             "Статус активности обновлен. Тип: %activity_type%. Текст: '%activity_text%'"
     );
 
-    private final BotHistory history = HistoryManager.newBot("ActiveBot", this)
-            .logging((message, bot) -> message.replace("bot_mood", bot.getMood().toString()));
+    private final SimpleHistory history = HistoryManager.newSimple("ActiveBot");
 
     public ActiveBot(DiscordApi api) {
         super(Properties.LISTENER_AWAITING_MAXIMUM_SIZE.asInt(),
@@ -90,8 +89,6 @@ public class ActiveBot extends ListeningBot {
         if (Properties.ACTIVITIES_SLEEPING_ENABLED.asBoolean()) {
             builder.add(new SleepActivity(this));
         }
-
-        builder.add(new MoodActivity(this));
 
         if (Properties.ACTIVITIES_LISTENING_ENABLED.asBoolean()) {
             builder.add(new ListeningActivity(this));
@@ -123,8 +120,7 @@ public class ActiveBot extends ListeningBot {
                             "%user_message%",
                             words.toString()
                     ),
-                    receiver,
-                    words.isPrivate()
+                    receiver
             );
 
             return;
@@ -137,7 +133,7 @@ public class ActiveBot extends ListeningBot {
         /*
          * Проверяем обращался ли пользователь к боту
          * */
-        if (words.isUserCalledBot()) {
+        if (words.isDidUserMentionBot()) {
             /*
              * Переменная спит ли Бот.
              *
@@ -194,13 +190,13 @@ public class ActiveBot extends ListeningBot {
             if (api.getStatus() != UserStatus.IDLE) {
                 api.updateStatus(UserStatus.IDLE);
                 api.unsetActivity();
+                cleanUp(); // Обязательно очищаем, дабы избежать странностей.
+
                 history.log("Бот уснул.");
             }
-        } else {
-            if (api.getStatus() != UserStatus.ONLINE) {
-                api.updateStatus(UserStatus.ONLINE);
-                history.log("Бот проснулся.");
-            }
+        } else if (api.getStatus() != UserStatus.ONLINE) {
+            api.updateStatus(UserStatus.ONLINE);
+            history.log("Бот проснулся.");
         }
     }
 

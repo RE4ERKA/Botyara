@@ -121,6 +121,11 @@ public abstract class ListeningBot extends Bot {
             return false;
         }
 
+        // Иногда размер может быть 0, проверяем, дабы избегать багов.
+        if (words.size() == 0) {
+            return false;
+        }
+
         return listener.onAwaitingListen(receiver, words);
     }
 

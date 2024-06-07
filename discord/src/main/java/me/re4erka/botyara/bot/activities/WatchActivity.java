@@ -24,8 +24,8 @@ public class WatchActivity implements Activity {
             return true;
         }
 
-        videos.random().thenAccept(optionalTitle ->
-                optionalTitle.ifPresent(bot::watch)
+        videos.random().thenAccept(
+                optionalVideo -> optionalVideo.ifPresent(video -> bot.watch(video.getLeft()))
         );
 
         return true;

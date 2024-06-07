@@ -6,12 +6,15 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.YouTubeRequestInitializer;
 import com.google.api.services.youtube.model.SearchListResponse;
+import com.google.api.services.youtube.model.VideoListResponse;
 import com.google.common.collect.ImmutableList;
 import lombok.extern.log4j.Log4j2;
 import me.re4erka.botyara.api.util.random.Random;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -42,7 +45,7 @@ public final class YoutubeVideos {
         this.channels = ImmutableList.copyOf(channels);
     }
 
-    public CompletableFuture<Optional<String>> random() {
+    public CompletableFuture<Optional<ImmutablePair<String, Long>>> random() {
         return CompletableFuture.supplyAsync(() -> {
             YouTube.Search.List request = null;
             try {
@@ -79,12 +82,37 @@ public final class YoutubeVideos {
             }
 
             final int videoIndex = Random.next(response.getItems().size());
+            String videoId = response.getItems().get(videoIndex).getId().getVideoId();
+
+            // Новый запрос для получения информации о видео
+            YouTube.Videos.List videoRequest;
+            VideoListResponse videoResponse = null;
+            try {
+                videoRequest = youtube.videos().list("contentDetails")
+                        .setId(videoId);
+                videoResponse = videoRequest.execute();
+            } catch (IOException e) {
+                log.error("Failed to get video details via YouTube api!", e);
+            }
+
+            if (videoResponse == null || videoResponse.getItems().isEmpty()) {
+                return Optional.empty();
+            }
+
+            final String title = response.getItems()
+                    .get(videoIndex)
+                    .getSnippet()
+                    .getTitle();
+
+            final long duration = Duration.parse(
+                    videoResponse.getItems()
+                            .get(0)
+                            .getContentDetails()
+                            .getDuration()
+            ).toMillis();
 
             return Optional.of(
-                    response.getItems()
-                            .get(videoIndex)
-                            .getSnippet()
-                            .getTitle()
+                    ImmutablePair.of(title, duration)
             );
         });
     }

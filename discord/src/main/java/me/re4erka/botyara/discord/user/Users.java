@@ -64,26 +64,29 @@ public class Users {
         this.databaseManager = databaseManager;
     }
 
-    public void find(final long id, final Consumer<UserData> action) {
-        final UserData data = cache.getIfPresent(id);
+    public void find(long id, Consumer<UserData> action) {
+        final UserData cachedUserData = cache.getIfPresent(id);
 
-        if (data == null) {
-            databaseManager.getUserData(id).thenAccept(optionalUserData ->
-                optionalUserData.ifPresentOrElse(userData -> {
-                    userData.checkLastDialog();
+        if (cachedUserData == null) {
+            databaseManager.getUserData(id)
+                    .thenAccept(userData -> userData.ifPresentOrElse(data -> {
+                        data.checkLastDialog();
+                        action.accept(data);
 
-                    action.accept(userData);
-                    cache.put(id, userData);
-                }, () -> {
-                    final UserData userData = UserData.newStranger(id);
-
-                    action.accept(userData);
-                    cache.put(id, userData);
-                })
-            );
-        } else {
-            action.accept(data);
+                        cache.put(id, data);
+                    }, () -> {
+                        action.accept(UserData.newStranger());
+                        cache.put(id, UserData.newStranger());
+                    }
+            ));
         }
+        else {
+            action.accept(cachedUserData);
+        }
+    }
+
+    public void intoFamiliar(long id, String name) {
+        cache.put(id, UserData.newFamiliar(id, name));
     }
 
     public void saveAll() {

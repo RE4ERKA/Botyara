@@ -17,11 +17,6 @@ public class UserHistory extends History {
         return this;
     }
 
-    public void log(String message, Receiver receiver, boolean isPrivate) {
-        final String messagePrefix = isPrivate ? "PM" : "SM";
-        this.log("<" + messagePrefix + "> " + message, receiver);
-    }
-
     public void log(String message, Receiver receiver) {
         final HistoryMessage historyMessage = HistoryMessage.create(message);
         logging.accept(historyMessage, receiver);

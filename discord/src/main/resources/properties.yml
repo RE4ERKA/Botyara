@@ -75,6 +75,33 @@ Listener:
   # Пример: generic/custom_listener
   blacklist: []
 
+# Настройка фильтра.
+Filter:
+  # Процент сходства с запрещенном словом.
+  # Значение 0.9 равно 90%
+  similarity: 0.9
+  # Список слов которые будут игнорироваться ботом.
+  words:
+    - 'ban_word_1'
+    - 'ban_word_2'
+    - 'ban_word_3'
+
+# Озвучка сообщения в войсе.
+# Для отключения этой функции необходимо добавить
+# в поле списка Listener.blacklist слушатель
+# под названием 'USER_CALLS_FOR_VOICE'.
+Text_to_speech:
+  # Тип сервиса для озвучки текста.
+  # Типы: VOICE_RSS, GOOGLE_CLOUD (не работает)
+  type: VOICE_RSS
+  # Ключ для работы сервиса TTS.
+  api_key: 'EMPTY'
+  # Название голоса из доступных сервису.
+  # Должен быть с поддержкой русского языка.
+  # https://www.voicerss.org/api/#voices
+  # https://cloud.google.com/text-to-speech/docs/voices
+  voice_name: ''
+
 # Планировщик активностей.
 Scheduler:
   # Диапозон в котором будет происходить обновление.

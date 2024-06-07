@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDate;
+import java.util.function.Consumer;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -20,26 +21,23 @@ public class UserData {
 
     private LocalDate lastDialog;
 
-    public UserData(long id,
-                    @NotNull FriendshipType friendshipType,
-                    @Nullable Integer reputation,
-                    @Nullable String name,
-                    @Nullable LocalDate lastDialog) {
+    private static final UserData STRANGER = new UserData(
+            Long.MIN_VALUE, FriendshipType.STRANGER, Integer.MIN_VALUE, "", null
+    );
+
+    public UserData(final long id,
+                    @NotNull final FriendshipType friendshipType,
+                    final int reputation,
+                    @NotNull final String name,
+                    @Nullable final LocalDate lastDialog) {
         this.id = id;
 
         this.friendshipType = friendshipType;
-        this.reputation = reputation == null ? 0 : reputation;
+        this.reputation = reputation;
 
         this.name = name;
 
         this.lastDialog = lastDialog;
-    }
-
-    public void intoFamiliar(String name) {
-        this.name = name;
-        this.friendshipType = FriendshipType.FAMILIAR;
-        this.reputation = 0;
-        this.lastDialog = LocalDate.now();
     }
 
     public boolean setReputation(int reputation) {
@@ -80,17 +78,23 @@ public class UserData {
         setReputation(reputation + ((int) -(DAYS.between(lastDialog, LocalDate.now()))));
     }
 
+    public void ifFamiliarOrElse(Consumer<UserData> action, final Runnable runnable) {
+        if (isStranger()) {
+            runnable.run();
+        } else {
+            action.accept(this);
+        }
+    }
+
     public boolean isStranger() {
         return friendshipType == FriendshipType.STRANGER;
     }
 
-    public static UserData newStranger(long id) {
-        return new UserData(
-                id,
-                FriendshipType.STRANGER,
-                null,
-                null,
-                null
-        );
+    public static UserData newFamiliar(long id, String name) {
+        return new UserData(id, FriendshipType.FAMILIAR, 0, name, LocalDate.now());
+    }
+
+    public static UserData newStranger() {
+        return UserData.STRANGER;
     }
 }

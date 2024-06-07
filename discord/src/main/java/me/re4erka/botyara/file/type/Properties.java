@@ -31,6 +31,13 @@ public enum Properties {
 
     LISTENER_BLACKLIST("Listener.blacklist", null),
 
+    FILTER_SIMILARITY("Filter.similarity", 1.0),
+    FILTER_WORDS("Filter.words", null),
+
+//    TEXT_TO_SPEECH_TYPE("Text_to_speech.type", "VOICE_RSS"),
+    TEXT_TO_SPEECH_API_KEY("Text_to_speech.api_key", "EMPTY"),
+    TEXT_TO_SPEECH_VOICE_NAME("Text_to_speech.voice_name", ""),
+
     SCHEDULER_UPDATE_PERIOD_ORIGIN("Scheduler.update_period.origin", 30),
     SCHEDULER_UPDATE_PERIOD_BOUND("Scheduler.update_period.bound", 60),
 
@@ -70,5 +77,10 @@ public enum Properties {
     public List<String> asStringList() {
         return Botyara.INSTANCE.getFileManager()
                 .getProperties().getStringList(path);
+    }
+
+    public double asDouble() {
+        return Botyara.INSTANCE.getFileManager()
+                .getProperties().getDouble(path, (double) def);
     }
 }
