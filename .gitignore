@@ -1,3 +1,8 @@
+### Hide Custom Listeners
+discord/src/main/java/me/re4erka/botyara/bot/listeners/generic/
+discord/src/main/java/me/re4erka/botyara/bot/listeners/friendship/
+discord/src/main/java/me/re4erka/botyara/bot/listeners/await/
+
 ### Gradle template
 .gradle
 **/build/
@@ -23,8 +28,3 @@ gradle-app.setting
 
 ### Intellij idea
 .idea
-
-### Custom Listeners
-discord/src/main/java/me/re4erka/botyara/bot/listeners/generic/
-discord/src/main/java/me/re4erka/botyara/bot/listeners/friendship/
-discord/src/main/java/me/re4erka/botyara/bot/listeners/await/
