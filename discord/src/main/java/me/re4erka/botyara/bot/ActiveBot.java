@@ -70,9 +70,9 @@ public class ActiveBot extends ListeningBot {
 
     public static final UserHistory USER_HISTORY = HistoryManager.newUser("ListeningBot")
             .logging((message, receiver) -> {
-                message.replace("user_id", String.valueOf(receiver.getId()));
+                message.replace("user_id", Long.toString(receiver.getId()));
                 message.replace("user_name", receiver.getName());
-                message.replace("user_reputation", String.valueOf(receiver.getReputation()));
+                message.replace("user_reputation", Integer.toString(receiver.getReputation()));
                 message.replace("friendship_type", receiver.getFriendshipType().toString());
             });
     private static final ActivityHistory ACTIVITY_HISTORY = new ActivityHistory(

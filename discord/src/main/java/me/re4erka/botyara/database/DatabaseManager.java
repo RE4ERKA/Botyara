@@ -136,7 +136,7 @@ public class DatabaseManager extends Manager {
         return CompletableFuture.supplyAsync(() -> {
             try (Connection connection = dataSource.getConnection();
                     PreparedStatement statement = connection.prepareStatement(SELECT_USER_DATA)) {
-                statement.setString(1, String.valueOf(id));
+                statement.setString(1, Long.toString(id));
 
                 try (ResultSet result = statement.executeQuery()) {
                     if (result.next()) {
