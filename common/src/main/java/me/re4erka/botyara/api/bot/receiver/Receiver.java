@@ -1,20 +1,19 @@
 package me.re4erka.botyara.api.bot.receiver;
 
 import me.re4erka.botyara.api.bot.friendship.FriendshipType;
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface Receiver {
     long getId();
 
     FriendshipType getFriendshipType();
 
-    void changeName(final String p0);
-    @Nullable
-    String getName();
+    void changeName(@NotNull String name);
+    @Nullable String getName();
 
-    Receiver reply(final String p0);
+    Receiver reply(@NotNull String respondMessage);
 
-    boolean reputation(final int p0);
+    boolean reputation(int delta);
     int getReputation();
 }

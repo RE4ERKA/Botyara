@@ -2,10 +2,10 @@ package me.re4erka.botyara.api.config.message;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import me.re4erka.botyara.api.config.exception.ConfigLoadException;
 import me.re4erka.botyara.api.config.message.types.RandomMessage;
 import me.re4erka.botyara.api.config.message.types.SingleMessage;
 import org.apache.logging.log4j.message.ParameterizedMessage;
+import org.jetbrains.annotations.NotNull;
 import org.simpleyaml.configuration.ConfigurationSection;
 
 import java.lang.reflect.Constructor;
@@ -31,7 +31,7 @@ public enum ConfigMessageType {
         }
     }
 
-    public MessageHandler newInstance(final ConfigurationSection section) {
+    public MessageHandler newInstance(@NotNull ConfigurationSection section) {
         try {
             return constructor.newInstance(section);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {

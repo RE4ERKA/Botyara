@@ -4,11 +4,12 @@ import me.re4erka.botyara.api.bot.Bot;
 import me.re4erka.botyara.api.bot.activity.Activity;
 import me.re4erka.botyara.api.util.random.Random;
 import me.re4erka.botyara.file.type.Properties;
+import org.jetbrains.annotations.NotNull;
 
 public class PlayingActivity implements Activity {
     private final Bot bot;
 
-    public PlayingActivity(Bot bot) {
+    public PlayingActivity(@NotNull Bot bot) {
         this.bot = bot;
     }
 

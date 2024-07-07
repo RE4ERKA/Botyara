@@ -4,8 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 import me.re4erka.botyara.api.util.key.Key;
 
+@Setter
+@Getter
 public class ConfigLoadException extends Exception {
-    @Getter @Setter
     private Key listenerName;
 
     public ConfigLoadException(String message) {

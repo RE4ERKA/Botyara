@@ -36,7 +36,9 @@ public class DiscordManager extends Manager {
             log.warn("Set the token for the bot in the 'properties.yml' file!");
             log.warn("https://discord.com/developers/docs/topics/oauth2");
 
-            return false;
+            if (!Properties.BOT_DEBUG.asBoolean()) {
+                return false;
+            }
         }
 
         api = new DiscordApiBuilder()
@@ -121,7 +123,11 @@ public class DiscordManager extends Manager {
 
         /* Убираем все слушатели в черном списке из конфига */
         Properties.LISTENER_BLACKLIST.asStringList()
-                .forEach(name -> bot.unregister(name));
+                .forEach(name -> {
+                    if (bot.unregister(name)) {
+                        count.decrementAndGet();
+                    }
+                });
 
         log.info("There was successfully loaded {} listeners!", count.get());
     }

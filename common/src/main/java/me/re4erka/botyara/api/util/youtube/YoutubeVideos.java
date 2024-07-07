@@ -11,6 +11,7 @@ import com.google.common.collect.ImmutableList;
 import lombok.extern.log4j.Log4j2;
 import me.re4erka.botyara.api.util.random.Random;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -24,7 +25,7 @@ public final class YoutubeVideos {
     private final YouTube youtube;
     private final ImmutableList<String> channels;
 
-    public YoutubeVideos(String key, List<String> channels) {
+    public YoutubeVideos(@NotNull String key, @NotNull List<String> channels) {
         final NetHttpTransport httpTransport;
 
         try {

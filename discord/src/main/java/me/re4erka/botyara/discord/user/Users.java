@@ -9,6 +9,7 @@ import me.re4erka.botyara.api.bot.user.UserData;
 import me.re4erka.botyara.database.DatabaseManager;
 import me.re4erka.botyara.file.type.Properties;
 import org.apache.logging.log4j.message.ParameterizedMessage;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Objects;
@@ -32,7 +33,7 @@ public class Users {
 
     private final DatabaseManager databaseManager;
 
-    public Users(DatabaseManager databaseManager) {
+    public Users(@NotNull DatabaseManager databaseManager) {
         cache = CacheBuilder.newBuilder()
                 .maximumSize(Properties.CACHE_USERS_MAXIMUM_SIZE.asInt())
                 .expireAfterAccess(Properties.CACHE_USERS_EXPIRATION.asInt(), TimeUnit.MINUTES)
@@ -64,7 +65,7 @@ public class Users {
         this.databaseManager = databaseManager;
     }
 
-    public void find(long id, Consumer<UserData> action) {
+    public void find(long id, @NotNull Consumer<UserData> action) {
         final UserData cachedUserData = cache.getIfPresent(id);
 
         if (cachedUserData == null) {
@@ -85,7 +86,7 @@ public class Users {
         }
     }
 
-    public void intoFamiliar(long id, String name) {
+    public void intoFamiliar(long id, @NotNull String name) {
         cache.put(id, UserData.newFamiliar(id, name));
     }
 

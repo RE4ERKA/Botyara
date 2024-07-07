@@ -1,6 +1,7 @@
 package me.re4erka.botyara.api.bot.memory.part;
 
 import me.re4erka.botyara.api.util.random.Random;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
@@ -13,7 +14,7 @@ public class ExpiringMemoryPart<E> extends MemoryPart<E> {
 
     private long expiration;
 
-    private ExpiringMemoryPart(Supplier<E> updateMethod, int origin, int bound) {
+    private ExpiringMemoryPart(@NotNull Supplier<E> updateMethod, int origin, int bound) {
         this.updateMethod = updateMethod;
 
         this.origin = origin;
@@ -53,13 +54,13 @@ public class ExpiringMemoryPart<E> extends MemoryPart<E> {
         private int origin;
         private int bound;
 
-        public Builder<E> update(Supplier<E> method) {
+        public Builder<E> update(@NotNull Supplier<E> method) {
             this.updateMethod = method;
 
             return this;
         }
 
-        public Builder<E> expireAfter(long origin, long bound, TimeUnit unit) {
+        public Builder<E> expireAfter(long origin, long bound, @NotNull TimeUnit unit) {
             this.origin = Math.toIntExact(unit.toMillis(origin));
             this.bound = Math.toIntExact(unit.toMillis(bound));
 

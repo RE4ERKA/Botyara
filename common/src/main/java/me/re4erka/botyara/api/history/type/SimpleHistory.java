@@ -1,23 +1,24 @@
 package me.re4erka.botyara.api.history.type;
 
 import me.re4erka.botyara.api.history.History;
+import org.jetbrains.annotations.NotNull;
 
 public class SimpleHistory extends History {
-    public SimpleHistory(String name) {
+    public SimpleHistory(@NotNull String name) {
         super(name);
     }
 
-    public void log(String message) {
+    public void log(@NotNull String message) {
         super.log(message);
     }
 
-    public void log(String message, Object... args) {
+    public void log(@NotNull String message, Object... args) {
         this.log(
                 String.format(message, args)
         );
     }
 
-    public void logAwait(String message) {
+    public void logAwait(@NotNull String message) {
         super.logAwait(message);
     }
 }

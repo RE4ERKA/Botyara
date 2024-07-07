@@ -1,6 +1,8 @@
 package me.re4erka.botyara.api.bot.memory.word;
 
 import me.re4erka.botyara.api.util.similarity.SimilarityUtil;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -13,17 +15,17 @@ public class MemoryWords {
         this.answers = new LinkedHashMap<>(size);
     }
 
-    public void add(String words, String answer) {
+    public void add(@NotNull String words, @NotNull String answer) {
         answers.put(words, answer);
     }
 
-    public Optional<String> getIfMatches(String words) {
+    public Optional<String> getIfMatches(@NotNull String words) {
         return Optional.ofNullable(
                 getIfMatchesOrElse(words, null)
         );
     }
 
-    public String getIfMatchesOrElse(String words, String answer) {
+    public String getIfMatchesOrElse(@NotNull String words, @Nullable String answer) {
         for (Map.Entry<String, String> memory : answers.entrySet()) {
             if (SimilarityUtil.check(words, memory.getKey())) {
                 return memory.getValue();

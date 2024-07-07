@@ -8,6 +8,7 @@ import me.re4erka.botyara.api.bot.receiver.Receiver;
 import me.re4erka.botyara.api.bot.listener.ask.IAskListener;
 import me.re4erka.botyara.api.bot.listener.await.AwaitingListener;
 import me.re4erka.botyara.api.bot.word.Words;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -60,7 +61,7 @@ public abstract class ListeningBot extends Bot {
         return this;
     }
 
-    public ListeningBot register(Listener listener) {
+    public ListeningBot register(@NotNull Listener listener) {
         switch (listener.getPostOrder()) {
             case FIRST -> highestListeners.add(listener);
             case NORMAL -> normalListeners.add(listener);
@@ -69,29 +70,31 @@ public abstract class ListeningBot extends Bot {
         return this;
     }
 
-    public void unregister(String name) {
+    public boolean unregister(@NotNull String name) {
         final String formattedName = name.toUpperCase(Locale.ROOT);
 
         for (Listener listener : highestListeners) {
             if (listener.getName().equals(formattedName)) {
                 highestListeners.remove(listener);
-                return;
+                return true;
             }
         }
 
         for (Listener listener : normalListeners) {
             if (listener.getName().equals(formattedName)) {
                 normalListeners.remove(listener);
-                return;
+                return true;
             }
         }
 
         for (Listener listener : lowestListeners) {
             if (listener.getName().equals(formattedName)) {
                 lowestListeners.remove(listener);
-                return;
+                return true;
             }
         }
+
+        return false;
     }
 
     public void unregisterAll() {
@@ -100,7 +103,7 @@ public abstract class ListeningBot extends Bot {
         lowestListeners.clear();
     }
 
-    protected boolean listen(Receiver receiver, Words words) {
+    protected boolean listen(@NotNull Receiver receiver, @NotNull Words words) {
         if (listenAll(receiver, words, highestListeners)) {
             return true;
         }
@@ -112,7 +115,7 @@ public abstract class ListeningBot extends Bot {
         return listenAll(receiver, words, lowestListeners);
     }
 
-    protected boolean listenAwaiting(Receiver receiver, Words words) {
+    protected boolean listenAwaiting(@NotNull Receiver receiver, @NotNull Words words) {
         final AwaitingListener listener = awaitingListeners.get(
                 receiver.getId()
         );
@@ -129,7 +132,7 @@ public abstract class ListeningBot extends Bot {
         return listener.onAwaitingListen(receiver, words);
     }
 
-    protected boolean listenAsk(Receiver receiver, Words words) {
+    protected boolean listenAsk(@NotNull Receiver receiver, @NotNull Words words) {
         final IAskListener listener = askListeners.get(
                 receiver.getId()
         );
@@ -145,7 +148,7 @@ public abstract class ListeningBot extends Bot {
         return listener.onAsked(receiver, words);
     }
 
-    private boolean listenAll(Receiver receiver, Words words, Collection<Listener> listeners) {
+    private boolean listenAll(@NotNull Receiver receiver, @NotNull Words words, @NotNull Collection<Listener> listeners) {
         for (final Listener listener : listeners) {
             if (listener.onListen(receiver, words)) {
                 return true;
@@ -162,7 +165,7 @@ public abstract class ListeningBot extends Bot {
         ).immutableCopy();
     }
 
-    public void addAwaitingListener(long id, AwaitingListener listener) {
+    public void addAwaitingListener(long id, @NotNull AwaitingListener listener) {
         awaitingListeners.put(id, listener);
     }
 
@@ -170,7 +173,7 @@ public abstract class ListeningBot extends Bot {
         awaitingListeners.remove(id);
     }
 
-    public void addAskListener(long id, IAskListener listener) {
+    public void addAskListener(long id, @NotNull IAskListener listener) {
         askListeners.put(id, listener);
     }
 }

@@ -11,6 +11,7 @@ import me.re4erka.botyara.api.config.types.ConfigQuestions;
 import me.re4erka.botyara.api.config.types.ConfigRespond;
 import me.re4erka.botyara.api.bot.word.search.SearchWords;
 import me.re4erka.botyara.api.util.key.Key;
+import org.jetbrains.annotations.NotNull;
 import org.simpleyaml.configuration.file.YamlConfiguration;
 
 import java.util.Map;
@@ -26,7 +27,7 @@ public class ConfigHandler {
     private final ConfigRespond respond;
     private final ConfigQuestions questions;
 
-    public ConfigHandler(Key listenerName, YamlConfiguration configuration) throws ConfigLoadException {
+    public ConfigHandler(@NotNull Key listenerName, @NotNull YamlConfiguration configuration) throws ConfigLoadException {
         this.listenerName = listenerName;
 
         this.searchWords = SearchWords.of(configuration.getStringList("Contains"));
@@ -50,7 +51,7 @@ public class ConfigHandler {
         }
     }
 
-    public boolean handle(Receiver receiver, Words words) {
+    public boolean handle(@NotNull Receiver receiver, @NotNull Words words) {
         if (words.containsAny(searchWords) || words.matchesAny(matchesWords)) {
             final ConfigMessage message = switch (receiver.getFriendshipType()) {
                 case STRANGER -> respond.getMessageForStranger();
@@ -78,7 +79,7 @@ public class ConfigHandler {
         return false;
     }
 
-    public boolean handleAsk(Receiver receiver, Words words) {
+    public boolean handleAsk(@NotNull Receiver receiver, @NotNull Words words) {
         for (Map.Entry<AskType, ConfigMessage> question : questions.entrySet()) {
             if (words.containsAny(question.getKey().getSearchWords())) {
                 receiver.reply(

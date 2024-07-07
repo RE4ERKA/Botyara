@@ -13,6 +13,7 @@ import me.re4erka.botyara.api.util.file.JarDirectory;
 import me.re4erka.botyara.api.util.key.Key;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.message.ParameterizedMessage;
+import org.jetbrains.annotations.NotNull;
 import org.simpleyaml.configuration.file.YamlConfiguration;
 
 import java.io.BufferedReader;
@@ -23,7 +24,7 @@ import java.util.Locale;
 
 @Log4j2
 public class ListenerLoader {
-    public static ImmutableSet<ConfigHandler> fromDirectory(JarDirectory directory, boolean ignoreEmptyFolder) {
+    public static ImmutableSet<ConfigHandler> fromDirectory(@NotNull JarDirectory directory, boolean ignoreEmptyFolder) {
         if (directory.notExists("listeners")) {
             final String exampleListenerPath = "listeners/ExampleListener.yml";
 
@@ -68,7 +69,7 @@ public class ListenerLoader {
         return builder.build();
     }
 
-    public static ImmutableSet<Listener> fromPackage(String[] packageNames, ListeningBot bot) {
+    public static ImmutableSet<Listener> fromPackage(@NotNull String[] packageNames, @NotNull ListeningBot bot) {
         try {
             final ImmutableSet.Builder<Listener> builder = new ImmutableSet.Builder<>();
 
@@ -91,7 +92,7 @@ public class ListenerLoader {
         return ImmutableSet.of();
     }
 
-    private static Listener loadListener(Class<? extends Listener> clazz, ListeningBot bot) {
+    private static Listener loadListener(@NotNull Class<? extends Listener> clazz, @NotNull ListeningBot bot) {
         try {
             try {
                 return clazz.getConstructor().newInstance();
@@ -103,7 +104,7 @@ public class ListenerLoader {
         }
     }
 
-    private static void loadDirectory(ImmutableSet.Builder<ConfigHandler> builder, String directoryName, File directory) {
+    private static void loadDirectory(@NotNull ImmutableSet.Builder<ConfigHandler> builder, @NotNull String directoryName, @NotNull File directory) {
         final File[] files = directory.listFiles(pathname -> pathname.getName().endsWith(".yml"));
 
         if (files == null) {
@@ -124,7 +125,7 @@ public class ListenerLoader {
         }
     }
 
-    private static ConfigHandler create(String name, File file) {
+    private static ConfigHandler create(@NotNull String name, @NotNull File file) {
         final YamlConfiguration config = new YamlConfiguration();
 
         try (BufferedReader reader = Files.newReader(file, Charsets.UTF_8)) {
@@ -157,7 +158,7 @@ public class ListenerLoader {
         return null;
     }
 
-    private static String formatName(String name) {
+    private static String formatName(@NotNull String name) {
         return StringUtils.removeEnd(name, ".yml").toUpperCase(Locale.ROOT);
     }
 }

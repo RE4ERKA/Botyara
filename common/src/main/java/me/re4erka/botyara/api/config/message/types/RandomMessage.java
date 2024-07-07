@@ -5,13 +5,13 @@ import me.re4erka.botyara.api.config.exception.ConfigLoadException;
 import me.re4erka.botyara.api.config.handler.ConfigVariables;
 import me.re4erka.botyara.api.config.message.MessageHandler;
 import me.re4erka.botyara.api.util.random.Random;
-import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.simpleyaml.configuration.ConfigurationSection;
 
 public class RandomMessage extends MessageHandler {
     private final ImmutableList<String> messages;
 
-    public RandomMessage(ConfigurationSection section) throws ConfigLoadException {
+    public RandomMessage(@NotNull ConfigurationSection section) throws ConfigLoadException {
         super(section);
 
         if (section.getStringList("messages").size() < 2) {
@@ -23,9 +23,8 @@ public class RandomMessage extends MessageHandler {
         if (useLineSkip) {
             final ImmutableList.Builder<String> builder = new ImmutableList.Builder<>();
 
-            section.getStringList("messages").forEach(message -> builder.add(
-                    StringUtils.replace(message, "\\n", StringUtils.LF))
-            );
+            section.getStringList("messages")
+                    .forEach(message -> builder.add(replaceLinefeed(message)));
 
             this.messages = builder.build();
         } else {
@@ -36,7 +35,7 @@ public class RandomMessage extends MessageHandler {
     }
 
     @Override
-    public String handle(ConfigVariables variables) {
+    public String handle(@NotNull ConfigVariables variables) {
         final String message = Random.nextElement(messages);
 
         if (useVariables) {

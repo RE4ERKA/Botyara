@@ -17,11 +17,13 @@ import me.re4erka.botyara.bot.listeners.FilterListener;
 import me.re4erka.botyara.bot.listeners.RepetitionListener;
 import me.re4erka.botyara.bot.listeners.SleepingListener;
 import me.re4erka.botyara.file.type.Properties;
+import me.re4erka.botyara.voice.VoiceManager;
 import org.apache.commons.lang3.StringUtils;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.entity.activity.Activity;
 import org.javacord.api.entity.activity.ActivityType;
 import org.javacord.api.entity.user.UserStatus;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -60,6 +62,7 @@ public class ActiveBot extends ListeningBot {
     private final IListener filterListener = new FilterListener();
 
     private final ActivityScheduler scheduler;
+    private final VoiceManager voiceManager;
 
     public static final ZoneId ZONE_ID = ZoneId.of(
             Properties.ACTIVITIES_SLEEPING_ZONE_ID.asString()
@@ -78,7 +81,7 @@ public class ActiveBot extends ListeningBot {
 
     private final SimpleHistory history = HistoryManager.newSimple("ActiveBot");
 
-    public ActiveBot(DiscordApi api) {
+    public ActiveBot(@NotNull DiscordApi api) {
         super(Properties.LISTENER_AWAITING_MAXIMUM_SIZE.asInt(),
                 Properties.LISTENER_ASK_MAXIMUM_SIZE.asInt());
 
@@ -109,10 +112,11 @@ public class ActiveBot extends ListeningBot {
 
         this.api = api;
         this.scheduler = builder.build();
+        this.voiceManager = new VoiceManager(Properties.TEXT_TO_SPEECH_API_KEY.asString());
     }
 
     @Override
-    public void onListen(Receiver receiver, Words words) {
+    public void onListen(@NotNull Receiver receiver, @NotNull Words words) {
         if (filterListener.onListen(receiver, words)) {
             USER_HISTORY.log(
                     StringUtils.replaceOnce(
@@ -177,7 +181,7 @@ public class ActiveBot extends ListeningBot {
     }
 
     @Override
-    public void setMood(MoodType type) {
+    public void setMood(@NotNull MoodType type) {
         this.mood = type;
         history.log("Статус настроения обновлен. Тип: %bot_mood%.");
     }
@@ -201,19 +205,19 @@ public class ActiveBot extends ListeningBot {
     }
 
     @Override
-    public void watch(String title) {
+    public void watch(@NotNull String title) {
         api.updateActivity(ActivityType.WATCHING, title);
         ACTIVITY_HISTORY.log(ActivityType.WATCHING, title);
     }
 
     @Override
-    public void listen(String song) {
+    public void listen(@NotNull String song) {
         api.updateActivity(ActivityType.LISTENING, song);
         ACTIVITY_HISTORY.log(ActivityType.LISTENING, song);
     }
 
     @Override
-    public void play(String game) {
+    public void play(@NotNull String game) {
         api.updateActivity(ActivityType.PLAYING, game);
         ACTIVITY_HISTORY.log(ActivityType.PLAYING, game);
     }

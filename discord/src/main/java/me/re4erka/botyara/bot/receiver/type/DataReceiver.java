@@ -4,13 +4,14 @@ import me.re4erka.botyara.api.bot.friendship.FriendshipType;
 import me.re4erka.botyara.api.bot.user.UserData;
 import me.re4erka.botyara.bot.receiver.DiscordReceiver;
 import org.javacord.api.entity.message.Message;
+import org.jetbrains.annotations.NotNull;
 
 public class DataReceiver extends DiscordReceiver {
-    protected DataReceiver(Message message, UserData data, boolean hasMessageBeenChanged) {
+    protected DataReceiver(@NotNull Message message, @NotNull UserData data, boolean hasMessageBeenChanged) {
         super(message, data, hasMessageBeenChanged);
     }
 
-    public DataReceiver(Message message, UserData data) {
+    public DataReceiver(@NotNull Message message, @NotNull UserData data) {
         this(message, data, false);
     }
 
@@ -25,7 +26,7 @@ public class DataReceiver extends DiscordReceiver {
     }
 
     @Override
-    public void changeName(String name) {
+    public void changeName(@NotNull String name) {
         data.setName(name);
     }
 

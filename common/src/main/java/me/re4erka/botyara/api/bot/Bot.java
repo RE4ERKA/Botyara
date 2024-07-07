@@ -4,20 +4,21 @@ import lombok.Getter;
 import me.re4erka.botyara.api.bot.mood.MoodType;
 import me.re4erka.botyara.api.bot.receiver.Receiver;
 import me.re4erka.botyara.api.bot.word.Words;
+import org.jetbrains.annotations.NotNull;
 
 @Getter
 public abstract class Bot {
     protected boolean isSleep;
     protected MoodType mood = MoodType.NORMAL;
 
-    public abstract void onListen(Receiver receiver, Words words);
+    public abstract void onListen(@NotNull Receiver receiver, @NotNull Words words);
 
-    public abstract void setMood(MoodType type);
+    public abstract void setMood(@NotNull MoodType type);
 
     public abstract void sleep(boolean isSleep);
-    public abstract void watch(String title);
-    public abstract void listen(String song);
-    public abstract void play(String game);
+    public abstract void watch(@NotNull String title);
+    public abstract void listen(@NotNull String song);
+    public abstract void play(@NotNull String game);
 
     public abstract int getCurrentHours();
 

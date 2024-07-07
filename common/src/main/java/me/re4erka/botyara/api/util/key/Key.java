@@ -1,4 +1,5 @@
 package me.re4erka.botyara.api.util.key;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.charset.StandardCharsets;
@@ -13,7 +14,7 @@ public final class Key implements CharSequence, Comparable<Key> {
         this.hash = computeHashCode();
     }
 
-    public static Key of(final String input) {
+    public static Key of(final @NotNull String input) {
         return new Key(input.getBytes(StandardCharsets.US_ASCII));
     }
 
@@ -30,7 +31,7 @@ public final class Key implements CharSequence, Comparable<Key> {
     }
 
     // Метод для проверки, содержит ли строка только ASCII символы
-    private static boolean isAscii(String input) {
+    private static boolean isAscii(final String input) {
         for (char c : input.toCharArray()) {
             if (c > 127) {
                 return false;
@@ -98,7 +99,7 @@ public final class Key implements CharSequence, Comparable<Key> {
     }
 
     @Override
-    public int compareTo(Key other) {
+    public int compareTo(final Key other) {
         final int len1 = this.characters.length;
         final int len2 = other.characters.length;
 

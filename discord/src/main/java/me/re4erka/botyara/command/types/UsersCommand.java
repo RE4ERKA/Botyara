@@ -4,10 +4,11 @@ import me.re4erka.botyara.api.bot.user.UserData;
 import me.re4erka.botyara.api.command.Command;
 import me.re4erka.botyara.Botyara;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 public class UsersCommand implements Command {
     @Override
-    public void execute(String[] args) {
+    public void execute(@NotNull String[] args) {
         if (args.length < 1) {
             info("Недостаточно аргументов!");
             info("Подкоманды: get|saveAll|setName|setReputation");

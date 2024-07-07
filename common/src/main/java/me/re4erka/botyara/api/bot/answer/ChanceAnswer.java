@@ -1,8 +1,9 @@
-package me.re4erka.botyara.api.bot.word.random.answer;
+package me.re4erka.botyara.api.bot.answer;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import me.re4erka.botyara.api.util.random.Random;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -43,7 +44,7 @@ public class ChanceAnswer {
         private short sum = 0;
         private short index = 0;
 
-        public Builder word(String word, int chance) {
+        public Builder word(@NotNull String word, int chance) {
             if (chance > 100) {
                 throw new IllegalArgumentException("The chance cannot be above 100!");
             }
@@ -52,7 +53,7 @@ public class ChanceAnswer {
                     new ChanceWord(index, word, this.sum, (short) (this.sum + chance))
             );
 
-            sum += chance;
+            sum += (short) chance;
             index++;
 
             return Builder.this;

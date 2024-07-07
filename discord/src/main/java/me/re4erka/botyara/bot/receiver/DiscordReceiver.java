@@ -14,6 +14,8 @@ import me.re4erka.botyara.bot.receiver.message.MessageReceiver;
 import me.re4erka.botyara.executor.ScheduledExecutor;
 import org.javacord.api.entity.channel.ServerVoiceChannel;
 import org.javacord.api.entity.message.Message;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
 import java.util.Optional;
@@ -29,7 +31,7 @@ public abstract class DiscordReceiver implements Receiver {
     @Getter
     private final boolean hasMessageBeenChanged;
 
-    public DiscordReceiver(Message message, UserData data, boolean hasMessageBeenChanged) {
+    public DiscordReceiver(@NotNull Message message, @NotNull UserData data, boolean hasMessageBeenChanged) {
         this.message = message;
         this.data = data;
 
@@ -37,23 +39,23 @@ public abstract class DiscordReceiver implements Receiver {
     }
 
     @Override
-    public Receiver reply(String respondMessage) {
+    public Receiver reply(@NotNull String respondMessage) {
         botTyping(() -> onSend(respondMessage, null), respondMessage.length());
 
         return this;
     }
 
-    public Receiver replyThenRun(String respondMessage, Consumer<Message> thenAction) {
+    public Receiver replyThenRun(@NotNull String respondMessage, @Nullable Consumer<Message> thenAction) {
         botTyping(() -> onSend(respondMessage, thenAction), respondMessage.length());
 
         return this;
     }
 
-    public void replyWithoutDelay(String respondMessage) {
+    public void replyWithoutDelay(@NotNull String respondMessage) {
         onSend(respondMessage, null);
     }
 
-    public Receiver emojiThenRun(String emoji, Consumer<Message> thenAction) {
+    public Receiver emojiThenRun(@NotNull String emoji, @NotNull Consumer<Message> thenAction) {
         message.addReactions(emoji).exceptionally(throwable -> {
             log.error("Failed to post emoji to user message!", throwable);
             return null;
@@ -74,7 +76,7 @@ public abstract class DiscordReceiver implements Receiver {
         return this.message.getChannel().type();
     }
 
-    protected void onSend(String respondMessage, Consumer<Message> thenAction) {
+    protected void onSend(@NotNull String respondMessage, @Nullable Consumer<Message> thenAction) {
         message.reply(respondMessage).thenAccept(botMessage -> {
             message.addMessageEditListener(listener -> {
                 final Message message = listener.getMessage();
@@ -88,7 +90,7 @@ public abstract class DiscordReceiver implements Receiver {
                         HistoryMessage.create("Сообщение изменено: '%bot_message%' на '%bot_changed_message%' из-за пользователя: %user_name%(%user_id%)")
                                 .replace("bot_message", respondMessage)
                                 .replace("bot_changed_message", botMessage.getReadableContent())
-                                .get(),
+                                .getMessage(),
                         this
                 );
             });
@@ -98,7 +100,7 @@ public abstract class DiscordReceiver implements Receiver {
             ).thenRun(() -> ActiveBot.USER_HISTORY.log(
                     HistoryMessage.create("Сообщение удалено: '%bot_message%' из-за пользователя: %user_name%(%user_id%)")
                             .replace("bot_message", respondMessage)
-                            .get(),
+                            .getMessage(),
                     this
             )));
 
@@ -106,7 +108,7 @@ public abstract class DiscordReceiver implements Receiver {
                     HistoryMessage.create("%user_name%(%user_id%): '%user_message%'  <-  '%bot_message%'")
                             .replace("user_message", message.getReadableContent())
                             .replace("bot_message", respondMessage)
-                            .get(),
+                            .getMessage(),
                     this
             );
 
@@ -119,7 +121,7 @@ public abstract class DiscordReceiver implements Receiver {
         });
     }
 
-    protected void botTyping(Runnable runnable, long length) {
+    protected void botTyping(@NotNull Runnable runnable, long length) {
         message.getChannel().type().thenRun(() -> ScheduledExecutor.executeLater(
                 runnable,
                 calculateDelay(length)

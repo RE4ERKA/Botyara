@@ -3,6 +3,7 @@ package me.re4erka.botyara.api.history;
 import me.re4erka.botyara.api.history.type.SimpleHistory;
 import me.re4erka.botyara.api.history.type.UserHistory;
 import me.re4erka.botyara.api.util.file.JarDirectory;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -18,7 +19,7 @@ public class HistoryManager {
 
     private static boolean DEBUG = false;
 
-    public static void init(JarDirectory directory, boolean debug) {
+    public static void init(@NotNull JarDirectory directory, boolean debug) {
         if (!debug && directory.notExists(HISTORY_FILE)) {
             try {
                 directory.newFile(HISTORY_FILE).createNewCustomFile();
@@ -30,15 +31,15 @@ public class HistoryManager {
         DEBUG = debug;
     }
 
-    public static SimpleHistory newSimple(String name) {
+    public static SimpleHistory newSimple(@NotNull String name) {
         return new SimpleHistory(name);
     }
 
-    public static UserHistory newUser(String name) {
+    public static UserHistory newUser(@NotNull String name) {
         return new UserHistory(name);
     }
 
-    public static void writeLine(String line) {
+    public static void writeLine(@NotNull String line) {
         if (DEBUG) {
             return;
         }

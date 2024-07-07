@@ -2,17 +2,16 @@ package me.re4erka.botyara.api.config.message;
 
 import lombok.Getter;
 import me.re4erka.botyara.api.config.exception.ConfigLoadException;
+import org.jetbrains.annotations.Nullable;
 import org.simpleyaml.configuration.ConfigurationSection;
-
-import java.util.Objects;
 
 @Getter
 public class ConfigMessage {
     private final MessageHandler handler;
     private final int reputation;
 
-    public ConfigMessage(ConfigurationSection section) throws ConfigLoadException {
-        if (Objects.isNull(section)) {
+    public ConfigMessage(@Nullable ConfigurationSection section) throws ConfigLoadException {
+        if (section == null) {
             throw new ConfigLoadException("The message section cannot be empty!");
         }
 

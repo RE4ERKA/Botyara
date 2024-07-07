@@ -5,6 +5,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import lombok.extern.log4j.Log4j2;
 import me.re4erka.botyara.api.bot.activity.Activity;
 import me.re4erka.botyara.api.util.random.Random;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -21,7 +22,7 @@ public class ActivityScheduler {
     );
     private final ImmutableSet<Activity> activities;
 
-    private ActivityScheduler(ImmutableSet<Activity> activities, int origin, int bound) {
+    private ActivityScheduler(@NotNull ImmutableSet<Activity> activities, int origin, int bound) {
         this.activities = activities;
 
         executor.scheduleAtFixedRate(() -> {
@@ -33,7 +34,7 @@ public class ActivityScheduler {
         }, 0, Random.range(origin, bound), TimeUnit.MINUTES);
     }
 
-    public void updateNow(Class<? extends Activity> excludeActivity) {
+    public void updateNow(@NotNull Class<? extends Activity> excludeActivity) {
         for (Activity activity : activities) {
             if (activity.getClass() == excludeActivity) {
                 continue;
@@ -65,7 +66,7 @@ public class ActivityScheduler {
         }
     }
 
-    private boolean check(Activity activity) {
+    private boolean check(@NotNull Activity activity) {
         try {
             if (activity.update()) {
                 return true;
@@ -97,7 +98,7 @@ public class ActivityScheduler {
             return this;
         }
 
-        public Builder add(Activity activity) {
+        public Builder add(@NotNull Activity activity) {
             activitiesBuilder.add(activity);
             return this;
         }

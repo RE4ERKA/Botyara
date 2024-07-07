@@ -1,8 +1,9 @@
-package me.re4erka.botyara.api.bot.word.random.answer;
+package me.re4erka.botyara.api.bot.word;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+@Getter
 @RequiredArgsConstructor
 public enum WordEnd {
     COMMA(','),
@@ -11,6 +12,5 @@ public enum WordEnd {
     DOT('.'),
     EMPTY(Character.MIN_VALUE);
 
-    @Getter
     private final char symbol;
 }

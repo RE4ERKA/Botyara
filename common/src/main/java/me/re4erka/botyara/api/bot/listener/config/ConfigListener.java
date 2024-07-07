@@ -5,11 +5,12 @@ import me.re4erka.botyara.api.bot.listener.ask.AskListener;
 import me.re4erka.botyara.api.bot.receiver.Receiver;
 import me.re4erka.botyara.api.bot.word.Words;
 import me.re4erka.botyara.api.config.handler.ConfigHandler;
+import org.jetbrains.annotations.NotNull;
 
 public class ConfigListener extends AskListener {
     private final ConfigHandler configHandler;
 
-    public ConfigListener(ConfigHandler configHandler, ListeningBot bot) {
+    public ConfigListener(@NotNull ConfigHandler configHandler, @NotNull ListeningBot bot) {
         super(
                 configHandler.getListenerName(),
                 configHandler.getOptions().getPostOrder(),
@@ -20,7 +21,7 @@ public class ConfigListener extends AskListener {
     }
 
     @Override
-    public boolean onListen(Receiver receiver, Words words) {
+    public boolean onListen(@NotNull Receiver receiver, @NotNull Words words) {
         if (configHandler.handle(receiver, words)) {
             if (configHandler.getQuestions().isPresent()) {
                 addAskListener(receiver.getId());
@@ -33,7 +34,7 @@ public class ConfigListener extends AskListener {
     }
 
     @Override
-    public boolean onAsked(Receiver receiver, Words words) {
+    public boolean onAsked(@NotNull Receiver receiver, @NotNull Words words) {
         return configHandler.handleAsk(receiver, words);
     }
 }

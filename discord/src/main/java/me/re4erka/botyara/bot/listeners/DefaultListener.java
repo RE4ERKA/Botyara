@@ -4,10 +4,11 @@ import me.re4erka.botyara.api.bot.listener.common.IListener;
 import me.re4erka.botyara.api.bot.memory.word.MemoryWords;
 import me.re4erka.botyara.api.bot.receiver.Receiver;
 import me.re4erka.botyara.api.bot.word.Words;
-import me.re4erka.botyara.api.bot.word.random.answer.ChanceAnswer;
-import me.re4erka.botyara.api.bot.word.random.answer.ChanceWord;
+import me.re4erka.botyara.api.bot.answer.ChanceAnswer;
+import me.re4erka.botyara.api.bot.answer.ChanceWord;
 import me.re4erka.botyara.api.util.random.Random;
 import me.re4erka.botyara.file.type.Properties;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -24,7 +25,7 @@ public class DefaultListener implements IListener {
     );
 
     @Override
-    public boolean onListen(Receiver receiver, Words words) {
+    public boolean onListen(@NotNull Receiver receiver, @NotNull Words words) {
         memoryWords.getIfMatches(
                 words.toString()
         ).ifPresentOrElse(receiver::reply, () -> {

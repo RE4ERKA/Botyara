@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 * Добавление/удаление типа дружбы могут привести к проблемам с базой данной.
 * По этому стоит внимательно посмотреть, что содержится в базе данных.
 *  */
+@Getter
 @RequiredArgsConstructor
 public enum FriendshipType {
     STRANGER(-1),
@@ -17,7 +18,6 @@ public enum FriendshipType {
 
     private static final FriendshipType[] FAMILIARS = new FriendshipType[] { BEST_FRIEND, FRIEND, FAMILIAR };
 
-    @Getter
     private final int requiredReputation;
 
     public static FriendshipType[] familiars() {

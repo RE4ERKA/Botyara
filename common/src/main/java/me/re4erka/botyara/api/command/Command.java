@@ -1,13 +1,15 @@
 package me.re4erka.botyara.api.command;
 
-public interface Command {
-    void execute(String[] args);
+import org.jetbrains.annotations.NotNull;
 
-    default void info(String message) {
+public interface Command {
+    void execute(@NotNull String[] args);
+
+    default void info(@NotNull String message) {
         System.out.println(message);
     }
 
-    default void info(String message, Object... args) {
+    default void info(@NotNull String message, Object... args) {
         System.out.printf((message) + "%n", args);
     }
 }

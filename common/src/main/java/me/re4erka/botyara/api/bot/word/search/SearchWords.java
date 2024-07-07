@@ -1,9 +1,9 @@
 package me.re4erka.botyara.api.bot.word.search;
 
-import lombok.NonNull;
 import lombok.ToString;
 import me.re4erka.botyara.api.bot.word.Words;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,7 +13,7 @@ import java.util.List;
 public class SearchWords {
     private final Words[] searchWords;
 
-    private SearchWords(Words[] searchWords) {
+    private SearchWords(@NotNull Words[] searchWords) {
         this.searchWords = searchWords;
     }
 
@@ -25,7 +25,7 @@ public class SearchWords {
         return searchWords.length;
     }
 
-    public static SearchWords of(Collection<String> collection) {
+    public static SearchWords of(@NotNull Collection<String> collection) {
         final Builder builder = SearchWords.builder();
 
         collection.forEach(builder::words);
@@ -40,7 +40,7 @@ public class SearchWords {
     public static final class Builder {
         private final List<Words> wordList = new ArrayList<>();
 
-        public Builder words(@NonNull String words) {
+        public Builder words(@NotNull String words) {
             wordList.add(
                     Words.of(StringUtils.split(words, ' '))
             );

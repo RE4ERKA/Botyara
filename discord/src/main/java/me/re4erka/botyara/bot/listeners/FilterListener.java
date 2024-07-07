@@ -5,6 +5,7 @@ import me.re4erka.botyara.api.bot.receiver.Receiver;
 import me.re4erka.botyara.api.bot.word.Words;
 import me.re4erka.botyara.api.util.similarity.SimilarityUtil;
 import me.re4erka.botyara.file.type.Properties;
+import org.jetbrains.annotations.NotNull;
 
 public class FilterListener implements IListener {
     private final String[] filterWords;
@@ -16,7 +17,7 @@ public class FilterListener implements IListener {
     }
 
     @Override
-    public boolean onListen(final Receiver receiver, final Words words) {
+    public boolean onListen(final @NotNull Receiver receiver, final @NotNull Words words) {
         for (int i = 0; i < words.sizeRaw(); ++i) {
             final String word = words.getRaw(i);
 

@@ -7,6 +7,7 @@ import me.re4erka.botyara.api.bot.word.cache.CacheWords;
 import me.re4erka.botyara.api.bot.word.Words;
 import me.re4erka.botyara.bot.receiver.DiscordReceiver;
 import me.re4erka.botyara.file.type.Properties;
+import org.jetbrains.annotations.NotNull;
 
 public class RepetitionListener implements IListener {
     private final EvictingQueue<CacheWords> previousWords = EvictingQueue.create(
@@ -14,7 +15,7 @@ public class RepetitionListener implements IListener {
     );
 
     @Override
-    public boolean onListen(Receiver receiver, Words words) {
+    public boolean onListen(@NotNull Receiver receiver, @NotNull Words words) {
         if (words.sizeRaw() == 1) {
             return false;
         }

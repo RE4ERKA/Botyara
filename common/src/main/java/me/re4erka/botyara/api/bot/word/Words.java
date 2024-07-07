@@ -5,6 +5,7 @@ import me.re4erka.botyara.api.bot.word.cache.CacheWords;
 import me.re4erka.botyara.api.bot.word.search.SearchWords;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.OptionalInt;
 
@@ -24,7 +25,7 @@ public class Words {
             "ботяра", "бот", "ботя", "робот", "ботик", "ботиха", "ботярище", "botyara", "bot", "robot"
     };
 
-    private Words(String[] formattedWords, String[] originalWords, boolean didUserMentionBot) {
+    private Words(@NotNull String[] formattedWords, @NotNull String[] originalWords, boolean didUserMentionBot) {
         this.formattedWords = formattedWords;
         this.originalWords = originalWords;
 
@@ -43,7 +44,7 @@ public class Words {
         return StringUtils.equals(formattedWords[index], word);
     }
 
-    public boolean equals(Words words) {
+    public boolean equals(@NotNull Words words) {
         if (words.size() != formattedWords.length) {
             return false;
         }
@@ -60,7 +61,7 @@ public class Words {
         return true;
     }
 
-    public boolean contains(String targetWord) {
+    public boolean contains(@NotNull String targetWord) {
         for (String word : formattedWords) {
             if (targetWord.equals(word)) {
                 return true;
@@ -70,7 +71,7 @@ public class Words {
         return false;
     }
 
-    public boolean contains(String[] searchWordArray) {
+    public boolean contains(@NotNull String[] searchWordArray) {
         for (String searchWord : searchWordArray) {
             if (contains(searchWord)) {
                 return true;
@@ -100,7 +101,7 @@ public class Words {
 //        return false;
 //    }
 
-    public boolean matchesAny(SearchWords matchesWords) {
+    public boolean matchesAny(@NotNull SearchWords matchesWords) {
         for (int i = 0; i < matchesWords.size(); i++) {
             final Words words = matchesWords.get(i);
 
@@ -116,7 +117,7 @@ public class Words {
         return false;
     }
 
-    public boolean containsAny(SearchWords searchWords) {
+    public boolean containsAny(@NotNull SearchWords searchWords) {
         for (int i = 0; i < searchWords.size(); i++) {
             final Words words = searchWords.get(i);
 
@@ -132,7 +133,7 @@ public class Words {
         return false;
     }
 
-    public boolean contains(Words searchWords) {
+    public boolean contains(@NotNull Words searchWords) {
         int index = getFirstEqualsWordIndex(
                 searchWords.get(0)
         );
@@ -159,13 +160,13 @@ public class Words {
         return true;
     }
 
-    public OptionalInt find(String searchWord) {
+    public OptionalInt find(@NotNull String searchWord) {
         final int index = getFirstEqualsWordIndex(searchWord);
 
         return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
     }
 
-    public OptionalInt find(String[] searchWordArray) {
+    public OptionalInt find(@NotNull String[] searchWordArray) {
         for (String word : searchWordArray) {
             final OptionalInt optionalIndex = find(word);
 
@@ -177,7 +178,7 @@ public class Words {
         return OptionalInt.empty();
     }
 
-    private int getFirstEqualsWordIndex(String searchWord) {
+    private int getFirstEqualsWordIndex(@NotNull String searchWord) {
         for (int index = 0; index < formattedWords.length; index++) {
             final String word = get(index);
 
@@ -206,7 +207,7 @@ public class Words {
         return new CacheWords(id, toString());
     }
 
-    public static Words create(String content) {
+    public static Words create(@NotNull String content) {
         /* Сохраняем сообщение без каких-либо изменений с поделением на слова в массив */
         final String[] original = StringUtils.split(content, SEPARATOR);
 
@@ -268,6 +269,14 @@ public class Words {
              * К примеру текст "ппрривееет" станет "привет", что улучшит проверку.
              * */
             for (final char character : words[i].toCharArray()) {
+                // Проверяем этот символ цифра или нет.
+                if (Character.isDigit(character)) {
+                    result.append(character);
+                    // Устанавливаю пропуск потому что он всегда будет false.
+                    previousCharacter = ' ';
+                    continue;
+                }
+
                 if (character != previousCharacter) {
                     result.append(character);
                     previousCharacter = character;
@@ -317,7 +326,7 @@ public class Words {
                 : new Words(ArrayUtils.remove(words, indexMentionsBot), original, true);
     }
 
-    public static Words of(String[] formattedWords) {
+    public static Words of(@NotNull String[] formattedWords) {
         return new Words(formattedWords, null, false);
     }
 }

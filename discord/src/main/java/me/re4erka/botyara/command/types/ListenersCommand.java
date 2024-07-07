@@ -2,12 +2,13 @@ package me.re4erka.botyara.command.types;
 
 import me.re4erka.botyara.api.command.Command;
 import me.re4erka.botyara.Botyara;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
 public class ListenersCommand implements Command {
     @Override
-    public void execute(String[] args) {
+    public void execute(@NotNull String[] args) {
         if (args.length < 1) {
             info("Недостаточно аргументов!");
             info("Подкоманды: reload|cleanup|list|unregister");
@@ -44,8 +45,15 @@ public class ListenersCommand implements Command {
             }
 
             case "unregister" -> {
-                Botyara.INSTANCE.getDiscordManager().getBot().unregister(args[1]);
-                info("Слушатель '%s' больше не зарегистрирован!", args[1].toUpperCase(Locale.ROOT));
+                final boolean hasUnregistered = Botyara.INSTANCE.getDiscordManager()
+                        .getBot()
+                        .unregister(args[1]);
+
+                if (hasUnregistered) {
+                    info("Слушатель '%s' больше не зарегистрирован!", args[1].toUpperCase(Locale.ROOT));
+                } else {
+                    info("Слушатель не был найден!");
+                }
             }
 
             default -> info("Подкоманда не найдена!");

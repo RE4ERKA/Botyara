@@ -1,14 +1,15 @@
 package me.re4erka.botyara.api.util.user;
 
 import lombok.experimental.UtilityClass;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Pattern;
 
 @UtilityClass
 public class UserNameUtil {
-    private final static Pattern VALID_REGEX = Pattern.compile("[^А-Яа-я]");
+    private final static Pattern VALID_REGEX = Pattern.compile("[^А-ЯЁа-яё]");
 
-    public InvalidType valid(String name) {
+    public InvalidType valid(@NotNull String name) {
         if (name.length() < 3) {
             return InvalidType.TOO_SMALL;
         }

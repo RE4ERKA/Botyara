@@ -90,7 +90,7 @@ public class UserData {
         return friendshipType == FriendshipType.STRANGER;
     }
 
-    public static UserData newFamiliar(long id, String name) {
+    public static UserData newFamiliar(long id, @NotNull String name) {
         return new UserData(id, FriendshipType.FAMILIAR, 0, name, LocalDate.now());
     }
 

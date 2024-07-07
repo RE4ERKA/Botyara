@@ -134,29 +134,25 @@ public class DatabaseManager extends Manager {
 
     public CompletableFuture<Optional<UserData>> getUserData(long id) {
         return CompletableFuture.supplyAsync(() -> {
-            ResultSet result = null;
-
             try (Connection connection = dataSource.getConnection();
                     PreparedStatement statement = connection.prepareStatement(SELECT_USER_DATA)) {
                 statement.setString(1, String.valueOf(id));
 
-                result = statement.executeQuery();
-
-                while (result.next()) {
-                    return Optional.of(
-                            new UserData(
-                                    id,
-                                    FriendshipType.valueOf(result.getString(2)),
-                                    result.getInt(3),
-                                    result.getString(1),
-                                    DateUtil.parse(result.getString(4))
-                            )
-                    );
+                try (ResultSet result = statement.executeQuery()) {
+                    if (result.next()) {
+                        return Optional.of(
+                                new UserData(
+                                        id,
+                                        FriendshipType.valueOf(result.getString(2)),
+                                        result.getInt(3),
+                                        result.getString(1),
+                                        DateUtil.parse(result.getString(4))
+                                )
+                        );
+                    }
                 }
             } catch (SQLException e) {
                 log.error("Error when selecting a value in the 'users' table from the database!", e);
-            } finally {
-                close(result);
             }
 
             return Optional.empty();
@@ -173,13 +169,5 @@ public class DatabaseManager extends Manager {
         }
 
         log.info("The database was successfully shut down!");
-    }
-
-    private void close(AutoCloseable closeable) {
-        if (closeable != null) {
-            try {
-                closeable.close();
-            } catch (Exception ignored) {}
-        }
     }
 }

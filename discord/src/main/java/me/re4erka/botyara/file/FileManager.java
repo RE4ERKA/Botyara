@@ -9,9 +9,9 @@ import org.simpleyaml.configuration.file.YamlConfiguration;
 
 import java.io.IOException;
 
+@Getter
 @Log4j2
 public class FileManager extends Manager {
-    @Getter
     private YamlConfiguration properties;
 
     private static final String PROPERTIES_FILE = "properties.yml";

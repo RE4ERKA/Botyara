@@ -2,12 +2,13 @@ package me.re4erka.botyara.bot.listeners;
 
 import me.re4erka.botyara.api.bot.listener.common.IListener;
 import me.re4erka.botyara.api.bot.receiver.Receiver;
+import me.re4erka.botyara.api.bot.word.WordEnd;
 import me.re4erka.botyara.api.bot.word.Words;
-import me.re4erka.botyara.api.bot.word.random.answer.MultiAnswer;
-import me.re4erka.botyara.api.bot.word.random.answer.WordEnd;
+import me.re4erka.botyara.api.bot.answer.MultiAnswer;
+import org.jetbrains.annotations.NotNull;
 
 public class SleepingListener implements IListener {
-    private final MultiAnswer multiAnswer = MultiAnswer.newBuilder()
+    private final MultiAnswer multiAnswer = MultiAnswer.builder()
             .part(new String[] {
                     "Прости, что-то хотел", "Кто говорит",
                     "Кто меня разбудил", "Что за звуки"
@@ -21,7 +22,7 @@ public class SleepingListener implements IListener {
             .build();
 
     @Override
-    public boolean onListen(Receiver receiver, Words words) {
+    public boolean onListen(@NotNull Receiver receiver, @NotNull Words words) {
         receiver.reply(
                 multiAnswer.generate()
         ).reputation(-10);

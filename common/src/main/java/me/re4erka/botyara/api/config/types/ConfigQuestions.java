@@ -5,23 +5,32 @@ import com.google.common.collect.ImmutableSet;
 import me.re4erka.botyara.api.bot.listener.ask.AskType;
 import me.re4erka.botyara.api.config.exception.ConfigLoadException;
 import me.re4erka.botyara.api.config.message.ConfigMessage;
+import org.jetbrains.annotations.Nullable;
 import org.simpleyaml.configuration.ConfigurationSection;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 public class ConfigQuestions {
     private final ImmutableMap<AskType, ConfigMessage> questionMap;
 
-    public ConfigQuestions(ConfigurationSection section) throws ConfigLoadException {
-        if (section == null || section.getKeys(false) == null) {
-            questionMap = null;
+    public ConfigQuestions(@Nullable ConfigurationSection section) throws ConfigLoadException {
+        if (section == null) {
+            questionMap = ImmutableMap.of();
             return;
         }
 
-        ImmutableMap.Builder<AskType, ConfigMessage> builder = ImmutableMap.builder();
+        final Set<String> keys = section.getKeys(false);
 
-        for (String key : section.getKeys(false)) {
+        if (keys == null) {
+            questionMap = ImmutableMap.of();
+            return;
+        }
+
+        final ImmutableMap.Builder<AskType, ConfigMessage> builder = ImmutableMap.builder();
+
+        for (String key : keys) {
             final ConfigMessage message = new ConfigMessage(
                     section.getConfigurationSection(key)
             );

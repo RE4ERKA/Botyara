@@ -14,7 +14,7 @@ import java.io.InputStream;
 
 @Log4j2
 public class CustomFile extends File {
-    public CustomFile(String parent, @NotNull String child) {
+    public CustomFile(@NotNull String parent, @NotNull String child) {
         super(parent, child);
     }
 
@@ -31,7 +31,7 @@ public class CustomFile extends File {
         return this;
     }
 
-    public YamlConfiguration saveOrLoad(String resource) throws IOException {
+    public YamlConfiguration saveOrLoad(@NotNull String resource) throws IOException {
         final YamlConfiguration config = new YamlConfiguration();
 
         config.options().useComments(true);
@@ -47,20 +47,20 @@ public class CustomFile extends File {
         return config;
     }
 
-    private void loadFromFile(YamlConfiguration config) throws IOException {
+    private void loadFromFile(@NotNull YamlConfiguration config) throws IOException {
         try {
             config.load(this);
         } catch (YAMLException e) {
-            log.error("Failed to load configuration from file: " + getAbsolutePath(), e);
+            log.error("Failed to load configuration from file: {}", getAbsolutePath(), e);
             throw new IOException("Failed to load configuration from file: " + getAbsolutePath(), e);
         }
     }
 
-    private void loadFromResource(YamlConfiguration config, String resource) throws IOException {
+    private void loadFromResource(@NotNull YamlConfiguration config, @NotNull String resource) throws IOException {
         try (InputStream inputStream = Resources.getResource(resource).openStream()) {
             config.load(inputStream);
         } catch (IOException e) {
-            log.error("Failed to load file from resources: " + resource, e);
+            log.error("Failed to load file from resources: {}", resource, e);
             throw new IOException("Failed to load file from resources: " + resource, e);
         }
     }

@@ -1,5 +1,7 @@
 package me.re4erka.botyara.api.util.file;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -18,15 +20,15 @@ public class JarDirectory {
         }
     }
 
-    public CustomFile newFile(String path) {
+    public CustomFile newFile(@NotNull String path) {
         return new CustomFile(parent, path);
     }
 
-    public File[] filesInDirectory(String directory) {
+    public File[] filesInDirectory(@NotNull String directory) {
         return new File(parent, directory).listFiles();
     }
 
-    public boolean notExists(String path) {
+    public boolean notExists(@NotNull String path) {
         return !new File(parent, path).exists();
     }
 }

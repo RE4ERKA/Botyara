@@ -4,12 +4,13 @@ import me.re4erka.botyara.api.bot.Bot;
 import me.re4erka.botyara.api.bot.activity.Activity;
 import me.re4erka.botyara.api.util.youtube.YoutubeVideos;
 import me.re4erka.botyara.file.type.Properties;
+import org.jetbrains.annotations.NotNull;
 
 public class WatchActivity implements Activity {
     private final Bot bot;
     private final YoutubeVideos videos;
 
-    public WatchActivity(Bot bot) {
+    public WatchActivity(@NotNull Bot bot) {
         this.bot = bot;
 
         this.videos = new YoutubeVideos(
