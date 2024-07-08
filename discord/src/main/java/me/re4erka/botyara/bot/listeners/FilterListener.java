@@ -17,7 +17,7 @@ public class FilterListener implements IListener {
     }
 
     @Override
-    public boolean onListen(final @NotNull Receiver receiver, final @NotNull Words words) {
+    public boolean onListen(@NotNull Receiver receiver, @NotNull Words words) {
         for (int i = 0; i < words.sizeRaw(); ++i) {
             final String word = words.getRaw(i);
 

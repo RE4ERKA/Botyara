@@ -1,6 +1,7 @@
 package me.re4erka.botyara.api.bot;
 
 import lombok.Getter;
+import me.re4erka.botyara.api.bot.activity.Activity;
 import me.re4erka.botyara.api.bot.mood.MoodType;
 import me.re4erka.botyara.api.bot.receiver.Receiver;
 import me.re4erka.botyara.api.bot.word.Words;
@@ -20,6 +21,8 @@ public abstract class Bot {
     public abstract void listen(@NotNull String song);
     public abstract void play(@NotNull String game);
 
+    public abstract Activity.Type getActivityType();
+    public abstract String getActivityContent();
     public abstract int getCurrentHours();
 
     public abstract Bot cleanUp();

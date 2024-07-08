@@ -20,7 +20,7 @@ public class RepetitionListener implements IListener {
             return false;
         }
 
-        for (final CacheWords cacheWords : previousWords) {
+        for (CacheWords cacheWords : previousWords) {
             if (cacheWords.similarity(words)) {
                 if (receiver instanceof DiscordReceiver discordReceiver) {
                     if (discordReceiver.hasMessageBeenChanged()) {

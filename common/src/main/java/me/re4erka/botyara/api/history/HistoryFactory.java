@@ -1,5 +1,6 @@
 package me.re4erka.botyara.api.history;
 
+import me.re4erka.botyara.api.history.type.ActivityHistory;
 import me.re4erka.botyara.api.history.type.SimpleHistory;
 import me.re4erka.botyara.api.history.type.UserHistory;
 import me.re4erka.botyara.api.util.file.JarDirectory;
@@ -29,6 +30,10 @@ public class HistoryFactory {
 
     public static SimpleHistory createSimple(@NotNull String name) {
         return new SimpleHistory(name);
+    }
+
+    public static ActivityHistory createActivity(@NotNull String name, @NotNull String message) {
+        return new ActivityHistory(name, message);
     }
 
     public static UserHistory createUser(@NotNull String name) {

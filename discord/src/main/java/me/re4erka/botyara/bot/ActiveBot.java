@@ -1,6 +1,7 @@
 package me.re4erka.botyara.bot;
 
 import lombok.extern.log4j.Log4j2;
+import me.re4erka.botyara.api.bot.activity.Activity;
 import me.re4erka.botyara.api.bot.activity.scheduler.ActivityScheduler;
 import me.re4erka.botyara.api.bot.listener.ListeningBot;
 import me.re4erka.botyara.api.bot.listener.common.IListener;
@@ -9,7 +10,7 @@ import me.re4erka.botyara.api.bot.receiver.Receiver;
 import me.re4erka.botyara.api.bot.word.Words;
 import me.re4erka.botyara.api.history.HistoryFactory;
 import me.re4erka.botyara.api.history.type.SimpleHistory;
-import me.re4erka.botyara.history.ActivityHistory;
+import me.re4erka.botyara.api.history.type.ActivityHistory;
 import me.re4erka.botyara.api.history.type.UserHistory;
 import me.re4erka.botyara.bot.activities.*;
 import me.re4erka.botyara.bot.listeners.DefaultListener;
@@ -20,14 +21,13 @@ import me.re4erka.botyara.file.type.Properties;
 import me.re4erka.botyara.voice.VoiceManager;
 import org.apache.commons.lang3.StringUtils;
 import org.javacord.api.DiscordApi;
-import org.javacord.api.entity.activity.Activity;
+import org.javacord.api.entity.Nameable;
 import org.javacord.api.entity.activity.ActivityType;
 import org.javacord.api.entity.user.UserStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Optional;
 
 @Log4j2
 public class ActiveBot extends ListeningBot {
@@ -75,7 +75,8 @@ public class ActiveBot extends ListeningBot {
                 message.replace("user_reputation", Integer.toString(receiver.getReputation()));
                 message.replace("friendship_type", receiver.getFriendshipType().toString());
             });
-    private static final ActivityHistory ACTIVITY_HISTORY = new ActivityHistory(
+    private static final ActivityHistory ACTIVITY_HISTORY = HistoryFactory.createActivity(
+            "BotActivity",
             "Статус активности обновлен. Тип: %activity_type%. Текст: '%activity_text%'"
     );
 
@@ -207,28 +208,39 @@ public class ActiveBot extends ListeningBot {
     @Override
     public void watch(@NotNull String title) {
         api.updateActivity(ActivityType.WATCHING, title);
-        ACTIVITY_HISTORY.log(ActivityType.WATCHING, title);
+        ACTIVITY_HISTORY.logWatching(title);
     }
 
     @Override
     public void listen(@NotNull String song) {
         api.updateActivity(ActivityType.LISTENING, song);
-        ACTIVITY_HISTORY.log(ActivityType.LISTENING, song);
+        ACTIVITY_HISTORY.logListening(song);
     }
 
     @Override
     public void play(@NotNull String game) {
         api.updateActivity(ActivityType.PLAYING, game);
-        ACTIVITY_HISTORY.log(ActivityType.PLAYING, game);
+        ACTIVITY_HISTORY.logPlaying(game);
+    }
+
+    @Override
+    public Activity.Type getActivityType() {
+        return api.getActivity().map(activity -> switch (activity.getType()) {
+            case PLAYING -> Activity.Type.PLAYING;
+            case WATCHING -> Activity.Type.WATCHING;
+            case LISTENING -> Activity.Type.LISTENING;
+            default -> Activity.Type.SLEEPING;
+        }).orElse(Activity.Type.SLEEPING);
+    }
+
+    @Override
+    public String getActivityContent() {
+        return api.getActivity().map(Nameable::getName).orElseThrow();
     }
 
     @Override
     public int getCurrentHours() {
         return ZonedDateTime.now(ZONE_ID).getHour();
-    }
-
-    public Optional<Activity> getDiscordActivity() {
-        return api.getActivity();
     }
 
     public void stop() {
