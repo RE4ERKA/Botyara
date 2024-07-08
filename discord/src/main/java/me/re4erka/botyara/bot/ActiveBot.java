@@ -7,7 +7,7 @@ import me.re4erka.botyara.api.bot.listener.common.IListener;
 import me.re4erka.botyara.api.bot.mood.MoodType;
 import me.re4erka.botyara.api.bot.receiver.Receiver;
 import me.re4erka.botyara.api.bot.word.Words;
-import me.re4erka.botyara.api.history.HistoryManager;
+import me.re4erka.botyara.api.history.HistoryFactory;
 import me.re4erka.botyara.api.history.type.SimpleHistory;
 import me.re4erka.botyara.history.ActivityHistory;
 import me.re4erka.botyara.api.history.type.UserHistory;
@@ -68,7 +68,7 @@ public class ActiveBot extends ListeningBot {
             Properties.ACTIVITIES_SLEEPING_ZONE_ID.asString()
     );
 
-    public static final UserHistory USER_HISTORY = HistoryManager.newUser("ListeningBot")
+    public static final UserHistory USER_HISTORY = HistoryFactory.createUser("ListeningBot")
             .logging((message, receiver) -> {
                 message.replace("user_id", Long.toString(receiver.getId()));
                 message.replace("user_name", receiver.getName());
@@ -79,7 +79,7 @@ public class ActiveBot extends ListeningBot {
             "Статус активности обновлен. Тип: %activity_type%. Текст: '%activity_text%'"
     );
 
-    private final SimpleHistory history = HistoryManager.newSimple("ActiveBot");
+    private final SimpleHistory history = HistoryFactory.createSimple("ActiveBot");
 
     public ActiveBot(@NotNull DiscordApi api) {
         super(Properties.LISTENER_AWAITING_MAXIMUM_SIZE.asInt(),

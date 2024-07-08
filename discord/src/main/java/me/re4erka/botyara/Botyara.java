@@ -3,7 +3,7 @@ package me.re4erka.botyara;
 import com.google.common.base.Stopwatch;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
-import me.re4erka.botyara.api.history.HistoryManager;
+import me.re4erka.botyara.api.history.HistoryFactory;
 import me.re4erka.botyara.api.history.type.SimpleHistory;
 import me.re4erka.botyara.api.util.file.JarDirectory;
 import me.re4erka.botyara.command.CommandManager;
@@ -29,7 +29,7 @@ public enum Botyara {
 
     private final JarDirectory jarDirectory = new JarDirectory();
 
-    private static final SimpleHistory history = HistoryManager.newSimple("MainClass");
+    private static final SimpleHistory history = HistoryFactory.createSimple("MainClass");
 
     /* Потокобезопастная переменная выключен ли бот.
     *
@@ -53,7 +53,7 @@ public enum Botyara {
         if (fileManager.start()) {
             final boolean debug = Properties.BOT_DEBUG.asBoolean();
 
-            HistoryManager.init(jarDirectory, debug);
+            HistoryFactory.init(jarDirectory, debug);
 
             if (debug) {
                 log.info("Debug mode has been enabled!");
