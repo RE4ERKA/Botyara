@@ -2,6 +2,7 @@ package me.re4erka.botyara.bot.receiver.voice;
 
 import lombok.extern.log4j.Log4j2;
 import me.re4erka.botyara.api.bot.user.UserData;
+import me.re4erka.botyara.bot.DiscordBot;
 import me.re4erka.botyara.bot.receiver.type.DataReceiver;
 import me.re4erka.botyara.voice.VoiceManager;
 import org.javacord.api.entity.message.Message;
@@ -14,8 +15,11 @@ import java.util.function.Consumer;
 public class VoiceReceiver extends DataReceiver {
     private final VoiceManager voiceManager;
 
-    public VoiceReceiver(@NotNull Message message, @NotNull UserData data, @NotNull VoiceManager voiceManager) {
-        super(message, data, false);
+    public VoiceReceiver(@NotNull Message message,
+                         @NotNull UserData data,
+                         @NotNull DiscordBot bot,
+                         @NotNull VoiceManager voiceManager) {
+        super(message, data, bot,false);
         this.voiceManager = voiceManager;
     }
 

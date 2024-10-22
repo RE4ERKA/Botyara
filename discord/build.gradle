@@ -5,6 +5,8 @@ plugins {
 dependencies {
     api project(':common')
 
+    implementation 'org.jline:jline:3.21.0'
+
     compileOnly ('org.xerial:sqlite-jdbc:3.42.0.0')  {
         exclude group: 'org.slf4j'
     }
@@ -18,7 +20,7 @@ dependencies {
         exclude group: 'org.apache.logging.log4j'
     }
 
-    implementation ('org.javacord:javacord:3.8.0') {
+    implementation ('com.github.RealYusufIsmail.Javacord:javacord-core:4beb9fd7d8') {
         exclude group: 'org.apache.logging.log4j'
     }
     implementation("net.fellbaum:jemoji:1.4.1")
@@ -38,7 +40,7 @@ shadowJar {
     archiveFileName = "Botyara-${project.version}.jar"
 
     minimize() {
-        exclude(dependency('org.javacord:javacord:.*'))
+        exclude(dependency('com.github.RealYusufIsmail.Javacord:.*:.*'))
         exclude(dependency('org.xerial:sqlite-jdbc:.*'))
     }
 }

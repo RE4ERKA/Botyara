@@ -5,13 +5,15 @@ import com.google.common.collect.Sets;
 import me.re4erka.botyara.api.bot.Bot;
 import me.re4erka.botyara.api.bot.listener.common.Listener;
 import me.re4erka.botyara.api.bot.receiver.Receiver;
-import me.re4erka.botyara.api.bot.listener.ask.IAskListener;
-import me.re4erka.botyara.api.bot.listener.await.AwaitingListener;
+import me.re4erka.botyara.api.bot.listener.clarify.IClarifyingListener;
+import me.re4erka.botyara.api.bot.listener.wait.WaitingListener;
+import me.re4erka.botyara.api.bot.response.PendingResponse;
 import me.re4erka.botyara.api.bot.word.Words;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class ListeningBot extends Bot {
     /*
@@ -36,28 +38,33 @@ public abstract class ListeningBot extends Bot {
      *
      * Карта является потокобезопасной.
      * */
-    private final Map<Long, AwaitingListener> awaitingListeners;
+    private final Map<Long, WaitingListener> waitingListeners;
 
-    private final Map<Long, IAskListener> askListeners;
+    private final Map<Long, IClarifyingListener> clarifyingListeners;
 
-    public ListeningBot(int awaitingListenersSize, int askListenersSize) {
+    private final Deque<PendingResponse> responses = new ArrayDeque<>();
+    private final AtomicBoolean isResponding = new AtomicBoolean(false);
+
+    public ListeningBot(int waitingListenersSize, int clarifyingListenersSize) {
         highestListeners = new HashSet<>();
         normalListeners = new HashSet<>();
         lowestListeners = new HashSet<>();
 
-        awaitingListeners = new ConcurrentHashMap<>(
-                awaitingListenersSize
+        waitingListeners = new ConcurrentHashMap<>(
+                waitingListenersSize
         );
 
-        askListeners = new LinkedHashMap<>(
-                askListenersSize
+        clarifyingListeners = new LinkedHashMap<>(
+                clarifyingListenersSize
         );
     }
 
+    protected abstract void onListen(@NotNull Receiver receiver, @NotNull Words words);
+
     @Override
     public ListeningBot cleanUp() {
-        awaitingListeners.clear();
-        askListeners.clear();
+        waitingListeners.clear();
+        clarifyingListeners.clear();
         return this;
     }
 
@@ -103,7 +110,38 @@ public abstract class ListeningBot extends Bot {
         lowestListeners.clear();
     }
 
-    protected boolean listen(@NotNull Receiver receiver, @NotNull Words words) {
+    public void beginResponse() {
+        isResponding.compareAndSet(false, true);
+    }
+
+    public void finishResponse() {
+        isResponding.compareAndSet(true, false);
+    }
+
+    public void queueResponse(@NotNull PendingResponse response) {
+        responses.addLast(response);
+    }
+
+    public void processNextResponse() {
+        final PendingResponse response = responses.pollFirst();
+
+        if (response == null) {
+            finishResponse();
+            return;
+        }
+
+        this.onListen(response.getReceiver(), response.getWords());
+    }
+
+    public boolean isResponding() {
+        return isResponding.get();
+    }
+
+    public boolean hasPendingResponses() {
+        return !responses.isEmpty();
+    }
+
+    protected boolean listenOther(@NotNull Receiver receiver, @NotNull Words words) {
         if (listenAll(receiver, words, highestListeners)) {
             return true;
         }
@@ -116,7 +154,7 @@ public abstract class ListeningBot extends Bot {
     }
 
     protected boolean listenAwaiting(@NotNull Receiver receiver, @NotNull Words words) {
-        final AwaitingListener listener = awaitingListeners.get(
+        final WaitingListener listener = waitingListeners.get(
                 receiver.getId()
         );
 
@@ -129,23 +167,23 @@ public abstract class ListeningBot extends Bot {
             return false;
         }
 
-        return listener.onAwaitingListen(receiver, words);
+        return listener.onWaitingListen(receiver, words);
     }
 
     protected boolean listenAsk(@NotNull Receiver receiver, @NotNull Words words) {
-        final IAskListener listener = askListeners.get(
+        final IClarifyingListener listener = clarifyingListeners.get(
                 receiver.getId()
         );
 
         if (listener == null) {
             return false;
         } else {
-            askListeners.remove(
+            clarifyingListeners.remove(
                     receiver.getId()
             );
         }
 
-        return listener.onAsked(receiver, words);
+        return listener.onClarify(receiver, words);
     }
 
     private boolean listenAll(@NotNull Receiver receiver, @NotNull Words words, @NotNull Collection<Listener> listeners) {
@@ -165,15 +203,15 @@ public abstract class ListeningBot extends Bot {
         ).immutableCopy();
     }
 
-    public void addAwaitingListener(long id, @NotNull AwaitingListener listener) {
-        awaitingListeners.put(id, listener);
+    public void addWaitingListener(long id, @NotNull WaitingListener listener) {
+        waitingListeners.put(id, listener);
     }
 
-    public void removeAwaitingListener(long id) {
-        awaitingListeners.remove(id);
+    public void removeWaitingListener(long id) {
+        waitingListeners.remove(id);
     }
 
-    public void addAskListener(long id, @NotNull IAskListener listener) {
-        askListeners.put(id, listener);
+    public void addClarifyingListener(long id, @NotNull IClarifyingListener listener) {
+        clarifyingListeners.put(id, listener);
     }
 }

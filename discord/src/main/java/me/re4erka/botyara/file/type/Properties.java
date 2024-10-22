@@ -19,8 +19,8 @@ public enum Properties {
     CACHE_MESSAGE_MAXIMUM_SIZE("Cache.message.maximum_size", 16),
     CACHE_MESSAGE_EXPIRATION("Cache.message.expiration", 1800),
 
-    LISTENER_AWAITING_MAXIMUM_SIZE("Listener.types.AWAITING.maximum_size", 64),
-    LISTENER_ASK_MAXIMUM_SIZE("Listener.types.ASK.maximum_size", 64),
+    LISTENER_WAITING_MAXIMUM_SIZE("Listener.types.WAITING.maximum_size", 64),
+    LISTENER_CLARIFYING_MAXIMUM_SIZE("Listener.types.CLARIFYING.maximum_size", 64),
 
 //    LISTENER_MAXIMUM_RESPONSE_MEMORY("Listener.maximum_response_memory", 128),
     LISTENER_DEFAULT_RESPONSE_MEMORY("Listener.default_response_memory", 256),
@@ -38,13 +38,20 @@ public enum Properties {
     TEXT_TO_SPEECH_API_KEY("Text_to_speech.api_key", "EMPTY"),
     TEXT_TO_SPEECH_VOICE_NAME("Text_to_speech.voice_name", ""),
 
-    SCHEDULER_UPDATE_PERIOD_ORIGIN("Scheduler.update_period.origin", 30),
-    SCHEDULER_UPDATE_PERIOD_BOUND("Scheduler.update_period.bound", 60),
+    SCHEDULER_SLEEP_ENABLED("Scheduler.SLEEP.enabled", false),
+    SCHEDULER_SLEEP_ZONE_ID("Scheduler.SLEEP.zone_id", "Europe/Moscow"),
 
-    ACTIVITIES_SLEEPING_ENABLED("Activities.SLEEPING.enabled", false),
-    ACTIVITIES_SLEEPING_ZONE_ID("Activities.SLEEPING.zone_id", "Europe/Moscow"),
-    ACTIVITIES_SLEEPING_PATTERN_BETWEEN("Activities.SLEEPING.pattern.between", 0),
-    ACTIVITIES_SLEEPING_PATTERN_TO("Activities.SLEEPING.pattern.to", 1),
+    SCHEDULER_SLEEP_HOURS_SLEEP("Scheduler.SLEEP.hours.sleep", 23),
+    SCHEDULER_SLEEP_HOURS_WAKE_UP("Scheduler.SLEEP.hours.wake_up", 5),
+
+    SCHEDULER_SLEEP_REQUIRED_SLEEP("Scheduler.SLEEP.required_sleep", 360),
+    SCHEDULER_SLEEP_DIVISION_OF_SLEEP_QUALITY("Scheduler.SLEEP.division_of_sleep_quality", 3.0),
+
+    SCHEDULER_SLEEP_UPDATE_PERIOD_ORIGIN("Scheduler.SLEEP.update_period.origin", 30),
+    SCHEDULER_SLEEP_UPDATE_PERIOD_BOUND("Scheduler.SLEEP.update_period.bound", 60),
+
+    SCHEDULER_ACTIVITY_UPDATE_PERIOD_ORIGIN("Scheduler.ACTIVITY.update_period.origin", 30),
+    SCHEDULER_ACTIVITY_UPDATE_PERIOD_BOUND("Scheduler.ACTIVITY.update_period.bound", 60),
 
     ACTIVITIES_WATCHING_ENABLED("Activities.WATCHING.enabled", false),
     ACTIVITIES_WATCHING_API_KEY("Activities.WATCHING.api_key", "EMPTY"),
@@ -54,7 +61,12 @@ public enum Properties {
     ACTIVITIES_LISTENING_SONGS("Activities.LISTENING.songs", null),
 
     ACTIVITIES_PLAYING_ENABLED("Activities.PLAYING.enabled", false),
-    ACTIVITIES_PLAYING_GAMES("Activities.PLAYING.games", null);
+    ACTIVITIES_PLAYING_GAMES("Activities.PLAYING.games", null),
+
+    ACTIVITIES_EATING_ENABLED("Activities.EATING.enabled", false),
+    ACTIVITIES_EATING_FOODS("Activities.EATING.foods", null),
+
+    ACTIVITIES_NOTHING_ENABLED("Activities.NOTHING.enabled", false);
 
     private final String path;
     private final Object def;

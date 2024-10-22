@@ -7,6 +7,9 @@ import me.re4erka.botyara.api.bot.listener.ListeningBot;
 import me.re4erka.botyara.api.bot.listener.common.IListener;
 import me.re4erka.botyara.api.bot.mood.MoodType;
 import me.re4erka.botyara.api.bot.receiver.Receiver;
+import me.re4erka.botyara.api.bot.response.PendingResponse;
+import me.re4erka.botyara.api.bot.sleep.SleepQuality;
+import me.re4erka.botyara.api.bot.sleep.scheduler.SleepScheduler;
 import me.re4erka.botyara.api.bot.word.Words;
 import me.re4erka.botyara.api.history.HistoryFactory;
 import me.re4erka.botyara.api.history.type.SimpleHistory;
@@ -22,6 +25,7 @@ import me.re4erka.botyara.voice.VoiceManager;
 import org.apache.commons.lang3.StringUtils;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.entity.Nameable;
+import org.javacord.api.entity.activity.ActivityParty;
 import org.javacord.api.entity.activity.ActivityType;
 import org.javacord.api.entity.user.UserStatus;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +34,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 @Log4j2
-public class ActiveBot extends ListeningBot {
+public class DiscordBot extends ListeningBot {
     private final DiscordApi api;
 
     /*
@@ -61,11 +65,13 @@ public class ActiveBot extends ListeningBot {
     * */
     private final IListener filterListener = new FilterListener();
 
-    private final ActivityScheduler scheduler;
+    private final SleepScheduler sleepScheduler;
+    private final ActivityScheduler activityScheduler;
+
     private final VoiceManager voiceManager;
 
     public static final ZoneId ZONE_ID = ZoneId.of(
-            Properties.ACTIVITIES_SLEEPING_ZONE_ID.asString()
+            Properties.SCHEDULER_SLEEP_ZONE_ID.asString()
     );
 
     public static final UserHistory USER_HISTORY = HistoryFactory.createUser("ListeningBot")
@@ -82,24 +88,32 @@ public class ActiveBot extends ListeningBot {
 
     private final SimpleHistory history = HistoryFactory.createSimple("ActiveBot");
 
-    public ActiveBot(@NotNull DiscordApi api) {
-        super(Properties.LISTENER_AWAITING_MAXIMUM_SIZE.asInt(),
-                Properties.LISTENER_ASK_MAXIMUM_SIZE.asInt());
+    public DiscordBot(@NotNull DiscordApi api) {
+        super(Properties.LISTENER_WAITING_MAXIMUM_SIZE.asInt(),
+                Properties.LISTENER_CLARIFYING_MAXIMUM_SIZE.asInt());
+        this.api = api;
 
-        ActivityScheduler.Builder builder = ActivityScheduler.builder()
-                .setOrigin(Properties.SCHEDULER_UPDATE_PERIOD_ORIGIN.asInt())
-                .setBound(Properties.SCHEDULER_UPDATE_PERIOD_BOUND.asInt());
+        log.info("Initializing SleepScheduler...");
+        this.sleepScheduler = SleepScheduler.builder(this)
+                .setOrigin(Properties.SCHEDULER_SLEEP_UPDATE_PERIOD_ORIGIN.asInt())
+                .setBound(Properties.SCHEDULER_SLEEP_UPDATE_PERIOD_BOUND.asInt())
+                .setSleepHours(Properties.SCHEDULER_SLEEP_HOURS_SLEEP.asInt())
+                .setWakeUpHours(Properties.SCHEDULER_SLEEP_HOURS_WAKE_UP.asInt())
+                .setRequiredSleepMinutes(Properties.SCHEDULER_SLEEP_REQUIRED_SLEEP.asInt())
+                .setDivisionOfSleepQuality(Properties.SCHEDULER_SLEEP_DIVISION_OF_SLEEP_QUALITY.asDouble())
+                .build();
 
-        if (Properties.ACTIVITIES_SLEEPING_ENABLED.asBoolean()) {
-            builder.add(new SleepActivity(this));
-        }
+        log.info("Initializing ActivityScheduler...");
+        ActivityScheduler.Builder builder = ActivityScheduler.builder(this)
+                .setOrigin(Properties.SCHEDULER_ACTIVITY_UPDATE_PERIOD_ORIGIN.asInt())
+                .setBound(Properties.SCHEDULER_ACTIVITY_UPDATE_PERIOD_BOUND.asInt());
 
         if (Properties.ACTIVITIES_LISTENING_ENABLED.asBoolean()) {
-            builder.add(new ListeningActivity(this));
+            builder.add(new ListeningActivity());
         }
 
         if (Properties.ACTIVITIES_PLAYING_ENABLED.asBoolean()) {
-            builder.add(new PlayingActivity(this));
+            builder.add(new PlayingActivity());
         }
 
         if (Properties.ACTIVITIES_WATCHING_ENABLED.asBoolean()) {
@@ -107,17 +121,24 @@ public class ActiveBot extends ListeningBot {
                 log.warn("Set the key for activities watching to work in 'properties.yml'!");
                 log.warn("https://developers.google.com/youtube/v3/getting-started");
             } else {
-                builder.add(new WatchActivity(this));
+                builder.add(new WatchActivity());
             }
         }
 
-        this.api = api;
-        this.scheduler = builder.build();
+        if (Properties.ACTIVITIES_EATING_ENABLED.asBoolean()) {
+            builder.add(new EatingActivity());
+        }
+
+        if (Properties.ACTIVITIES_NOTHING_ENABLED.asBoolean()) {
+            builder.add(new NothingActivity());
+        }
+
+        this.activityScheduler = builder.build();
         this.voiceManager = new VoiceManager(Properties.TEXT_TO_SPEECH_API_KEY.asString());
     }
 
     @Override
-    public void onListen(@NotNull Receiver receiver, @NotNull Words words) {
+    public void listen(@NotNull Receiver receiver, @NotNull Words words) {
         if (filterListener.onListen(receiver, words)) {
             USER_HISTORY.log(
                     StringUtils.replaceOnce(
@@ -131,6 +152,17 @@ public class ActiveBot extends ListeningBot {
             return;
         }
 
+        // Учитываем отвечает ли бот уже кому-то.
+        if (isResponding()) {
+            queueResponse(PendingResponse.of(receiver, words));
+            return;
+        }
+
+        onListen(receiver, words);
+    }
+
+    @Override
+    public void onListen(@NotNull Receiver receiver, @NotNull Words words) {
         if (listenAwaiting(receiver, words)) {
             return;
         }
@@ -139,17 +171,17 @@ public class ActiveBot extends ListeningBot {
          * Проверяем обращался ли пользователь к боту
          * */
         if (words.isDidUserMentionBot()) {
+            beginResponse();
+
             /*
              * Переменная спит ли Бот.
              *
              * Если да, то он просыпается и выполняется слушатель - SleepingListener.
              */
             if (isSleep) {
-                sleep(false);
-
-                scheduler.updateNow(SleepActivity.class);
-
-                sleepingListener.onListen(receiver, words);
+                wakeUp();
+                activityScheduler.update()
+                        .thenRun(() -> sleepingListener.onListen(receiver, words));
 
                 return;
             }
@@ -160,7 +192,7 @@ public class ActiveBot extends ListeningBot {
             }
 
             /* Отправляем всем прослушивателем получателя (receiver) и слова (words) */
-            if (listen(receiver, words)) {
+            if (listenOther(receiver, words)) {
                 return;
             }
 
@@ -188,39 +220,61 @@ public class ActiveBot extends ListeningBot {
     }
 
     @Override
-    public void sleep(boolean isSleep) {
-        this.isSleep = isSleep;
+    public void sleep() {
+        this.isSleep = true;
 
-        if (isSleep) {
-            if (api.getStatus() != UserStatus.IDLE) {
-                api.updateStatus(UserStatus.IDLE);
-                api.unsetActivity();
-                cleanUp(); // Обязательно очищаем, дабы избежать странностей.
+        if (api.getStatus() != UserStatus.IDLE) {
+            api.updateStatus(UserStatus.IDLE);
+            api.unsetActivity();
 
-                history.log("Бот уснул.");
-            }
-        } else if (api.getStatus() != UserStatus.ONLINE) {
+            api.getCachedMessages().deleteAll();
+            cleanUp(); // Обязательно очищаем, дабы избежать странностей.
+
+            history.log("Бот уснул.");
+        }
+    }
+
+    @Override
+    public void wakeUp() {
+        this.isSleep = false;
+
+        if (api.getStatus() != UserStatus.ONLINE) {
             api.updateStatus(UserStatus.ONLINE);
             history.log("Бот проснулся.");
         }
     }
 
     @Override
-    public void watch(@NotNull String title) {
-        api.updateActivity(ActivityType.WATCHING, title);
-        ACTIVITY_HISTORY.logWatching(title);
+    public SleepQuality getSleepQuality() {
+        return sleepScheduler.getSleepQuality();
     }
 
     @Override
-    public void listen(@NotNull String song) {
-        api.updateActivity(ActivityType.LISTENING, song);
-        ACTIVITY_HISTORY.logListening(song);
+    public void updateActivities() {
+        activityScheduler.update();
     }
 
     @Override
-    public void play(@NotNull String game) {
-        api.updateActivity(ActivityType.PLAYING, game);
-        ACTIVITY_HISTORY.logPlaying(game);
+    public void updateActivity(@NotNull Activity.Type type, @NotNull String content) {
+        switch (type) {
+            case LISTENING -> {
+                api.updateActivity(ActivityType.LISTENING, content);
+                ACTIVITY_HISTORY.log(Activity.Type.LISTENING, content);
+            }
+            case PLAYING -> {
+                api.updateActivity(ActivityType.PLAYING, content);
+                ACTIVITY_HISTORY.log(Activity.Type.PLAYING, content);
+            }
+            case WATCHING -> {
+                api.updateActivity(ActivityType.WATCHING, content);
+                ACTIVITY_HISTORY.log(Activity.Type.WATCHING, content);
+            }
+            case EATING -> {
+                api.updateActivity(ActivityType.CUSTOM, content);
+                ACTIVITY_HISTORY.log(Activity.Type.EATING, content);
+            }
+            default -> log.error("Activity type '{}' is not supported for update!", type.toString());
+        }
     }
 
     @Override
@@ -229,13 +283,20 @@ public class ActiveBot extends ListeningBot {
             case PLAYING -> Activity.Type.PLAYING;
             case WATCHING -> Activity.Type.WATCHING;
             case LISTENING -> Activity.Type.LISTENING;
-            default -> Activity.Type.SLEEPING;
-        }).orElse(Activity.Type.SLEEPING);
+            case CUSTOM -> Activity.Type.EATING;
+            default -> Activity.Type.NOTHING;
+        }).orElse(Activity.Type.NOTHING);
     }
 
     @Override
     public String getActivityContent() {
-        return api.getActivity().map(Nameable::getName).orElseThrow();
+        return api.getActivity().map(Nameable::getName).orElse(StringUtils.EMPTY);
+    }
+
+    @Override
+    public void doesNothing() {
+        api.unsetActivity();
+        ACTIVITY_HISTORY.logNothing();
     }
 
     @Override
@@ -243,8 +304,15 @@ public class ActiveBot extends ListeningBot {
         return ZonedDateTime.now(ZONE_ID).getHour();
     }
 
-    public void stop() {
-        scheduler.shutdown();
+    @Override
+    public ZonedDateTime getCurrentDateTime() {
+        return ZonedDateTime.now(ZONE_ID);
+    }
+
+    public void shutdown() {
+        sleepScheduler.shutdown();
+        activityScheduler.shutdown();
+
         cleanUp().unregisterAll();
     }
 }

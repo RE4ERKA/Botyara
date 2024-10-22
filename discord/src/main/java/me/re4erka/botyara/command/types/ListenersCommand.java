@@ -2,22 +2,23 @@ package me.re4erka.botyara.command.types;
 
 import me.re4erka.botyara.api.command.Command;
 import me.re4erka.botyara.Botyara;
+import me.re4erka.botyara.api.command.logger.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
 public class ListenersCommand implements Command {
     @Override
-    public void execute(@NotNull String[] args) {
+    public void execute(@NotNull Logger logger, @NotNull String[] args) {
         if (args.length < 1) {
-            info("Недостаточно аргументов!");
-            info("Подкоманды: reload|cleanup|list|unregister");
+            logger.info("Недостаточно аргументов!");
+            logger.info("Подкоманды: reload|cleanup|list|unregister");
             return;
         }
 
         switch (args[0]) {
             case "reload" -> {
-                info("Перезагрузка...");
+                logger.info("Перезагрузка...");
 
                 Botyara.INSTANCE.getDiscordManager().getBot()
                         .cleanUp()
@@ -27,18 +28,18 @@ public class ListenersCommand implements Command {
             }
 
             case "cleanup" -> {
-                info("Очистка ожидающий и вопросительных слушателей...");
+                logger.info("Очистка ожидающий и вопросительных слушателей...");
 
                 Botyara.INSTANCE.getDiscordManager().getBot().cleanUp();
             }
 
             case "list" -> {
-                info("Список слушателей:");
+                logger.info("Список слушателей:");
 
                 Botyara.INSTANCE.getDiscordManager()
                         .getBot()
                         .getListeners()
-                        .forEach(listener -> info(
+                        .forEach(listener -> logger.info(
                                 "Имя: " + listener.getName() + " | PostOrder: " + listener.getPostOrder()
                         )
                 );
@@ -50,13 +51,13 @@ public class ListenersCommand implements Command {
                         .unregister(args[1]);
 
                 if (hasUnregistered) {
-                    info("Слушатель '%s' больше не зарегистрирован!", args[1].toUpperCase(Locale.ROOT));
+                    logger.info("Слушатель '%s' больше не зарегистрирован!", args[1].toUpperCase(Locale.ROOT));
                 } else {
-                    info("Слушатель не был найден!");
+                    logger.info("Слушатель не был найден!");
                 }
             }
 
-            default -> info("Подкоманда не найдена!");
+            default -> logger.info("Подкоманда не найдена!");
         }
     }
 }

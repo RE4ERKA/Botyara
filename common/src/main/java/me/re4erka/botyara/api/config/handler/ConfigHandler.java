@@ -1,7 +1,7 @@
 package me.re4erka.botyara.api.config.handler;
 
 import lombok.Getter;
-import me.re4erka.botyara.api.bot.listener.ask.AskType;
+import me.re4erka.botyara.api.bot.listener.clarify.ClarifyingType;
 import me.re4erka.botyara.api.bot.receiver.Receiver;
 import me.re4erka.botyara.api.bot.word.Words;
 import me.re4erka.botyara.api.config.exception.ConfigLoadException;
@@ -33,8 +33,8 @@ public class ConfigHandler {
         this.searchWords = SearchWords.of(configuration.getStringList("Contains"));
         this.matchesWords = SearchWords.of(configuration.getStringList("Matches"));
 
-        if (searchWords.size() == 0
-                && matchesWords.size() == 0) {
+        if (searchWords.isEmpty()
+                && matchesWords.isEmpty()) {
             throw new ConfigLoadException(
                     listenerName,
                     "The 'Contains' and 'Matches' list can't be empty!"
@@ -80,7 +80,7 @@ public class ConfigHandler {
     }
 
     public boolean handleAsk(@NotNull Receiver receiver, @NotNull Words words) {
-        for (Map.Entry<AskType, ConfigMessage> question : questions.entrySet()) {
+        for (Map.Entry<ClarifyingType, ConfigMessage> question : questions.entrySet()) {
             if (words.containsAny(question.getKey().getSearchWords())) {
                 receiver.reply(
                         question.getValue().getHandler().handle(

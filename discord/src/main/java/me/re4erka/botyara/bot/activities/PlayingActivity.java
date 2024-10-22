@@ -7,20 +7,12 @@ import me.re4erka.botyara.file.type.Properties;
 import org.jetbrains.annotations.NotNull;
 
 public class PlayingActivity implements Activity {
-    private final Bot bot;
-
-    public PlayingActivity(@NotNull Bot bot) {
-        this.bot = bot;
-    }
 
     @Override
-    public boolean update() {
-        if (bot.isSleep()) {
-            return true;
-        }
-
-        if (Random.chance(33)) {
-            bot.play(
+    public boolean update(@NotNull Bot bot) {
+        if (Random.chance(20)) {
+            bot.updateActivity(
+                    Type.PLAYING,
                     Random.nextElement(
                             Properties.ACTIVITIES_PLAYING_GAMES.asStringList()
                     )

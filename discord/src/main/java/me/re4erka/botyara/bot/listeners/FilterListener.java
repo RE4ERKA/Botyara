@@ -21,7 +21,7 @@ public class FilterListener implements IListener {
         for (int i = 0; i < words.sizeRaw(); ++i) {
             final String word = words.getRaw(i);
 
-            for (final String filterWord : filterWords) {
+            for (String filterWord : filterWords) {
                 if (SimilarityUtil.check(word, filterWord, similarity)) {
                     receiver.reputation(-50);
                     return true;

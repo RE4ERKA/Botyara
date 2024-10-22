@@ -1,10 +1,10 @@
-package me.re4erka.botyara.api.bot.listener.ask;
+package me.re4erka.botyara.api.bot.listener.clarify;
 
 import lombok.RequiredArgsConstructor;
 import me.re4erka.botyara.api.bot.word.search.SearchWords;
 
 @RequiredArgsConstructor
-public enum AskType {
+public enum ClarifyingType {
     WHY(
             SearchWords.builder()
                     .words("почему")

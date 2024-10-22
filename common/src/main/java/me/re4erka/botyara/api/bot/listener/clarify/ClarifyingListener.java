@@ -1,4 +1,4 @@
-package me.re4erka.botyara.api.bot.listener.ask;
+package me.re4erka.botyara.api.bot.listener.clarify;
 
 import me.re4erka.botyara.api.bot.listener.ListeningBot;
 import me.re4erka.botyara.api.bot.listener.common.Listener;
@@ -8,17 +8,17 @@ import me.re4erka.botyara.api.bot.word.Words;
 import me.re4erka.botyara.api.util.key.Key;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class AskListener extends Listener implements IAskListener {
+public abstract class ClarifyingListener extends Listener implements IClarifyingListener {
     private final ListeningBot bot;
 
-    protected AskListener(@NotNull Key name, @NotNull PostOrder postOrder, @NotNull ListeningBot bot) {
+    protected ClarifyingListener(@NotNull Key name, @NotNull PostOrder postOrder, @NotNull ListeningBot bot) {
         super(name, postOrder);
         this.bot = bot;
     }
 
-    public abstract boolean onAsked(@NotNull Receiver receiver, @NotNull Words words);
+    public abstract boolean onClarify(@NotNull Receiver receiver, @NotNull Words words);
 
-    protected void addAskListener(long id) {
-        bot.addAskListener(id, this);
+    protected void addClarifyingListener(long id) {
+        bot.addClarifyingListener(id, this);
     }
 }

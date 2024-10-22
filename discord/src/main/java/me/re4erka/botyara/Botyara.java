@@ -12,6 +12,7 @@ import me.re4erka.botyara.discord.DiscordManager;
 import me.re4erka.botyara.executor.ScheduledExecutor;
 import me.re4erka.botyara.file.FileManager;
 import me.re4erka.botyara.file.type.Properties;
+import org.javacord.api.util.logging.FallbackLoggerConfiguration;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -53,9 +54,10 @@ public enum Botyara {
         if (fileManager.start()) {
             final boolean debug = Properties.BOT_DEBUG.asBoolean();
 
-            HistoryFactory.init(jarDirectory, debug);
+            HistoryFactory.initialize(jarDirectory, debug);
 
             if (debug) {
+                FallbackLoggerConfiguration.setDebug(true);
                 log.info("Debug mode has been enabled!");
             }
 
@@ -67,6 +69,8 @@ public enum Botyara {
 
                     log.info("The bot successfully launched in {}ms.", stopwatch.elapsed(TimeUnit.MILLISECONDS));
                     history.logAwait("Бот был включен.");
+
+                    commandManager.runConsoleThread();
                 } else {
                     shutdown();
                 }

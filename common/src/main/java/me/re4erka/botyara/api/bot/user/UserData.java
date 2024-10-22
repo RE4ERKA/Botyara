@@ -1,6 +1,8 @@
 package me.re4erka.botyara.api.bot.user;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import me.re4erka.botyara.api.bot.friendship.FriendshipType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -10,7 +12,8 @@ import java.util.function.Consumer;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
-@Data
+@Getter
+@Setter
 public class UserData {
     private final long id;
 
@@ -25,11 +28,11 @@ public class UserData {
             Long.MIN_VALUE, FriendshipType.STRANGER, Integer.MIN_VALUE, "", null
     );
 
-    public UserData(final long id,
-                    @NotNull final FriendshipType friendshipType,
-                    final int reputation,
-                    @NotNull final String name,
-                    @Nullable final LocalDate lastDialog) {
+    public UserData(long id,
+                    @NotNull FriendshipType friendshipType,
+                    int reputation,
+                    @NotNull String name,
+                    @Nullable LocalDate lastDialog) {
         this.id = id;
 
         this.friendshipType = friendshipType;
@@ -75,15 +78,7 @@ public class UserData {
             return;
         }
 
-        setReputation(reputation + ((int) -(DAYS.between(lastDialog, LocalDate.now()))));
-    }
-
-    public void ifFamiliarOrElse(Consumer<UserData> action, final Runnable runnable) {
-        if (isStranger()) {
-            runnable.run();
-        } else {
-            action.accept(this);
-        }
+        setReputation(reputation + getNegativeDaysBetween());
     }
 
     public boolean isStranger() {
@@ -96,5 +91,9 @@ public class UserData {
 
     public static UserData newStranger() {
         return UserData.STRANGER;
+    }
+
+    private int getNegativeDaysBetween() {
+        return (int) -DAYS.between(lastDialog, LocalDate.now());
     }
 }

@@ -7,7 +7,8 @@ import me.re4erka.botyara.api.bot.listener.loader.ListenerLoader;
 import me.re4erka.botyara.api.bot.word.Words;
 import me.re4erka.botyara.api.manager.Manager;
 import me.re4erka.botyara.Botyara;
-import me.re4erka.botyara.bot.ActiveBot;
+import me.re4erka.botyara.bot.DiscordBot;
+import me.re4erka.botyara.bot.receiver.DiscordReceiver;
 import me.re4erka.botyara.bot.receiver.type.DataReceiver;
 import me.re4erka.botyara.bot.receiver.type.EmptyReceiver;
 import me.re4erka.botyara.discord.user.Users;
@@ -16,13 +17,14 @@ import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 import org.javacord.api.entity.intent.Intent;
 import org.javacord.api.entity.message.Message;
+import org.javacord.core.BotActivity;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Log4j2
 public class DiscordManager extends Manager {
     @Getter
-    private ActiveBot bot;
+    private DiscordBot bot;
     private DiscordApi api;
 
     @Getter
@@ -50,7 +52,7 @@ public class DiscordManager extends Manager {
                 .setUserCacheEnabled(true)
                 .login().join();
 
-        bot = new ActiveBot(api);
+        bot = new DiscordBot(api);
 
         users = new Users(Botyara.INSTANCE.getDatabaseManager());
 
@@ -74,14 +76,15 @@ public class DiscordManager extends Manager {
             final long id = message.getAuthor().getId();
 
             users.find(id, userData -> {
+                final DiscordReceiver receiver = userData.isStranger()
+                        ? new EmptyReceiver(message, bot)
+                        : new DataReceiver(message, userData, bot);
+
                 final Words words = Words.create(
                         message.getReadableContent()
                 );
 
-                userData.ifFamiliarOrElse(
-                        data -> bot.onListen(new DataReceiver(message, data), words),
-                        () -> bot.onListen(new EmptyReceiver(message), words)
-                );
+                bot.listen(receiver, words);
             });
         });
 
@@ -93,11 +96,11 @@ public class DiscordManager extends Manager {
     public void loadListeners() {
         final AtomicInteger count = new AtomicInteger();
 
-        final String packageName = ActiveBot.class.getPackage().getName();
+        final String packagePrefix = DiscordBot.class.getPackage().getName();
         final String[] packageNames = new String[] {
-                packageName + ".listeners.generic",
-                packageName + ".listeners.await",
-                packageName + ".listeners.friendship"
+                packagePrefix + ".listeners.generic",
+                packagePrefix + ".listeners.await",
+                packagePrefix + ".listeners.friendship"
         };
 
         ListenerLoader.fromPackage(
@@ -137,7 +140,7 @@ public class DiscordManager extends Manager {
         if (api != null) {
             log.info("Disconnecting from the Discord...");
 
-            bot.stop();
+            bot.shutdown();
             api.disconnect().join();
             users.saveAll();
         }

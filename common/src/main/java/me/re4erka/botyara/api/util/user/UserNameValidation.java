@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.regex.Pattern;
 
 @UtilityClass
-public class UserNameUtil {
+public class UserNameValidation {
     private final static Pattern VALID_REGEX = Pattern.compile("[^А-ЯЁа-яё]");
 
     public InvalidType valid(@NotNull String name) {

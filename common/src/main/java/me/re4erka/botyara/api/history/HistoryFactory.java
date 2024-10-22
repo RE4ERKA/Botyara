@@ -12,11 +12,11 @@ import java.time.format.DateTimeFormatter;
 
 public class HistoryFactory {
     public static final String HISTORY_FILE =
-            "history/" + DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDate.now()) + ".log";
+            "history/".concat(DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDate.now())) + ".log";
 
     public static boolean DEBUG;
 
-    public static void init(@NotNull JarDirectory directory, boolean debug) {
+    public static void initialize(@NotNull JarDirectory directory, boolean debug) {
         if (!debug && directory.notExists(HISTORY_FILE)) {
             try {
                 directory.newFile(HISTORY_FILE).createNewCustomFile();

@@ -1,74 +1,50 @@
 package me.re4erka.botyara.api.bot.activity.scheduler;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import lombok.extern.log4j.Log4j2;
+import me.re4erka.botyara.api.bot.Bot;
 import me.re4erka.botyara.api.bot.activity.Activity;
+import me.re4erka.botyara.api.bot.scheduler.BotScheduler;
 import me.re4erka.botyara.api.util.random.Random;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 @Log4j2
-public class ActivityScheduler {
-    private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(
-            new ThreadFactoryBuilder()
-                    .setNameFormat("Activity-Scheduler-Thread")
-                    .setPriority(Thread.NORM_PRIORITY)
-                    .setDaemon(false)
-                    .build()
-    );
+public class ActivityScheduler extends BotScheduler {
+
     private final ImmutableSet<Activity> activities;
 
-    private ActivityScheduler(@NotNull ImmutableSet<Activity> activities, int origin, int bound) {
+    private ActivityScheduler(@NotNull Bot bot,
+                              @NotNull ImmutableSet<Activity> activities,
+                              int origin, int bound) {
+        super("Activity", bot);
         this.activities = activities;
 
-        executor.scheduleAtFixedRate(() -> {
-            for (Activity activity : activities) {
-                if (check(activity)) {
-                    break;
-                }
-            }
-        }, 0, Random.range(origin, bound), TimeUnit.MINUTES);
+        executor.scheduleAtFixedRate(this::onUpdate, 0, Random.range(origin, bound), TimeUnit.MINUTES);
     }
 
-    public void updateNow(@NotNull Class<? extends Activity> excludeActivity) {
-        for (Activity activity : activities) {
-            if (activity.getClass() == excludeActivity) {
-                continue;
-            }
+    @Override
+    public CompletableFuture<Void> update() {
+        return CompletableFuture.runAsync(this::onUpdate, executor);
+    }
 
+    private void onUpdate() {
+        if (bot.isSleep()) {
+            return;
+        }
+
+        for (Activity activity : activities) {
             if (check(activity)) {
                 break;
             }
         }
     }
 
-    public void shutdown() {
-        try {
-            executor.shutdown();
-
-            if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
-                log.warn("Executor did not terminate in the specified time.");
-
-                executor.shutdownNow();
-                if (!executor.awaitTermination(1, TimeUnit.MINUTES)) {
-                    log.error("Executor did not terminate after shutdownNow.");
-                }
-            }
-        } catch (InterruptedException e) {
-            log.error("Shutdown interrupted: {}", e.getMessage(), e);
-
-            executor.shutdownNow();
-            Thread.currentThread().interrupt();
-        }
-    }
-
     private boolean check(@NotNull Activity activity) {
         try {
-            if (activity.update()) {
+            if (activity.update(bot)) {
                 return true;
             }
         } catch (Exception e) {
@@ -78,15 +54,21 @@ public class ActivityScheduler {
         return false;
     }
 
-    public static ActivityScheduler.Builder builder() {
-        return new ActivityScheduler.Builder();
+    public static ActivityScheduler.Builder builder(@NotNull Bot bot) {
+        return new ActivityScheduler.Builder(bot);
     }
 
     public static final class Builder {
+        private final Bot bot;
+
+        private final ImmutableSet.Builder<Activity> activitiesBuilder = ImmutableSet.builder();
+
         private int origin = 30;
         private int bound = 60;
 
-        private final ImmutableSet.Builder<Activity> activitiesBuilder = ImmutableSet.builder();
+        public Builder(@NotNull Bot bot) {
+            this.bot = bot;
+        }
 
         public Builder setOrigin(int origin) {
             this.origin = origin;
@@ -105,6 +87,7 @@ public class ActivityScheduler {
 
         public ActivityScheduler build() {
             return new ActivityScheduler(
+                    bot,
                     activitiesBuilder.build(),
                     origin,
                     bound

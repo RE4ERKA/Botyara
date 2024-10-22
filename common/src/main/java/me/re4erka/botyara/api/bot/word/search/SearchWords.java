@@ -13,6 +13,8 @@ import java.util.List;
 public class SearchWords {
     private final Words[] searchWords;
 
+    private static final SearchWords EMPTY_SEARCH_WORDS = new SearchWords(new Words[]{});
+
     private SearchWords(@NotNull Words[] searchWords) {
         this.searchWords = searchWords;
     }
@@ -25,12 +27,20 @@ public class SearchWords {
         return searchWords.length;
     }
 
+    public boolean isEmpty() {
+        return this == EMPTY_SEARCH_WORDS || size() == 0;
+    }
+
     public static SearchWords of(@NotNull Collection<String> collection) {
         final Builder builder = SearchWords.builder();
 
         collection.forEach(builder::words);
 
         return builder.build();
+    }
+
+    public static SearchWords empty() {
+        return EMPTY_SEARCH_WORDS;
     }
 
     public static SearchWords.Builder builder() {

@@ -22,7 +22,7 @@ public class Words {
     public static final String SEPARATOR = StringUtils.SPACE + System.lineSeparator();
 
     private static final String[] BOT_SYNONYMS = new String[] {
-            "ботяра", "бот", "ботя", "робот", "ботик", "ботиха", "ботярище", "botyara", "bot", "robot"
+            "ботяра", "ботярка", "бот", "ботя", "робот", "ботик", "ботиха", "ботярище", "botyara", "bot", "robot"
     };
 
     private Words(@NotNull String[] formattedWords, @NotNull String[] originalWords, boolean didUserMentionBot) {
@@ -121,10 +121,6 @@ public class Words {
         for (int i = 0; i < searchWords.size(); i++) {
             final Words words = searchWords.get(i);
 
-            if (words == null) {
-                return false;
-            }
-
             if (contains(words)) {
                 return true;
             }
@@ -179,7 +175,7 @@ public class Words {
     }
 
     private int getFirstEqualsWordIndex(@NotNull String searchWord) {
-        for (int index = 0; index < formattedWords.length; index++) {
+        for (int index = 0; index < size(); index++) {
             final String word = get(index);
 
             if (searchWord.equals(word)) {
@@ -312,6 +308,7 @@ public class Words {
                 case "че" -> words[i] = "что";
                 case "щас" -> words[i] = "сейчас";
                 case "го" -> words[i] = "давай"; // или заменять на "пошли" ?
+                case "скока" -> words[i] = "сколько";
             }
         }
 

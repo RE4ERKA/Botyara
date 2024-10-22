@@ -2,17 +2,21 @@ package me.re4erka.botyara.bot.receiver.type;
 
 import me.re4erka.botyara.api.bot.friendship.FriendshipType;
 import me.re4erka.botyara.api.bot.user.UserData;
+import me.re4erka.botyara.bot.DiscordBot;
 import me.re4erka.botyara.bot.receiver.DiscordReceiver;
 import org.javacord.api.entity.message.Message;
 import org.jetbrains.annotations.NotNull;
 
 public class DataReceiver extends DiscordReceiver {
-    protected DataReceiver(@NotNull Message message, @NotNull UserData data, boolean hasMessageBeenChanged) {
-        super(message, data, hasMessageBeenChanged);
+    protected DataReceiver(@NotNull Message message,
+                           @NotNull UserData data,
+                           @NotNull DiscordBot bot,
+                           boolean hasMessageBeenChanged) {
+        super(message, data, bot, hasMessageBeenChanged);
     }
 
-    public DataReceiver(@NotNull Message message, @NotNull UserData data) {
-        this(message, data, false);
+    public DataReceiver(@NotNull Message message, @NotNull UserData data, @NotNull DiscordBot bot) {
+        this(message, data, bot, false);
     }
 
     @Override
